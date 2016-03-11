@@ -56,4 +56,8 @@ var config = {
   },
 };
 
+//var compiler = webpack(config);
+//compiler.run(function (err, stats) {
+//  console.log(stats.toJson()); // по завершению, выводим всю статистику
+//});
 module.exports = config;
