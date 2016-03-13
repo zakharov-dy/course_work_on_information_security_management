@@ -1,10 +1,16 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio
-build
 *.iml
 
 ## Directory-based project format:
+/build/app.js.map
+/build/main.css
+/build/app.js
+/build/build
+/build/index.html
+/build/node_modules
+/build/cache
 .idea/
 # if you remove the above rule, at least ignore the following:
 

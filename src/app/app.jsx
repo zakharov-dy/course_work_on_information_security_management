@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 // Выбор компонента в зависимости от приложения
-import Main from './App1/Main.jsx';
+import Main from './app1/Main.jsx';
 
 //Needed for onTouchTap
 //Can go away when react 1.0 release

@@ -15,3 +15,4 @@ compiler.run(function (err, stats) {
 });
 ```
 2. run `node webpack-production.config.js`
+

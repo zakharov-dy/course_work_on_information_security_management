@@ -9,17 +9,17 @@ class AppHeader extends React.Component {
   }
 
   componentWillMount() {
-    let barButtonsParams = this.props.barButtonsParams
+    let barButtonsParams = this.props.barButtonsParams;
     let barContent = barButtonsParams.map(function (item, i) {
       return (
         <RaisedButton
-          id={i}
+          key={i}
           label={item.name}
-          onMouseUp={item.onButtonClick}
+          onMouseUp={function() {console.log('Hello')}}
           style={item.style}
         />
       )
-    })
+    });
 
     this.setState({
       barContent: barContent,

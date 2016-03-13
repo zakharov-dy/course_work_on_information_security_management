@@ -1,0 +1,15 @@
+{
+  "name": "course work",
+  "version": "1.0.0",
+  "description": "First application",
+  "main": "index.html",
+  "author": "Developer",
+  "window": {
+    "toolbar": false,
+    "width": 500,
+    "height": 200
+  },
+  "devDependencies": {
+    "nw-builder": "^2.2.0"
+  }
+}
