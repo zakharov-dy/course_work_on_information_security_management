@@ -1,6 +1,9 @@
 import React from 'react';
 import AppHeader from './../core/AppHeader.jsx';
-// import AppContent from './content/AppHeader.jsx';
+import AppContent from './../core/AppContent.jsx';
+
+import MyContent from './Content.jsx';
+
 import {deepOrange500} from 'material-ui/lib/styles/colors';
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
@@ -11,9 +14,6 @@ const styles = {
    container: {
       textAlign: 'center',
       paddingTop: 200,
-   },
-   button: {
-      margin: 12,
    },
 };
 
@@ -29,17 +29,15 @@ class Main extends React.Component {
 
       this.state = {
          open: false,
-         isMessage: false,
+         isDockDialog: false,
       };
    }
 
    render() {
-      // <AppContent />
-      let component = this;
       const myBarButtonsParams = [
          {
             name: 'Документация',
-            onButtonClick: () => {component.setState({isMessage: !component.state.isMessage})},
+            onButtonClick: () => {this.setState({isDockDialog: true})},
          },
          {
             name: 'О программе',
@@ -50,9 +48,17 @@ class Main extends React.Component {
             action: 'git',
          }];
 
-      myBarButtonsParams.forEach(function (item) {
-         item.style = styles.button
-      });
+      const dialogParams = [
+         {
+            title: 'Документация',
+            isOpen: this.state.isDockDialog,
+            content: 'Документация',
+            buttonCloseParams: {
+               caption: 'закрыть',
+               onClick: () => {this.setState({isDockDialog: false})},
+            },
+         },
+      ]
 
       return (
          <MuiThemeProvider muiTheme={muiTheme}>
@@ -60,6 +66,9 @@ class Main extends React.Component {
                <AppHeader barButtonsParams={myBarButtonsParams}
                           title={appName}
                />
+               <AppContent dialogParams={dialogParams}
+                           content={MyContent}/>
+
             </div>
          </MuiThemeProvider>
       );
@@ -67,3 +76,5 @@ class Main extends React.Component {
 }
 
 export default Main;
+
+

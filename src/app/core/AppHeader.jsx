@@ -3,6 +3,12 @@ import AppBar from 'material-ui/lib/app-bar';
 import RaisedButton from 'material-ui/lib/raised-button';
 import FontIcon from 'material-ui/lib/font-icon';
 
+const styles = {
+   button: {
+      margin: 12,
+   },
+};
+
 class AppHeader extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -15,8 +21,8 @@ class AppHeader extends React.Component {
         <RaisedButton
           key={i}
           label={item.name}
-          onMouseUp={function() {console.log('Hello')}}
-          style={item.style}
+          onMouseDown={item.onButtonClick}
+          style={styles.button}
         />
       )
     });
