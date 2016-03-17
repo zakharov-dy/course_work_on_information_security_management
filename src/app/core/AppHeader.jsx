@@ -10,37 +10,37 @@ const styles = {
 };
 
 class AppHeader extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-  }
+   constructor(props, context) {
+      super(props, context);
+   }
 
-  componentWillMount() {
-    let barButtonsParams = this.props.barButtonsParams;
-    let barContent = barButtonsParams.map(function (item, i) {
+   componentWillMount() {
+      let barButtonsParams = this.props.barButtonsParams;
+      let barContent = barButtonsParams.map(function (item, i) {
+         return (
+            <RaisedButton
+               key={i}
+               label={item.name}
+               onMouseDown={item.onButtonClick}
+               style={styles.button}
+            />
+         )
+      });
+
+      this.setState({
+         barContent: barContent,
+      });
+   }
+
+   render() {
       return (
-        <RaisedButton
-          key={i}
-          label={item.name}
-          onMouseDown={item.onButtonClick}
-          style={styles.button}
-        />
-      )
-    });
-
-    this.setState({
-      barContent: barContent,
-    });
-  }
-
-  render() {
-    return (
-      <AppBar
-        showMenuIconButton={false}
-        title={this.props.title}
-        children={this.state.barContent}
-      />
-    );
-  }
+         <AppBar
+            showMenuIconButton={false}
+            title={this.props.title}
+            children={this.state.barContent}
+         />
+      );
+   }
 }
 
 export default AppHeader;

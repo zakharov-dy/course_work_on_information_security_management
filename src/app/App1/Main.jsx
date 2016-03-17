@@ -1,7 +1,6 @@
 import React from 'react';
 import AppHeader from './../core/AppHeader.jsx';
 import AppContent from './../core/AppContent.jsx';
-
 import MyContent from './Content.jsx';
 
 import {deepOrange500} from 'material-ui/lib/styles/colors';

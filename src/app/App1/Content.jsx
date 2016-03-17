@@ -8,6 +8,7 @@ import SelectField from 'material-ui/lib/SelectField';
 import TextField from 'material-ui/lib/text-field';
 import NumberField from './../core/NumberField.jsx';
 import MenuItem from 'material-ui/lib/menus/menu-item';
+import RaisedButton from 'material-ui/lib/raised-button';
 
 
 class Content extends React.Component {
@@ -103,6 +104,8 @@ class Content extends React.Component {
             />
          )
       });
+
+      let isGenerateButtonDisabled = this.props.step;
       return (
          <div>
             <h2>Выберите граф связи вариантов реагирования и исходов.</h2>
@@ -123,6 +126,9 @@ class Content extends React.Component {
                maxValue={1}
                handleChange={this.inputChange}
             />
+            <RaisedButton
+               label="Строить график"
+               disabled={isGenerateButtonDisabled}/>
          </div>
       );
    }
