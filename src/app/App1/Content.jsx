@@ -8,6 +8,9 @@ import SelectField from 'material-ui/lib/SelectField';
 import TextField from 'material-ui/lib/text-field';
 import NumberField from './../core/NumberField.jsx';
 import MenuItem from 'material-ui/lib/menus/menu-item';
+import RaisedButton from 'material-ui/lib/raised-button';
+
+//import ChartData from './ChartData';
 
 
 class Content extends React.Component {
@@ -15,12 +18,11 @@ class Content extends React.Component {
       super(props, context);
       this.inputChange = this.inputChange.bind(this);
       this.handleChangeSelectField = this.handleChangeSelectField.bind(this);
-      //this.handleChangeTextValue = this.handleChangeTextValue.bind(this);
       this.getClearDamages = this.getClearDamages.bind(this);
       this.state = {
          scheme: 0,
          damages: this.getClearDamages(1),
-         step: false,
+         stepParams: {}
       };
    }
 
@@ -31,7 +33,7 @@ class Content extends React.Component {
     */
    getClearDamages(scheme) {
       let damages;
-      scheme === 2 ? damages = [{},{},{}] : damages = [{},{},{},{}];
+      scheme === 1 ? damages = [{},{},{}] : damages = [{},{},{},{}];
 
       for (let i = 0; i < damages.length; i++) {
          damages[i].name = 'C(v' + (i + 1) + ')';
@@ -47,46 +49,41 @@ class Content extends React.Component {
    handleChangeSelectField(event, index, scheme) {
       if (scheme !== this.state.value) {
          this.setState({
-            value: scheme,
-            damages: this.getClearDamages(scheme),
+            scheme: scheme,
+            damages: this.getClearDamages(scheme)
          })
       }
    }
+   
 
+   isGenerateButtonReady(){
+      let isStepReady = this.state.stepParams.errorText !== '';
+      let isDamagesReady = this.state.damages.filter(function(item) {
+         return item.errorText !== '';
+      }).length === this.state.damages.length;
+      return isDamagesReady || isStepReady
+   }
+   
    /*
     * Функция смены значения input'а и присваивания ему состояния и ошибки, в случае, если значение не является валидным. Вызывается при событии в input.
     *
     */
-   handleChangeTextValue(event) {
-      let target = event.target;
-      let id = +target.id[target.id.length-1] - 1;
-      let value = +target.value;
-      let damages = this.state.damages;
-
-      if (typeof value === 'number' && value > 0 && value <= 1 ) {
-         damages[id].errorText = ''
-      } else {
-         damages[id].errorText = 'Невалидное значение'
-      }
-
-      damages[id].value = target.value;
-
-      this.setState({
-         damages: damages,
-      });
-   }
-
    inputChange(id, errorText, value){
       if (id === 'stepId') {
+         let stepParams = this.state.stepParams;
+         stepParams.value = value;
+         stepParams.errorText = errorText;
          this.setState({
-            step: errorText,
-            stepValue: value,
+            stepParams: stepParams
          })
       }
       else {
          let damages = this.state.damages;
          damages[id].errorText = errorText;
          damages[id].value = value;
+         this.setState({
+            damages: damages
+         })
       }
    }
 
@@ -103,16 +100,17 @@ class Content extends React.Component {
             />
          )
       });
+
       return (
          <div>
             <h2>Выберите граф связи вариантов реагирования и исходов.</h2>
             <SelectField
                ref='SelectField'
-               value={this.state.value}
+               value={this.state.scheme}
                onChange={this.handleChangeSelectField}>
-               <MenuItem value={1} primaryText="Граф №1"/>
-               <MenuItem value={2} primaryText="Граф №2"/>
-               <MenuItem value={3} primaryText="Граф №3"/>
+               <MenuItem value={0} primaryText="Граф №1"/>
+               <MenuItem value={1} primaryText="Граф №2"/>
+               <MenuItem value={2} primaryText="Граф №3"/>
             </SelectField>
             <h2>Заполните величину ущерба от 0 до 1</h2>
             {damagesTextField}
@@ -123,6 +121,10 @@ class Content extends React.Component {
                maxValue={1}
                handleChange={this.inputChange}
             />
+            <RaisedButton 
+               label='Строить график'
+               label="Secondary"
+               disabled={this.isGenerateButtonReady()}/>
          </div>
       );
    }

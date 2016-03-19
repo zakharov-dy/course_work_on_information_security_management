@@ -19,7 +19,7 @@ class NumberField extends React.Component {
       // this.handleChangeSelectField = this.handleChangeSelectField.bind(this);
       this.onChange = this.onChange.bind(this);
       this.state = {
-         errorText: false,
+         errorText: false
       };
    }
 
@@ -33,16 +33,17 @@ class NumberField extends React.Component {
 
       let minValue = this.props.minValue;
       let maxValue = this.props.maxValue;
-      let handleChange = this.props.handleChange
+      let handleChange = this.props.handleChange;
 
-      let errorText = false;
-      if (isNaN(value)) errorText = 'Невалидное значение'
-      else if (value < minValue) errorText = 'Значение меньше нижней границы'
-      else if (value >= maxValue) errorText = 'Значение больше верхней границы'
+      let errorText = '';
+      if (isNaN(value)) errorText = 'Невалидное значение';
+      else if (value < minValue) errorText = 'Значение меньше нижней границы';
+      else if (value >= maxValue) errorText = 'Значение больше верхней границы';
+
       if (typeof handleChange === 'function') handleChange(this.props.id, errorText, value);
 
       this.setState({
-         errorText: errorText,
+         errorText: errorText
       });
    }
 
