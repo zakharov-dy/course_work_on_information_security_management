@@ -1,12 +1,15 @@
 import React from 'react';
 import AppBar from 'material-ui/lib/app-bar';
-import RaisedButton from 'material-ui/lib/raised-button';
-import FontIcon from 'material-ui/lib/font-icon';
+
+import IconButton from 'material-ui/lib/icon-button';
+import IconMenu from 'material-ui/lib/menus/icon-menu';
+import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
+import MenuItem from 'material-ui/lib/menus/menu-item';
 
 const styles = {
    button: {
-      margin: 12,
-   },
+      margin: 12
+   }
 };
 
 class AppHeader extends React.Component {
@@ -18,17 +21,16 @@ class AppHeader extends React.Component {
       let barButtonsParams = this.props.barButtonsParams;
       let barContent = barButtonsParams.map(function (item, i) {
          return (
-            <RaisedButton
+            <MenuItem
                key={i}
-               label={item.name}
+               primaryText={item.name}
                onMouseDown={item.onButtonClick}
-               style={styles.button}
             />
          )
       });
 
       this.setState({
-         barContent: barContent,
+         barContent: barContent
       });
    }
 
@@ -37,7 +39,17 @@ class AppHeader extends React.Component {
          <AppBar
             showMenuIconButton={false}
             title={this.props.title}
-            children={this.state.barContent}
+            iconElementRight={
+            <IconMenu
+              iconButtonElement={
+                <IconButton><MoreVertIcon /></IconButton>
+              }
+              targetOrigin={{horizontal: 'right', vertical: 'top'}}
+              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+            >
+            {this.state.barContent}
+            </IconMenu>
+         }
          />
       );
    }

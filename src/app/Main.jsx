@@ -1,25 +1,27 @@
 import React from 'react';
-import AppHeader from './../core/AppHeader.jsx';
-import AppContent from './../core/AppContent.jsx';
-import MyContent from './Content.jsx';
+import AppHeader from './core/AppHeader.jsx';
+import AppContent from './core/AppContent.jsx';
 
-import {deepOrange500} from 'material-ui/lib/styles/colors';
-import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
+import firstAppContent from './App1/Content.jsx';
+// import secondAppContent from './App2/Content.jsx';
+
+import {deepOrange500} from '../../node_modules/material-ui/lib/styles/colors';
+import getMuiTheme from '../../node_modules/material-ui/lib/styles/getMuiTheme';
+import MuiThemeProvider from '../../node_modules/material-ui/lib/MuiThemeProvider';
 
 const appName = 'Расчет рационального варианта реагирования на событие нарушения информационной безопасности';
 
 const styles = {
    container: {
       textAlign: 'center',
-      paddingTop: 200,
-   },
+      paddingTop: 200
+   }
 };
 
 const muiTheme = getMuiTheme({
    palette: {
-      accent1Color: deepOrange500,
-   },
+      accent1Color: deepOrange500
+   }
 });
 
 class Main extends React.Component {
@@ -28,7 +30,7 @@ class Main extends React.Component {
 
       this.state = {
          open: false,
-         isDockDialog: false,
+         isDockDialog: false
       };
    }
 
@@ -36,15 +38,15 @@ class Main extends React.Component {
       const myBarButtonsParams = [
          {
             name: 'Документация',
-            onButtonClick: () => {this.setState({isDockDialog: true})},
+            onButtonClick: () => {this.setState({isDockDialog: true})}
          },
          {
             name: 'О программе',
-            action: 'about',
+            action: 'about'
          },
          {
             name: 'Исходники',
-            action: 'git',
+            action: 'git'
          }];
 
       const dialogParams = [
@@ -54,10 +56,10 @@ class Main extends React.Component {
             content: 'Документация',
             buttonCloseParams: {
                caption: 'закрыть',
-               onClick: () => {this.setState({isDockDialog: false})},
-            },
-         },
-      ]
+               onClick: () => {this.setState({isDockDialog: false})}
+            }
+         }
+      ];
 
       return (
          <MuiThemeProvider muiTheme={muiTheme}>
@@ -66,7 +68,7 @@ class Main extends React.Component {
                           title={appName}
                />
                <AppContent dialogParams={dialogParams}
-                           content={MyContent}/>
+                           content={firstAppContent}/>
 
             </div>
          </MuiThemeProvider>

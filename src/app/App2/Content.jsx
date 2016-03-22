@@ -4,15 +4,6 @@
  */
 
 import React from 'react';
-import SelectField from 'material-ui/lib/SelectField';
-import NumberField from './../core/NumberField.jsx';
-import MenuItem from 'material-ui/lib/menus/menu-item';
-import RaisedButton from 'material-ui/lib/raised-button';
-import ChartData from './Chart.jsx';
-import Card from 'material-ui/lib/card/card';
-import CardHeader from 'material-ui/lib/card/card-header';
-import CardText from 'material-ui/lib/card/card-text';
-import CardTitle from 'material-ui/lib/card/card-title';
 
 const styles = {
    firstAppContainer: {
@@ -83,8 +74,8 @@ class Content extends React.Component {
    isGenerateButtonReady(){
       let isStepReady = this.state.stepParams.errorText !== '';
       let isDamagesReady = this.state.damages.filter(function(item) {
-         return item.errorText !== '';
-      }).length === this.state.damages.length;
+            return item.errorText !== '';
+         }).length === this.state.damages.length;
       return isDamagesReady || isStepReady
    }
 
@@ -142,6 +133,7 @@ class Content extends React.Component {
 
       return (
          <div style={styles.firstAppContainer}>
+            <h1>Второй контент</h1>
             <Card>
                <CardHeader
                   title='Выберите граф связи вариантов реагирования и исходов.'
@@ -197,7 +189,6 @@ class Content extends React.Component {
       );
    }
 }
-
 export default Content;
 
 
