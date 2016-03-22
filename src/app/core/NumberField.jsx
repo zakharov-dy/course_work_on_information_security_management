@@ -14,6 +14,20 @@ import TextField from 'material-ui/lib/text-field';
 
 
 class NumberField extends React.Component {
+   render() {
+      return (
+      <div>
+         <span>
+            {this.props.caption}
+         </span>
+         <TextField
+            errorText={this.state.errorText}
+            onChange={this.onChange}
+         />
+      </div>
+   );
+   }
+
    constructor(props, context) {
       super(props, context);
       // this.handleChangeSelectField = this.handleChangeSelectField.bind(this);
@@ -22,11 +36,11 @@ class NumberField extends React.Component {
          errorText: false
       };
    }
-
    /*
     * Функция смены значения input'а и присваивания ему состояния и ошибки, в случае, если значение не является валидным. Вызывается при событии в input.
     *
     */
+
    onChange(event) {
       let target = event.target;
       let value = +target.value;
@@ -45,15 +59,6 @@ class NumberField extends React.Component {
       this.setState({
          errorText: errorText
       });
-   }
-
-   render() {
-      return (
-         <TextField
-            errorText={this.state.errorText}
-            onChange={this.onChange}
-         />
-      );
    }
 }
 

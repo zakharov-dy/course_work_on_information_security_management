@@ -5,8 +5,8 @@ import FontIcon from 'material-ui/lib/font-icon';
 
 const styles = {
    button: {
-      margin: 12,
-   },
+      margin: 12
+   }
 };
 
 class AppHeader extends React.Component {
@@ -28,7 +28,7 @@ class AppHeader extends React.Component {
     });
 
     this.setState({
-      barContent: barContent,
+      barContent: barContent
     });
   }
 

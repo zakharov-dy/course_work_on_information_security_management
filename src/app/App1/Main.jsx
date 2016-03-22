@@ -13,14 +13,14 @@ const appName = 'Расчет рационального варианта реа
 const styles = {
    container: {
       textAlign: 'center',
-      paddingTop: 200,
-   },
+      paddingTop: 200
+   }
 };
 
 const muiTheme = getMuiTheme({
    palette: {
-      accent1Color: deepOrange500,
-   },
+      accent1Color: deepOrange500
+   }
 });
 
 class Main extends React.Component {
@@ -29,7 +29,7 @@ class Main extends React.Component {
 
       this.state = {
          open: false,
-         isDockDialog: false,
+         isDockDialog: false
       };
    }
 
@@ -37,15 +37,15 @@ class Main extends React.Component {
       const myBarButtonsParams = [
          {
             name: 'Документация',
-            onButtonClick: () => {this.setState({isDockDialog: true})},
+            onButtonClick: () => {this.setState({isDockDialog: true})}
          },
          {
             name: 'О программе',
-            action: 'about',
+            action: 'about'
          },
          {
             name: 'Исходники',
-            action: 'git',
+            action: 'git'
          }];
 
       const dialogParams = [
@@ -55,10 +55,10 @@ class Main extends React.Component {
             content: 'Документация',
             buttonCloseParams: {
                caption: 'закрыть',
-               onClick: () => {this.setState({isDockDialog: false})},
-            },
-         },
-      ]
+               onClick: () => {this.setState({isDockDialog: false})}
+            }
+         }
+      ];
 
       return (
          <MuiThemeProvider muiTheme={muiTheme}>

@@ -9,8 +9,7 @@ import TextField from 'material-ui/lib/text-field';
 import NumberField from './../core/NumberField.jsx';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import RaisedButton from 'material-ui/lib/raised-button';
-
-//import ChartData from './ChartData';
+import ChartData from './Chart.jsx';
 
 
 class Content extends React.Component {
@@ -19,10 +18,12 @@ class Content extends React.Component {
       this.inputChange = this.inputChange.bind(this);
       this.handleChangeSelectField = this.handleChangeSelectField.bind(this);
       this.getClearDamages = this.getClearDamages.bind(this);
+      this.onButtonClick = this.onButtonClick.bind(this);
       this.state = {
          scheme: 0,
          damages: this.getClearDamages(1),
-         stepParams: {}
+         stepParams: {},
+         isButtonActivate: false
       };
    }
 
@@ -33,7 +34,7 @@ class Content extends React.Component {
     */
    getClearDamages(scheme) {
       let damages;
-      scheme === 1 ? damages = [{},{},{}] : damages = [{},{},{},{}];
+      scheme === 1 ? damages = [{},{},{},{}] : damages = [{},{},{}];
 
       for (let i = 0; i < damages.length; i++) {
          damages[i].name = 'C(v' + (i + 1) + ')';
@@ -50,11 +51,12 @@ class Content extends React.Component {
       if (scheme !== this.state.value) {
          this.setState({
             scheme: scheme,
-            damages: this.getClearDamages(scheme)
+            damages: this.getClearDamages(scheme),
+            isButtonActivate: false
          })
       }
    }
-   
+
 
    isGenerateButtonReady(){
       let isStepReady = this.state.stepParams.errorText !== '';
@@ -63,7 +65,7 @@ class Content extends React.Component {
       }).length === this.state.damages.length;
       return isDamagesReady || isStepReady
    }
-   
+
    /*
     * Функция смены значения input'а и присваивания ему состояния и ошибки, в случае, если значение не является валидным. Вызывается при событии в input.
     *
@@ -74,7 +76,8 @@ class Content extends React.Component {
          stepParams.value = value;
          stepParams.errorText = errorText;
          this.setState({
-            stepParams: stepParams
+            stepParams: stepParams,
+            isButtonActivate: false
          })
       }
       else {
@@ -82,10 +85,16 @@ class Content extends React.Component {
          damages[id].errorText = errorText;
          damages[id].value = value;
          this.setState({
-            damages: damages
+            damages: damages,
+            isButtonActivate: false
          })
       }
    }
+
+   onButtonClick(){
+      this.setState({isButtonActivate: true})
+   }
+
 
    render() {
       let self = this;
@@ -97,9 +106,17 @@ class Content extends React.Component {
                minValue={0}
                maxValue={1}
                handleChange={self.inputChange}
-            />
+               caption={item.name}/>
          )
       });
+      let damages = {};
+      if(!this.isGenerateButtonReady()){
+         let stateDamages = this.state.damages;
+         for(let i=0; i<stateDamages.length; i++){
+            let key = 'v' + (i+1);
+            damages[key] = stateDamages[i].value;
+         }
+      }
 
       return (
          <div>
@@ -117,14 +134,19 @@ class Content extends React.Component {
             <h2>Заполните шаг графика от 0,01 до 1</h2>
             <NumberField
                id={'stepId'}
-               minValue={0}
+               minValue={0.01}
                maxValue={1}
-               handleChange={this.inputChange}
-            />
-            <RaisedButton 
+               handleChange={this.inputChange}/>
+            <RaisedButton
                label='Строить график'
                label="Secondary"
+               onMouseDown={this.onButtonClick}
                disabled={this.isGenerateButtonReady()}/>
+            <ChartData
+               index={this.state.scheme}
+               damages={damages}
+               step={+this.state.stepParams.value}
+               disable={this.isGenerateButtonReady() || !this.state.isButtonActivate}/>
          </div>
       );
    }
