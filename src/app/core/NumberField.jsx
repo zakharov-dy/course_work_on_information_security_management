@@ -12,7 +12,6 @@
 import React from 'react';
 import TextField from 'material-ui/lib/text-field';
 
-
 class NumberField extends React.Component {
    render() {
       return (

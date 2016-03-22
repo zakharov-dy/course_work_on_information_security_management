@@ -1,12 +1,13 @@
 import React from 'react';
-import AppHeader from './../core/AppHeader.jsx';
-import AppContent from './../core/AppContent.jsx';
+import AppHeader from './core/AppHeader.jsx';
+import AppContent from './core/AppContent.jsx';
 
-import MyContent from './Content.jsx';
+import firstAppContent from './App1/Content.jsx';
+// import secondAppContent from './App2/Content.jsx';
 
-import {deepOrange500} from 'material-ui/lib/styles/colors';
-import getMuiTheme from 'material-ui/lib/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/lib/MuiThemeProvider';
+import {deepOrange500} from '../../node_modules/material-ui/lib/styles/colors';
+import getMuiTheme from '../../node_modules/material-ui/lib/styles/getMuiTheme';
+import MuiThemeProvider from '../../node_modules/material-ui/lib/MuiThemeProvider';
 
 const appName = 'Расчет рационального варианта реагирования на событие нарушения информационной безопасности';
 
@@ -67,7 +68,7 @@ class Main extends React.Component {
                           title={appName}
                />
                <AppContent dialogParams={dialogParams}
-                           content={MyContent}/>
+                           content={firstAppContent}/>
 
             </div>
          </MuiThemeProvider>

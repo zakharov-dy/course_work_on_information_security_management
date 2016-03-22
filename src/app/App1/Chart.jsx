@@ -12,8 +12,6 @@
 import React from 'react';
 import Chart from 'chart.js/Chart';
 
-const lastPointOnX = 1;
-
 /**
  * Объект, содержащий в себе всю логику обработки данных
  */
@@ -301,8 +299,9 @@ class AppChart extends React.Component {
    }
 
    render(){
+      // if(!this.props.disable) let content = (<canvas id="myChart" width="400" height="400"></canvas>);
       return (
-         <canvas id="myChart" width="400" height="400"></canvas>
+         <div></div>
       );
    }
 
