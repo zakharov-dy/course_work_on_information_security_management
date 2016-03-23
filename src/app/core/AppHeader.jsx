@@ -5,6 +5,12 @@ import IconButton from 'material-ui/lib/icon-button';
 import IconMenu from 'material-ui/lib/menus/icon-menu';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import MenuItem from 'material-ui/lib/menus/menu-item';
+import FontIcon from 'material-ui/lib/font-icon';
+
+import Tabs from 'material-ui/lib/tabs/tabs';
+import Tab from 'material-ui/lib/tabs/tab';
+
+
 
 const styles = {
    button: {
@@ -34,12 +40,25 @@ class AppHeader extends React.Component {
       });
    }
 
+
    render() {
       return (
-         <AppBar
-            showMenuIconButton={false}
-            title={this.props.title}
-            iconElementRight={
+      <AppBar
+         showMenuIconButton={false}
+         title={this.props.title}
+         children={
+             <Tabs
+                  value={0}
+               >
+                  <Tab label="Tab One" value={0} />
+                  <Tab label="Tab Two" value={1} />
+                  <Tab label="Tab Three" value={2} />
+               </Tabs>
+         }
+         iconElementLeft={
+                 <FontIcon className="material-icons">home</FontIcon>
+            }
+         iconElementRight={
             <IconMenu
               iconButtonElement={
                 <IconButton><MoreVertIcon /></IconButton>
@@ -50,7 +69,7 @@ class AppHeader extends React.Component {
             {this.state.barContent}
             </IconMenu>
          }
-         />
+      />
       );
    }
 }

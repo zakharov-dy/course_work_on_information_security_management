@@ -9,7 +9,7 @@ import {deepOrange500} from '../../node_modules/material-ui/lib/styles/colors';
 import getMuiTheme from '../../node_modules/material-ui/lib/styles/getMuiTheme';
 import MuiThemeProvider from '../../node_modules/material-ui/lib/MuiThemeProvider';
 
-const appName = 'Расчет рационального варианта реагирования на событие нарушения информационной безопасности';
+const appName = 'СППР для обеспечения ИБ';
 
 const styles = {
    container: {

@@ -41,6 +41,7 @@ class NumberField extends React.Component {
     */
 
    onChange(event) {
+      event.stopPropagation();
       let target = event.target;
       let value = +target.value;
 

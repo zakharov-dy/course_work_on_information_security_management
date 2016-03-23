@@ -10,6 +10,7 @@ import Tab from 'material-ui/lib/tabs/tab';
 
 const styles = {
    paper: {
+      marginTop: '10px',
       width: '100%',
       height: '100%',
       // textAlign: 'center',
@@ -71,7 +72,7 @@ class AppContent extends React.Component {
                value={this.state.value}
                onChange={this.handleChange}
             >
-               <Tab label="Tab A" value="a" >
+               <Tab label="Комбинаторно-морфологический синтез рациональных наборов СЗИ" value="a" >
                   <div>
                      <h2 style={styles.headline}>Controllable Tab A</h2>
                      <p>
@@ -81,17 +82,7 @@ class AppContent extends React.Component {
                      </p>
                   </div>
                </Tab>
-               <Tab label="Tab B" value="b">
-                  <div>
-                     <h2 style={styles.headline}>Controllable Tab B</h2>
-                     <p>
-                        This is another example of a controllable tab. Remember, if you
-                        use controllable Tabs, you need to give all of your tabs values or else
-                        you wont be able to select them.
-                     </p>
-                  </div>
-               </Tab>
-               <Tab label="Tab C" value="c">
+               <Tab label="Расчет рационального варианта реагирования на событие нарушения ИБ" value="b">
                   <Content/>
                </Tab>
             </Tabs>
