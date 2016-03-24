@@ -15,6 +15,9 @@ import Tab from 'material-ui/lib/tabs/tab';
 const styles = {
    button: {
       margin: 12
+   },
+   tabsStyle: {
+      margin: 5
    }
 };
 
@@ -40,25 +43,21 @@ class AppHeader extends React.Component {
       });
    }
 
-
    render() {
       return (
       <AppBar
-         showMenuIconButton={false}
          title={this.props.title}
          children={
              <Tabs
-                  value={0}
+                  value={this.props.activeTab}
+                  style={styles.tabsStyle}
                >
-                  <Tab label="Tab One" value={0} />
-                  <Tab label="Tab Two" value={1} />
-                  <Tab label="Tab Three" value={2} />
+                  <Tab label="1" value={0} onActive={this.props.onTabActive}/>
+                  <Tab label="2" value={1} onActive={this.props.onTabActive}/>
                </Tabs>
          }
+
          iconElementLeft={
-                 <FontIcon className="material-icons">home</FontIcon>
-            }
-         iconElementRight={
             <IconMenu
               iconButtonElement={
                 <IconButton><MoreVertIcon /></IconButton>

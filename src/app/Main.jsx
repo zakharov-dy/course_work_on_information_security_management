@@ -2,8 +2,8 @@ import React from 'react';
 import AppHeader from './core/AppHeader.jsx';
 import AppContent from './core/AppContent.jsx';
 
-import firstAppContent from './App1/Content.jsx';
-// import secondAppContent from './App2/Content.jsx';
+import FirstAppContent from './App1/Content.jsx';
+import SecondAppContent from './App2/Content.jsx';
 
 import {deepOrange500} from '../../node_modules/material-ui/lib/styles/colors';
 import getMuiTheme from '../../node_modules/material-ui/lib/styles/getMuiTheme';
@@ -28,11 +28,20 @@ class Main extends React.Component {
    constructor(props, context) {
       super(props, context);
 
+      this.onChangeContentIndex = this.onChangeContentIndex.bind(this);
+
       this.state = {
          open: false,
+         contentIndex: 0,
          isDockDialog: false
       };
    }
+
+   onChangeContentIndex(value) {
+      this.setState({
+         contentIndex: value.props.value
+      });
+   };
 
    render() {
       const myBarButtonsParams = [
@@ -61,14 +70,19 @@ class Main extends React.Component {
          }
       ];
 
+
       return (
          <MuiThemeProvider muiTheme={muiTheme}>
             <div>
                <AppHeader barButtonsParams={myBarButtonsParams}
                           title={appName}
+                          activeTab={this.state.contentIndex}
+                          onTabActive={this.onChangeContentIndex}
                />
                <AppContent dialogParams={dialogParams}
-                           content={firstAppContent}/>
+                           firstContent={FirstAppContent}
+                           secondContent={SecondAppContent}
+                           contentIndex={this.state.contentIndex}/>
 
             </div>
          </MuiThemeProvider>

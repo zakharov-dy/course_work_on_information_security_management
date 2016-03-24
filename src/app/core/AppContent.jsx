@@ -3,10 +3,7 @@ import RaisedButton from 'material-ui/lib/raised-button';
 import Dialog from 'material-ui/lib/dialog';
 import Paper from 'material-ui/lib/paper';
 
-
-import Tabs from 'material-ui/lib/tabs/tabs';
-import Tab from 'material-ui/lib/tabs/tab';
-
+import SwipeableViews from 'react-swipeable-views';
 
 const styles = {
    paper: {
@@ -23,6 +20,7 @@ const styles = {
       marginBottom: 12,
       fontWeight: 400
    }
+
 };
 
 class AppContent extends React.Component {
@@ -64,28 +62,22 @@ class AppContent extends React.Component {
          )
       });
 
-      let Content = this.props.content;
+      let FirstContent = this.props.firstContent;
+      let SecondContent = this.props.secondContent;
+
       return (
          <Paper style={styles.paper} zDepth={3}>
             {dialogs}
-            <Tabs
-               value={this.state.value}
-               onChange={this.handleChange}
+            <SwipeableViews
+               index={this.props.contentIndex}
             >
-               <Tab label="Комбинаторно-морфологический синтез рациональных наборов СЗИ" value="a" >
-                  <div>
-                     <h2 style={styles.headline}>Controllable Tab A</h2>
-                     <p>
-                        Tabs are also controllable if you want to programmatically pass them their values.
-                        This allows for more functionality in Tabs such as not
-                        having any Tab selected or assigning them different values.
-                     </p>
-                  </div>
-               </Tab>
-               <Tab label="Расчет рационального варианта реагирования на событие нарушения ИБ" value="b">
-                  <Content/>
-               </Tab>
-            </Tabs>
+               <div>
+                  <FirstContent/>
+               </div>
+               <div>
+                  <SecondContent/>
+               </div>
+            </SwipeableViews>
          </Paper>
       );
    }

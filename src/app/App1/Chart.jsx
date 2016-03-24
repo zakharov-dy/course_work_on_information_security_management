@@ -299,10 +299,10 @@ class AppChart extends React.Component {
    }
 
    render(){
-      // if(!this.props.disable) let content = (<canvas id="myChart" width="400" height="400"></canvas>);
       return (
-         <div></div>
+         <canvas id="myChart" width="80%" height="80%"></canvas>
       );
+      // if(!this.props.disable) let content = ();
    }
 
    componentDidMount(){
