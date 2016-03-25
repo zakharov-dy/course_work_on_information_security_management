@@ -12,6 +12,8 @@
 import React from 'react';
 import Chart from 'chart.js/Chart';
 
+let myChart = undefined;
+
 /**
  * Объект, содержащий в себе всю логику обработки данных
  */
@@ -143,7 +145,7 @@ let chartLogic = {
       this._formArrayY();
       // Формируем массив точек для каждого элемента массива arrayY
       this._formData();
-      // Флормируем данные для графика и отправляем их на построение(Массив
+      // Формируем данные для графика и отправляем их на построение(Массив
       //    данных для каждого из графиков, цвета графиков, шаг графика).
       this._createDataChart();
    },
@@ -284,7 +286,7 @@ function updateChart(data, options) {
    }
    else{
       let ctx = document.querySelector('canvas').getContext('2d');
-      let myChart = new Chart(ctx).Line(data, options);
+      myChart = new Chart(ctx).Line(data, options);
    }
 }
 

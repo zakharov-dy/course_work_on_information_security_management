@@ -5,41 +5,55 @@
  *     {String} caption - имя инпута.
  *     {Number} minValue - минимальное значение.
  *     {Number} minValue - максимальное значение.
- *     {Function} handleChange - функция, срабатывающая по собтию изменения значения.
+ *     {Function} handleChange - функция, срабатывающая по событию изменения значения.
  * @state:
  *     {String, Boolean} errorText - имя ошибки.
  */
 import React from 'react';
 import TextField from 'material-ui/lib/text-field';
 
-class NumberField extends React.Component {
-   render() {
-      return (
-      <div>
-         <span>
-            {this.props.caption}
-         </span>
-         <TextField
-            errorText={this.state.errorText}
-            onChange={this.onChange}
-         />
-      </div>
-   );
+const styles = {
+   numberFieldCaption: {
+      fontSize: 'large'
    }
+};
+
+class NumberField extends React.Component {
 
    constructor(props, context) {
       super(props, context);
-      // this.handleChangeSelectField = this.handleChangeSelectField.bind(this);
       this.onChange = this.onChange.bind(this);
       this.state = {
          errorText: false
       };
    }
+
+   render() {
+      return (
+            <table>
+               <tbody>
+                  <tr>
+                     <td style={styles.numberFieldCaption}>
+                        {this.props.caption}
+                     </td>
+
+                     <td>
+                        <TextField
+                           errorText={this.state.errorText}
+                           onChange={this.onChange}
+                        />
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+      );
+   }
+
    /*
-    * Функция смены значения input'а и присваивания ему состояния и ошибки, в случае, если значение не является валидным. Вызывается при событии в input.
+    * Функция смены значения input'а и присваивания ему состояния и ошибки, в
+    * случае, если значение не является валидным. Вызывается при событии в input.
     *
     */
-
    onChange(event) {
       event.stopPropagation();
       let target = event.target;

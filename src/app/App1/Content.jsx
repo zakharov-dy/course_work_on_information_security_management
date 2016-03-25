@@ -12,6 +12,7 @@ import ChartData from './Chart.jsx';
 import Card from 'material-ui/lib/card/card';
 import CardHeader from 'material-ui/lib/card/card-header';
 import CardText from 'material-ui/lib/card/card-text';
+import Dialog from 'material-ui/lib/dialog';
 import CardTitle from 'material-ui/lib/card/card-title';
 
 const styles = {
@@ -40,12 +41,13 @@ class Content extends React.Component {
       this.inputChange = this.inputChange.bind(this);
       this.handleChangeSelectField = this.handleChangeSelectField.bind(this);
       this.getClearDamages = this.getClearDamages.bind(this);
-      this.onButtonClick = this.onButtonClick.bind(this);
+      this.onGeneralButtonClick = this.onGeneralButtonClick.bind(this);
+      this.onCloseDialog = this.onCloseDialog.bind(this);
       this.state = {
          scheme: 0,
          damages: this.getClearDamages(1),
          stepParams: {},
-         isButtonActivate: false
+         isDialogChartOpen: false
       };
    }
 
@@ -66,30 +68,31 @@ class Content extends React.Component {
    }
 
    /*
-    * Функция смены значения селектора и построения 'чистых' инпутов. Вызывается при событии в селекторе.
+    * Функция смены значения селектора и построения 'чистых' инпутов. 
+    * Вызывается при событии в селекторе.
     *
     */
    handleChangeSelectField(event, index, scheme) {
       if (scheme !== this.state.value) {
          this.setState({
             scheme: scheme,
-            damages: this.getClearDamages(scheme),
-            isButtonActivate: false
+            damages: this.getClearDamages(scheme)
          })
       }
    }
 
 
    isGenerateButtonReady(){
-      let isStepReady = this.state.stepParams.errorText !== '';
+      let isStepReady = this.state.stepParams.errorText === '';
       let isDamagesReady = this.state.damages.filter(function(item) {
-         return item.errorText !== '';
+         return item.errorText === '';
       }).length === this.state.damages.length;
-      return isDamagesReady || isStepReady
+      return isDamagesReady && isStepReady
    }
 
    /*
-    * Функция смены значения input'а и присваивания ему состояния и ошибки, в случае, если значение не является валидным. Вызывается при событии в input.
+    * Функция смены значения input'а и присваивания ему состояния и ошибки, в 
+    * случае, если значение не является валидным. Вызывается при событии в input.
     *
     */
    inputChange(id, errorText, value){
@@ -98,8 +101,7 @@ class Content extends React.Component {
          stepParams.value = value;
          stepParams.errorText = errorText;
          this.setState({
-            stepParams: stepParams,
-            isButtonActivate: false
+            stepParams: stepParams
          })
       }
       else {
@@ -107,16 +109,18 @@ class Content extends React.Component {
          damages[id].errorText = errorText;
          damages[id].value = value;
          this.setState({
-            damages: damages,
-            isButtonActivate: false
+            damages: damages
          })
       }
    }
 
-   onButtonClick(){
-      this.setState({isButtonActivate: true})
+   onGeneralButtonClick() {
+      this.setState({isDialogChartOpen: true})
    }
-
+   
+   onCloseDialog() {
+      this.setState({isDialogChartOpen: false})
+   }
 
    render() {
       let self = this;
@@ -132,7 +136,8 @@ class Content extends React.Component {
          )
       });
       let damages = {};
-      if(!this.isGenerateButtonReady()){
+      
+      if(this.isGenerateButtonReady()){
          let stateDamages = this.state.damages;
          for(let i=0; i<stateDamages.length; i++){
             let key = 'v' + (i+1);
@@ -140,6 +145,14 @@ class Content extends React.Component {
          }
       }
 
+      let closeButton = (
+         <RaisedButton
+            label='Закрыть'
+            onMouseDown={this.onCloseDialog}
+            primary={true}
+         />
+      );
+      
       return (
          <div style={styles.firstAppContainer}>
             <Card>
@@ -177,22 +190,29 @@ class Content extends React.Component {
                      id={'stepId'}
                      minValue={0.01}
                      maxValue={1}
-                     handleChange={this.inputChange}/>
+                     handleChange={this.inputChange}
+                     caption='dP'/>
                   <RaisedButton
                      label='Строить график'
                      label="Secondary"
-                     onMouseDown={this.onButtonClick}
-                     disabled={this.isGenerateButtonReady()}
+                     onMouseDown={this.onGeneralButtonClick}
+                     disabled={!this.isGenerateButtonReady()}
                   />
                </CardText>
             </Card>
-
-            <ChartData
-               index={this.state.scheme}
-               damages={damages}
-               step={+this.state.stepParams.value}
-               disable={this.isGenerateButtonReady() || !this.state.isButtonActivate}
-               style={styles.button}/>
+            <Dialog
+               title='График'
+               actions={closeButton}
+               open={this.state.isDialogChartOpen}
+               children={
+                <ChartData
+                  index={this.state.scheme}
+                  damages={damages}
+                  step={+this.state.stepParams.value}
+                  disable={this.isGenerateButtonReady() || !this.state.isDialogChartOpen}
+                  style={styles.button}/>
+               }
+            />
          </div>
       );
    }
