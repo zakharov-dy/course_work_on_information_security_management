@@ -280,6 +280,7 @@ let chartLogic = {
  */
 function updateChart(data, options) {
    if (typeof myChart !== 'undefined' && typeof myChart.datasets !== 'undefined') {
+      console.log(myChart);
       myChart.destroy();
       let ctx = document.querySelector('canvas').getContext('2d');
       myChart = new Chart(ctx).Line(data, options);
@@ -302,9 +303,10 @@ class AppChart extends React.Component {
 
    render(){
       return (
-         <canvas id="myChart" width="80%" height="80%"></canvas>
+         <canvas id="myChart" width="800px" height="400px">
+
+         </canvas>
       );
-      // if(!this.props.disable) let content = ();
    }
 
    componentDidMount(){

@@ -5,13 +5,14 @@
 
 import React from 'react';
 import SelectField from 'material-ui/lib/SelectField';
-import NumberField from './../core/NumberField.jsx';
+import ValidationField from './../core/ValidationField.jsx';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import RaisedButton from 'material-ui/lib/raised-button';
 import ChartData from './Chart.jsx';
 import Card from 'material-ui/lib/card/card';
 import CardHeader from 'material-ui/lib/card/card-header';
 import CardText from 'material-ui/lib/card/card-text';
+import CardMedia from 'material-ui/lib/card/card-media';
 import Dialog from 'material-ui/lib/dialog';
 import CardTitle from 'material-ui/lib/card/card-title';
 
@@ -126,7 +127,7 @@ class Content extends React.Component {
       let self = this;
       let damagesTextField = this.state.damages.map(function (item, i, array) {
          return (
-            <NumberField
+            <ValidationField
                key={'damagesTextField' + i}
                id={item.id}
                minValue={0}
@@ -157,7 +158,7 @@ class Content extends React.Component {
          <div style={styles.firstAppContainer}>
             <Card>
                <CardHeader
-                  title='Выберите граф связи вариантов реагирования и исходов.'
+                  title='Выберите модель принятия решений в виде графа связи вариантов реагирования и исходов.'
                   subtitle='Этап № 1'
                />
                <CardText>
@@ -170,10 +171,14 @@ class Content extends React.Component {
                      <MenuItem value={2} primaryText="Граф №3"/>
                   </SelectField>
                </CardText>
+               <CardMedia
+               >
+                  <img src={`/images/${this.state.scheme}.png`}/>
+               </CardMedia>
             </Card>
             <Card>
                <CardHeader
-                  title='Заполните величину ущерба от 0 до 1'
+                  title='Для заданной модели заполните величину ущерба от 0 до 1'
                   subtitle='Этап № 2'
                />
                <CardText>
@@ -186,15 +191,14 @@ class Content extends React.Component {
                   subtitle='Этап № 3'
                />
                <CardText>
-                  <NumberField
+                  <ValidationField
                      id={'stepId'}
                      minValue={0.01}
                      maxValue={1}
                      handleChange={this.inputChange}
                      caption='dP'/>
                   <RaisedButton
-                     label='Строить график'
-                     label="Secondary"
+                     label='Строить график зависимости целевой функции от значений ущерба '
                      onMouseDown={this.onGeneralButtonClick}
                      disabled={!this.isGenerateButtonReady()}
                   />
@@ -209,7 +213,7 @@ class Content extends React.Component {
                   index={this.state.scheme}
                   damages={damages}
                   step={+this.state.stepParams.value}
-                  disable={this.isGenerateButtonReady() || !this.state.isDialogChartOpen}
+                  disable={!(this.isGenerateButtonReady() && this.state.isDialogChartOpen)}
                   style={styles.button}/>
                }
             />
@@ -217,6 +221,7 @@ class Content extends React.Component {
       );
    }
 }
+
 
 export default Content;
 

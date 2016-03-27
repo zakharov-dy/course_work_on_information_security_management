@@ -9,7 +9,6 @@ const styles = {
    paper: {
       marginTop: '10px',
       width: '100%',
-      height: '100%',
       // textAlign: 'center',
       display: 'inline-block'
    },

@@ -3,6 +3,7 @@
  * @props:
  *     {Number} id - id инпута.
  *     {String} caption - имя инпута.
+ *     {String} type - тип импута.
  *     {Number} minValue - минимальное значение.
  *     {Number} minValue - максимальное значение.
  *     {Function} handleChange - функция, срабатывающая по событию изменения значения.
@@ -56,23 +57,37 @@ class NumberField extends React.Component {
     */
    onChange(event) {
       event.stopPropagation();
-      let target = event.target;
-      let value = +target.value;
+      if(this.props.type === 'string'){
+         let target = event.target,
+         value = target.value,
+         errorText;
+         value === '' ? errorText = 'Поле обязательно для заполнения' : errorText = '';
+         
+         this.setState({
+            errorText: errorText
+         });
+         if (typeof handleChange === 'function') handleChange(this.props.id, errorText, value);
+      }
+      else {
+         let target = event.target;
+         let value = +target.value;
 
-      let minValue = this.props.minValue;
-      let maxValue = this.props.maxValue;
-      let handleChange = this.props.handleChange;
+         let minValue = this.props.minValue;
+         let maxValue = this.props.maxValue;
+         let handleChange = this.props.handleChange;
+         
+         let errorText = '';
+         if (isNaN(value)) errorText = 'Невалидное значение';
+         else if (value < minValue) errorText = 'Значение меньше нижней границы';
+         else if (value >= maxValue) errorText = 'Значение больше верхней границы';
+      
 
-      let errorText = '';
-      if (isNaN(value)) errorText = 'Невалидное значение';
-      else if (value < minValue) errorText = 'Значение меньше нижней границы';
-      else if (value >= maxValue) errorText = 'Значение больше верхней границы';
+         this.setState({
+            errorText: errorText
+         });
+         if (typeof handleChange === 'function') handleChange(this.props.id, errorText, value);
+      }
 
-      if (typeof handleChange === 'function') handleChange(this.props.id, errorText, value);
-
-      this.setState({
-         errorText: errorText
-      });
    }
 }
 

@@ -10,8 +10,6 @@ import FontIcon from 'material-ui/lib/font-icon';
 import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
 
-
-
 const styles = {
    button: {
       margin: 12
