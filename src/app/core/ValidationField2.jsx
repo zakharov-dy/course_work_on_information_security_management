@@ -31,17 +31,17 @@ class ValidationField extends React.Component {
    }
 
    render() {
+      let props = this.props;
       return (
             <table>
                <tbody>
                   <tr>
                      <td style={styles.numberFieldCaption}>
-                        {this.props.caption}
+                        {props.caption}
                      </td>
-
                      <td>
                         <TextField
-                           value={this.props.value}
+                           value={props.value}
                            errorText={this.state.errorText}
                            onChange={this.onChange}
                         />
@@ -53,47 +53,44 @@ class ValidationField extends React.Component {
    }
 
    /*
+    * @params:
+    *    {Object} event - событие.
+    * 
     * Функция смены значения input'а и присваивания ему состояния и ошибки, в
     * случае, если значение не является валидным. Вызывается при событии в input.
+    * По завершении отправляет уведомление об изменении родительскому компоненту.
     *
     */
    onChange(event) {
       event.stopPropagation();
-      if(this.props.type === 'string'){
-         let target = event.target,
-            handleChange = this.props.handleChange,
-            value = target.value,
-            errorText;
-         value === '' ? errorText = 'Поле обязательно для заполнения' : errorText = '';
-         
-         this.setState({
-            errorText: errorText
-         });
+      let props = this.props,
+         target = event.target,
+         handleChange = props.handleChange,
+         value = target.value,
+         errorText = '';
 
-         if (typeof handleChange === 'function') handleChange(this.props.id, errorText, value);
+      if(value === ''){
+         errorText = 'Поле обязательно для заполнения';
       }
-      else {
-         let target = event.target;
-         let value = target.value;
-         let numberValue = +value;
+      else if(props.type === 'number') {
+         let min = props.min,
+            max = props.max,
+            numberValue = +value;
 
-         let min = this.props.min;
-         let max = this.props.max;
-         let handleChange = this.props.handleChange;
-         
-         let errorText = '';
          if (isNaN(numberValue)) errorText = 'Невалидное значение';
-         else if (min && numberValue < min) errorText = 'Значение меньше' +
-            ' нижней' +
-            ' границы';
-         else if (max && numberValue >= max) errorText = 'Значение больше' +
+         else if (min && numberValue <= min) errorText = 'Значение меньше' +
+            ' нижней границы';
+         else if (max && numberValue > max) errorText = 'Значение больше' +
             ' верхней границы';
-
-         this.setState({
-            errorText: errorText
-         });
-         if (typeof handleChange === 'function') handleChange(this.props.id, errorText, value);
       }
+
+
+      if (typeof handleChange === 'function') handleChange(props.id, errorText, value);
+
+      this.setState({
+         errorText: errorText
+      });
+
    }
 }
 

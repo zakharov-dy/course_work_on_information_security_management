@@ -2,12 +2,12 @@ import React from 'react';
 import Card from 'material-ui/lib/card/card';
 import CardActions from 'material-ui/lib/card/card-actions';
 import CardHeader from 'material-ui/lib/card/card-header';
-import FlatButton from 'material-ui/lib/flat-button';
+import RaisedButton from 'material-ui/lib/raised-button';
+import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import CardText from 'material-ui/lib/card/card-text';
 import ValidationField from './../core/ValidationField2.jsx'
 import SwipeableViews from 'react-swipeable-views';
 import LinearProgress from 'material-ui/lib/linear-progress';
-import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import ContentRemove from 'material-ui/lib/svg-icons/content/remove';
 
@@ -81,6 +81,7 @@ export default class Master extends React.Component {
 
 
    validateNextStep(params) {
+      // let state = this.state;
       let isNextButtonDisable = true;
       switch (this.state.contentIndex){
          case 0:
@@ -93,16 +94,18 @@ export default class Master extends React.Component {
                isNextButtonDisable: isNextButtonDisable
             });
             break;
+
          case 1:
             isNextButtonDisable = !(params.every(function(item){
+               console.log(item);
                return item.errorValueText === '' && item.errorNameText === ''
             }));
             this.setState({
                protections: params,
                isNextButtonDisable: isNextButtonDisable
             });
-
             break;
+
          case 2:
             isNextButtonDisable = !(params.every(function(item){
                return item.errorValueText === '' && item.errorNameText === ''
@@ -111,7 +114,6 @@ export default class Master extends React.Component {
                costs: params,
                isNextButtonDisable: isNextButtonDisable
             });
-
             break;
       }
 
@@ -161,15 +163,15 @@ export default class Master extends React.Component {
                                         handleChange={this.validateNextStep}/>
                   </div>
                   <div>
-                     slide n°4
+
                   </div>
                </SwipeableViews>
             </CardText>
             <CardActions>
-               <FlatButton label="Назад"/>
-               <FlatButton label={this.getRightButtonName()}
-                           onMouseDown={this.onRightButtonClick}
-                           disabled={state.isNextButtonDisable}
+               <RaisedButton label={this.getRightButtonName()}
+                             onMouseDown={this.onRightButtonClick}
+                             disabled={state.isNextButtonDisable}
+                             secondary={true}
                />
             </CardActions>
 
@@ -210,7 +212,7 @@ class GeneratorFeatures extends React.Component {
 
 
       this.state = {
-         items: [{name: '', value: 1, errorValueText: '', errorNextText: ''}]
+         items: [{name: '', value: 1, errorValueText: '', errorNameText: ''}]
       };
    }
 
@@ -224,6 +226,8 @@ class GeneratorFeatures extends React.Component {
       this.setState({
          items: items
       })
+
+      this.props.handleChange(items)
    }
 
    handleStringFieldChange(id, errorText, value){
@@ -236,6 +240,7 @@ class GeneratorFeatures extends React.Component {
       this.setState({
          items: items
       });
+
       this.props.handleChange(items)
    }
 
@@ -254,7 +259,7 @@ class GeneratorFeatures extends React.Component {
    addItem(){
       let state = this.state,
          items = state.items;
-      items.push({name: '', value: 1, errorValueText: '', errorNextText: ''});
+      items.push({name: '', value: 1, errorValueText: '', errorNameText: ''});
 
       this.setState({
          items: items
@@ -293,6 +298,7 @@ class GeneratorFeatures extends React.Component {
                         <FloatingActionButton
                            id={i}
                            mini={true}
+                           secondary={true}
                            onMouseDown={deleteItem}>
                            <ContentRemove />
                         </FloatingActionButton>
@@ -307,9 +313,44 @@ class GeneratorFeatures extends React.Component {
             {features}
             <FloatingActionButton
                mini={true}
+               secondary={true}
                onMouseDown={this.addItem}>
                <ContentAdd />
             </FloatingActionButton>
+         </div>
+      );
+   }
+}
+
+
+/*
+ * Компонент - Сборщик.
+ * @props:
+ *     {Function} handleChange - функция, вызываемая по событию в сборщике.
+ *     {Array} costs - Массив издержек:
+ *       {String} name - Имя издержки.
+ *       {String} value - Вес издержки.
+ *     {Array} protections - Массив критериев "Защищенность":
+ *       {String} name - Имя критерия.
+ *       {String} value - Вес критерия.
+ */
+
+class Collector extends React.Component {
+   constructor(props, context)
+   {
+      super(props, context);
+
+
+      this.state = {
+         items: [{name: '', value: 1, errorValueText: '', errorNameText: ''}]
+      };
+   }
+
+   render(){
+
+      return (
+         <div>
+
          </div>
       );
    }
