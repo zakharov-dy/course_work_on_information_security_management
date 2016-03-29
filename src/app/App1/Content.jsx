@@ -127,11 +127,10 @@ class Content extends React.Component {
       let self = this;
       let damagesTextField = this.state.damages.map(function (item, i, array) {
          return (
-            <ValidationField
-               key={'damagesTextField' + i}
+            <ValidationField key={'damagesTextField' + i}
                id={item.id}
-               minValue={0}
-               maxValue={1}
+               min={0}
+               max={1}
                handleChange={self.inputChange}
                caption={item.name}/>
          )
@@ -193,8 +192,8 @@ class Content extends React.Component {
                <CardText>
                   <ValidationField
                      id={'stepId'}
-                     minValue={0.01}
-                     maxValue={1}
+                     min={0.01}
+                     max={1}
                      handleChange={this.inputChange}
                      caption='dP'/>
                   <RaisedButton

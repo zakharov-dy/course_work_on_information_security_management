@@ -4,9 +4,25 @@ import CardActions from 'material-ui/lib/card/card-actions';
 import CardHeader from 'material-ui/lib/card/card-header';
 import FlatButton from 'material-ui/lib/flat-button';
 import CardText from 'material-ui/lib/card/card-text';
-import ValidationField from './../core/ValidationField.jsx'
+import ValidationField from './../core/ValidationField2.jsx'
 import SwipeableViews from 'react-swipeable-views';
 import LinearProgress from 'material-ui/lib/linear-progress';
+import FloatingActionButton from 'material-ui/lib/floating-action-button';
+import ContentAdd from 'material-ui/lib/svg-icons/content/add';
+import ContentRemove from 'material-ui/lib/svg-icons/content/remove';
+
+
+const styles = {
+   headline: {
+      fontSize: 24,
+      paddingTop: 16,
+      marginBottom: 12,
+      fontWeight: 400
+   },
+   slide: {
+      padding: 10
+   }
+};
 
 const progressProps = {
    min: 0,
@@ -37,9 +53,11 @@ export default class Master extends React.Component {
 
       this.onRightButtonClick = this.onRightButtonClick.bind(this);
       this.getRightButtonName = this.getRightButtonName.bind(this);
+      this.validateNextStep = this.validateNextStep.bind(this);
 
       this.state = {
-         contentIndex: 0
+         contentIndex: 0,
+         isNextButtonDisable: true
       };
    }
 
@@ -47,11 +65,13 @@ export default class Master extends React.Component {
       let contentIndex = this.state.contentIndex;
       if (contentIndex !== 3){
          this.setState({
-            contentIndex: contentIndex + 1
+            contentIndex: contentIndex + 1,
+            isNextButtonDisable: true
          });
       }
       else {
-         this.props.onFinish(this.state.structure);
+         console.log(this.state);
+         //this.props.onFinish(this.state.structure);
       }
    }
 
@@ -59,11 +79,50 @@ export default class Master extends React.Component {
       return this.state.contentIndex !== 3 ? 'Далее' : 'Готово'
    }
 
+
+   validateNextStep(params) {
+      let isNextButtonDisable = true;
+      switch (this.state.contentIndex){
+         case 0:
+            if(params.value !== ''){
+               isNextButtonDisable = false;
+            }
+
+            this.setState({
+               functionalSubsystemName: params.value,
+               isNextButtonDisable: isNextButtonDisable
+            });
+            break;
+         case 1:
+            isNextButtonDisable = !(params.every(function(item){
+               return item.errorValueText === '' && item.errorNameText === ''
+            }));
+            this.setState({
+               protections: params,
+               isNextButtonDisable: isNextButtonDisable
+            });
+
+            break;
+         case 2:
+            isNextButtonDisable = !(params.every(function(item){
+               return item.errorValueText === '' && item.errorNameText === ''
+            }));
+            this.setState({
+               costs: params,
+               isNextButtonDisable: isNextButtonDisable
+            });
+
+            break;
+      }
+
+   }
+
    render(){
+
       let props = this.props;
       let state = this.state;
-      let contentIndex = state.contentIndex;
 
+      let contentIndex = state.contentIndex;
       return (
          <Card>
             <CardHeader
@@ -73,6 +132,13 @@ export default class Master extends React.Component {
                showExpandableButton={true}
             />
             <CardText>
+               <LinearProgress
+                  min={progressProps.min}
+                  mode="determinate"
+                  max={progressProps.max}
+                  value={this.state.contentIndex} />
+            </CardText>
+            <CardText>
                {props.text[contentIndex].content}
             </CardText>
 
@@ -81,28 +147,29 @@ export default class Master extends React.Component {
                   index={this.state.contentIndex}
                >
                   <div>
-                     <FirstStep />
+                     <FirstStep handleChange={this.validateNextStep}/>
                   </div>
                   <div>
-                     slide n°2
+                     <GeneratorFeatures criteriaCaption='Название критерия'
+                                        criteriaWeight='Вес критерия'
+                                        handleChange={this.validateNextStep}
+                     />
                   </div>
                   <div>
-                     slide n°3
+                     <GeneratorFeatures criteriaCaption='Название критерия'
+                                        criteriaWeight='Вес критерия'
+                                        handleChange={this.validateNextStep}/>
                   </div>
                   <div>
                      slide n°4
                   </div>
                </SwipeableViews>
-               <LinearProgress
-                  min={progressProps.min}
-                  mode="determinate"
-                  max={progressProps.max}
-                  value={this.state.contentIndex} />
             </CardText>
             <CardActions>
                <FlatButton label="Назад"/>
                <FlatButton label={this.getRightButtonName()}
                            onMouseDown={this.onRightButtonClick}
+                           disabled={state.isNextButtonDisable}
                />
             </CardActions>
 
@@ -116,37 +183,134 @@ class FirstStep extends React.Component {
    {
       super(props, context);
 
-      // this.onRightButtonClick = this.onRightButtonClick.bind(this);
       this.handleChange = this.handleChange.bind(this);
-      //
-      // this.state = {
-      //    contentIndex: 0
-      // };
    }
 
-   // onRightButtonClick(){
-   //    let contentIndex = this.state.contentIndex;
-   //    if (contentIndex !== 3){
-   //       this.setState({
-   //          contentIndex: contentIndex + 1
-   //       });
-   //    }
-   //    else {
-   //       this.props.onFinish(this.state.structure);
-   //    }
-   // }
-   //
-   handleChange(){
-
+   handleChange(id, errorText, value){
+      this.props.handleChange({id: id, errorText: errorText, value: value})
    }
 
    render(){
-      let props = this.props;
-      let state = this.state;
-
       return (
          <ValidationField  type="string"
                            handleChange={this.handleChange}/>
+      );
+   }
+}
+
+class GeneratorFeatures extends React.Component {
+   constructor(props, context)
+   {
+      super(props, context);
+
+      this.handleNumberFieldChange = this.handleNumberFieldChange.bind(this);
+      this.handleStringFieldChange = this.handleStringFieldChange.bind(this);
+      this.deleteItem = this.deleteItem.bind(this);
+      this.addItem = this.addItem.bind(this);
+
+
+      this.state = {
+         items: [{name: '', value: 1, errorValueText: '', errorNextText: ''}]
+      };
+   }
+
+   handleNumberFieldChange(id, errorText, value){
+      let state = this.state,
+         items = state.items;
+
+      items[id].value = value;
+      items[id].errorValueText = errorText;
+
+      this.setState({
+         items: items
+      })
+   }
+
+   handleStringFieldChange(id, errorText, value){
+      let state = this.state,
+         items = state.items;
+
+      items[id].name = value;
+      items[id].errorNameText = errorText;
+
+      this.setState({
+         items: items
+      });
+      this.props.handleChange(items)
+   }
+
+   deleteItem(value) {
+      let state = this.state,
+         items = state.items;
+      items.splice(value, 1);
+
+      this.setState({
+         items: items
+      });
+
+      this.props.handleChange(items)
+   }
+
+   addItem(){
+      let state = this.state,
+         items = state.items;
+      items.push({name: '', value: 1, errorValueText: '', errorNextText: ''});
+
+      this.setState({
+         items: items
+      })
+   }
+
+   render(){
+      let state = this.state;
+      let self = this;
+      let features = state.items.map(function(item, i, array){
+         let deleteItem = function(){
+            let value = i;
+            self.deleteItem(value);
+         };
+         return (
+            <table key={i}>
+               <tbody>
+                  <tr>
+                     <td>
+                        <ValidationField  type="string"
+                                          caption={self.props.criteriaCaption}
+                                          value={item.name}
+                                          id={i}
+                                          handleChange={self.handleStringFieldChange}/>
+                     </td>
+                     <td>
+                        <ValidationField  type="number"
+                                          caption={self.props.criteriaWeight}
+                                          value={item.value}
+                                          id={i}
+                                          min={0}
+                                          max={1}
+                                          handleChange={self.handleNumberFieldChange}/>
+                     </td>
+                     <td>
+                        <FloatingActionButton
+                           id={i}
+                           mini={true}
+                           onMouseDown={deleteItem}>
+                           <ContentRemove />
+                        </FloatingActionButton>
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+         )
+      });
+      return (
+         <div>
+            {features}
+            <FloatingActionButton
+               mini={true}
+               onMouseDown={this.addItem}>
+               <ContentAdd />
+            </FloatingActionButton>
+         </div>
       );
    }
 }

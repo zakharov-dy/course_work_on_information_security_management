@@ -7,6 +7,7 @@
  *     {Number} min - минимальное значение.
  *     {Number} man - максимальное значение.
  *     {Function} handleChange - функция, срабатывающая по событию изменения значения.
+ *     {Number|String} value - значение инпута.
  * @state:
  *     {String, Boolean} errorText - имя ошибки.
  */
@@ -19,7 +20,7 @@ const styles = {
    }
 };
 
-class NumberField extends React.Component {
+class ValidationField extends React.Component {
 
    constructor(props, context) {
       super(props, context);
@@ -40,6 +41,7 @@ class NumberField extends React.Component {
 
                      <td>
                         <TextField
+                           value={this.props.value}
                            errorText={this.state.errorText}
                            onChange={this.onChange}
                         />
@@ -72,18 +74,19 @@ class NumberField extends React.Component {
       }
       else {
          let target = event.target;
-         let value = +target.value;
+         let value = target.value;
+         let numberValue = +value;
 
          let min = this.props.min;
          let max = this.props.max;
          let handleChange = this.props.handleChange;
          
          let errorText = '';
-         if (isNaN(value)) errorText = 'Невалидное значение';
-         else if (min && value < min) errorText = 'Значение меньше' +
+         if (isNaN(numberValue)) errorText = 'Невалидное значение';
+         else if (min && numberValue < min) errorText = 'Значение меньше' +
             ' нижней' +
             ' границы';
-         else if (max && value >= max) errorText = 'Значение больше' +
+         else if (max && numberValue >= max) errorText = 'Значение больше' +
             ' верхней границы';
 
          this.setState({
@@ -94,4 +97,4 @@ class NumberField extends React.Component {
    }
 }
 
-export default NumberField;
+export default ValidationField;

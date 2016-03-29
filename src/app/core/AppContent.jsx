@@ -6,18 +6,14 @@ import Paper from 'material-ui/lib/paper';
 import SwipeableViews from 'react-swipeable-views';
 
 const styles = {
-   paper: {
-      marginTop: '10px',
-      width: '100%',
-      // textAlign: 'center',
-      display: 'inline-block'
+   firstContent: {
+      //minHeight: '500px'
+      maxHeight: '100%',
+      minHeight: '100%'
    },
 
-   headline: {
-      fontSize: 24,
-      paddingTop: 16,
-      marginBottom: 12,
-      fontWeight: 400
+   secondContent: {
+      minHeight: '500px'
    }
 
 };
@@ -65,21 +61,27 @@ class AppContent extends React.Component {
       let SecondContent = this.props.secondContent;
 
       return (
-         <Paper style={styles.paper} zDepth={3}>
+         <div>
             {dialogs}
             <SwipeableViews
+               style={styles.firstContent}
+               slideStyle={styles.firstContent}
+               containerStyle={styles.firstContent}
                index={this.props.contentIndex}
             >
                <div>
                   <FirstContent/>
                </div>
-               <div>
+               <div style={styles.secondContent}>
                   <SecondContent/>
                </div>
             </SwipeableViews>
-         </Paper>
+
+         </div>
+
       );
    }
 }
-
+//<Paper style={styles.paper} zDepth={3}>
+//</Paper>
 export default AppContent;
