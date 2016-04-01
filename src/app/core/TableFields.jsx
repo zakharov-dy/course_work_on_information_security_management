@@ -5,10 +5,11 @@ import TableRow from 'material-ui/lib/table/table-row';
 import TableHeader from 'material-ui/lib/table/table-header';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import TableBody from 'material-ui/lib/table/table-body';
-import TableFooter from 'material-ui/lib/table/table-footer';
-//import TextField from 'material-ui/lib/text-field';
 import ValidationField2 from './../core/ValidationField2.jsx'
 
+import FloatingActionButton from 'material-ui/lib/floating-action-button';
+import ContentAdd from 'material-ui/lib/svg-icons/content/add';
+import ContentRemove from 'material-ui/lib/svg-icons/content/remove';
 
 const styles = {
    propContainerStyle: {
@@ -36,62 +37,46 @@ export default class TableFields extends React.Component {
    constructor(props) {
       super(props);
       
-      //this.handleToggle = this.handleToggle.bind(this);
-      //this.handleChange = this.handleChange.bind(this);
-      
+      this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
+      this.onAddItemClick = this.onAddItemClick.bind(this);
+      this.onRemoveItemClick = this.onRemoveItemClick.bind(this);
+      this.addItem = this.addItem.bind(this);
+      this.onFieldChange = this.onFieldChange.bind(this);
+
       
       this.state = {
-         fixedHeader: true,
-         fixedFooter: true,
-         stripedRows: false,
-         showRowHover: false,
-         selectable: true,
-         multiSelectable: false,
-         enableSelectAll: false,
-         deselectOnClickaway: true,
-         height: '300px'
+         struct: undefined
       };
    }
-   componentWillMount() {
 
-   }
    componentWillReceiveProps (nextProps) {
-      if(typeof this.state.struct !== 'undefined' && this.props.active){
+      if(typeof this.state.struct === 'undefined' && nextProps.active){
          let struct = [];
-         struct.push(new Array(this.props.alternatives.length + 1));
+         struct = this.addItem(struct, nextProps);
          this.setState({
             struct: struct
          });
       }
    }
 
-   addItem(){
-      let state = this.state,
-         struct = state.struct;
-      struct.push(new Array(this.props.alternatives.length + 1));
-
-      this.setState({
-         struct: struct
-      })
-   }
-
-
 
    render() {
-      let props = this.props,
-         alternatives = props.alternatives;
+      let self = this,
+         props = this.props,
+         state = this.state,
+         alternatives = props.alternatives,
+         struct = state.struct;
 
       if (props.active){
          return (
             <div>
                <Table
-                  height={this.state.height}
                   fixedHeader={true}
                   selectable={false}
                >
                   <TableHeader displaySelectAll={false} adjustForCheckbox={false} >
                      <TableRow>
-                        <TableHeaderColumn colSpan={protections.length + costs.length}
+                        <TableHeaderColumn colSpan={alternatives.length + 1}
                                            tooltip={props.name}
                                            style={{textAlign: 'center'}}>
                            {props.name}
@@ -108,102 +93,84 @@ export default class TableFields extends React.Component {
                         ))}
                      </TableRow>
                   </TableHeader>
-
+                  <TableBody
+                    showRowHover={true}
+                    stripedRows={this.state.stripedRows}
+                    displayRowCheckbox={false}
+                  >
+                    {struct.map( (row, i) => (
+                       <TableRow key={i}>
+                          {row.map((item, j) => (
+                             <TableRowColumn key={j}>
+                                <ValidationField2 id={[i, j]}
+                                                  value={item}
+                                                  type={j===0?'strinng':'number'}
+                                                  handleChange={self.onFieldChange}
+                                />
+                             </TableRowColumn>
+                          ))}
+                       </TableRow>
+                    ))}
+                  </TableBody>
                </Table>
-
-
+               <FloatingActionButton
+                  mini={true}
+                  secondary={true}
+                  onMouseDown={this.onAddItemClick}>
+                  <ContentAdd />
+               </FloatingActionButton>
+               <FloatingActionButton
+                  mini={true}
+                  secondary={true}
+                  onMouseDown={this.onRemoveItemClick}>
+                  <ContentRemove />
+               </FloatingActionButton>
             </div>
          );
       }
       else return (<div></div>)
 
    }
+
+   onAddItemClick(){
+      let struct = this.addItem(this.state.struct, this.props);
+      this.setState({
+         struct: struct
+      });
+      this.props.handleChange(struct);
+   }
+
+   onRemoveItemClick(){
+      let struct = this.state.struct;
+      struct.pop();
+      this.setState({
+         struct: struct
+      });
+      this.props.handleChange(struct);
+   }
+
+   addItem(struct, props){
+      struct.push(new Array(props.alternatives.length + 1));
+      let index = struct.length - 1;
+      for (let i = 0; i<struct[index].length; i++) {
+         i === 0? struct[index][i] = '' : struct[index][i] = 0
+      }
+      return struct
+   }
+
+   onFieldChange(id, errorText, value){
+      let struct = this.state.struct;
+
+      if(errorText !== ''){
+         value = ''
+      }
+
+      struct[id[0]][id[1]] = value;
+
+      this.setState({
+         struct: struct
+      });
+      
+      this.props.handleChange(struct)
+   }
 }
-//<TableBody
-//   deselectOnClickaway={this.state.deselectOnClickaway}
-//   showRowHover={this.state.showRowHover}
-//   stripedRows={this.state.stripedRows}
-//>
-//   {tableData.map( (row, index) => (
-//      <TableRow key={index} selected={row.selected}>
-//         <TableRowColumn>
-//            <ValidationField2 id={index + 'id'} value={index}/>
-//         </TableRowColumn>
-//         <TableRowColumn>
-//            <ValidationField2 id={index + 'name'} value={row.name}/>
-//         </TableRowColumn>
-//         <TableRowColumn>
-//            <ValidationField2 id={index + 'status'} value={row.status}/>
-//         </TableRowColumn>
-//      </TableRow>
-//   ))}
-//</TableBody>
-//<TableFooter>
-//<TableRow>
-//<TableRowColumn>ID</TableRowColumn>
-//<TableRowColumn>Name</TableRowColumn>
-//<TableRowColumn>Status</TableRowColumn>
-//</TableRow>
-//<TableRow>
-//<TableRowColumn colSpan="3" style={{textAlign: 'center'}}>
-//Super Footer
-//</TableRowColumn>
-//</TableRow>
-//</TableFooter>
-//<div style={styles.propContainerStyle}>
-//   <h3>Table Properties</h3>
-//   <TextField
-//      floatingLabelText="Table Body Height"
-//      defaultValue={this.state.height}
-//      onChange={this.handleChange}
-//   />
-//   <Toggle
-//      name="fixedHeader"
-//      label="Fixed Header"
-//      onToggle={this.handleToggle}
-//      defaultToggled={this.state.fixedHeader}
-//   />
-//   <Toggle
-//      name="fixedFooter"
-//      label="Fixed Footer"
-//      onToggle={this.handleToggle}
-//      defaultToggled={this.state.fixedFooter}
-//   />
-//   <Toggle
-//      name="selectable"
-//      label="Selectable"
-//      onToggle={this.handleToggle}
-//      defaultToggled={this.state.selectable}
-//   />
-//   <Toggle
-//      name="multiSelectable"
-//      label="Multi-Selectable"
-//      onToggle={this.handleToggle}
-//      defaultToggled={this.state.multiSelectable}
-//   />
-//   <Toggle
-//      name="enableSelectAll"
-//      label="Enable Select All"
-//      onToggle={this.handleToggle}
-//      defaultToggled={this.state.enableSelectAll}
-//   />
-//   <h3 style={styles.propToggleHeader}>TableBody Properties</h3>
-//   <Toggle
-//      name="deselectOnClickaway"
-//      label="Deselect On Clickaway"
-//      onToggle={this.handleToggle}
-//      defaultToggled={this.state.deselectOnClickaway}
-//   />
-//   <Toggle
-//      name="stripedRows"
-//      label="Stripe Rows"
-//      onToggle={this.handleToggle}
-//      defaultToggled={this.state.stripedRows}
-//   />
-//   <Toggle
-//      name="showRowHover"
-//      label="Show Row Hover"
-//      onToggle={this.handleToggle}
-//      defaultToggled={this.state.showRowHover}
-//   />
-//</div>

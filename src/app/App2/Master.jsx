@@ -70,7 +70,7 @@ export default class Master extends React.Component {
          });
       }
       else {
-         console.log(this.state);
+         console.log('Ура, товарищи!');
          //this.props.onFinish(this.state.structure);
       }
    }
@@ -114,6 +114,17 @@ export default class Master extends React.Component {
                isNextButtonDisable: isNextButtonDisable
             });
             break;
+
+         case 3:
+            isNextButtonDisable = !(params.every(function(row){
+
+               return row.every(function(item){return item !== ''});
+            }));
+
+            this.setState({
+               isNextButtonDisable: isNextButtonDisable
+            });
+            break;
       }
 
    }
@@ -129,7 +140,7 @@ export default class Master extends React.Component {
          alternatives;
 
       if(typeof costs !== 'undefined') {
-         alternatives =
+         alternatives = protections.concat(costs);
       }
 
       return (
