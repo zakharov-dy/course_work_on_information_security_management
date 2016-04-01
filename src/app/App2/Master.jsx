@@ -10,7 +10,7 @@ import SwipeableViews from 'react-swipeable-views';
 import LinearProgress from 'material-ui/lib/linear-progress';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import ContentRemove from 'material-ui/lib/svg-icons/content/remove';
-
+import TableFields from './../core/TableFields.jsx'
 
 const styles = {
    headline: {
@@ -97,7 +97,6 @@ export default class Master extends React.Component {
 
          case 1:
             isNextButtonDisable = !(params.every(function(item){
-               console.log(item);
                return item.errorValueText === '' && item.errorNameText === ''
             }));
             this.setState({
@@ -163,7 +162,7 @@ export default class Master extends React.Component {
                                         handleChange={this.validateNextStep}/>
                   </div>
                   <div>
-
+                     <TableFields />
                   </div>
                </SwipeableViews>
             </CardText>
@@ -317,40 +316,6 @@ class GeneratorFeatures extends React.Component {
                onMouseDown={this.addItem}>
                <ContentAdd />
             </FloatingActionButton>
-         </div>
-      );
-   }
-}
-
-
-/*
- * Компонент - Сборщик.
- * @props:
- *     {Function} handleChange - функция, вызываемая по событию в сборщике.
- *     {Array} costs - Массив издержек:
- *       {String} name - Имя издержки.
- *       {String} value - Вес издержки.
- *     {Array} protections - Массив критериев "Защищенность":
- *       {String} name - Имя критерия.
- *       {String} value - Вес критерия.
- */
-
-class Collector extends React.Component {
-   constructor(props, context)
-   {
-      super(props, context);
-
-
-      this.state = {
-         items: [{name: '', value: 1, errorValueText: '', errorNameText: ''}]
-      };
-   }
-
-   render(){
-
-      return (
-         <div>
-
          </div>
       );
    }
