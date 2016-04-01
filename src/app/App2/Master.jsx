@@ -119,11 +119,19 @@ export default class Master extends React.Component {
    }
 
    render(){
+      //costs={state.costs}
+      //protections={state.protections}
+      let props = this.props,
+         state = this.state,
+         costs = state.costs,
+         protections = state.protections,
+         contentIndex = state.contentIndex,
+         alternatives;
 
-      let props = this.props;
-      let state = this.state;
+      if(typeof costs !== 'undefined') {
+         alternatives =
+      }
 
-      let contentIndex = state.contentIndex;
       return (
          <Card>
             <CardHeader
@@ -162,8 +170,7 @@ export default class Master extends React.Component {
                                         handleChange={this.validateNextStep}/>
                   </div>
                   <div>
-                     <TableFields costs={state.costs}
-                                  protections={state.protections}
+                     <TableFields alternatives={alternatives}
                                   name={state.functionalSubsystemName}
                                   handleChange={this.validateNextStep}
                                   active={state.contentIndex === 3}

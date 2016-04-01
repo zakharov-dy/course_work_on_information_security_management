@@ -14,56 +14,20 @@ const styles = {
    propContainerStyle: {
       width: 200,
       overflow: 'hidden',
-      margin: '20px auto 0',
+      margin: '20px auto 0'
    },
    propToggleHeader: {
-      margin: '20px auto 10px',
-   },
+      margin: '20px auto 10px'
+   }
 };
-
-const tableData = [
-   {
-      name: 'John Smith',
-      status: 'Employed',
-      selected: true
-   },
-   {
-      name: 'Randal White',
-      status: 'Unemployed'
-   },
-   {
-      name: 'Stephanie Sanders',
-      status: 'Employed',
-      selected: true
-   },
-   {
-      name: 'Steve Brown',
-      status: 'Employed',
-   },
-   {
-      name: 'Joyce Whitten',
-      status: 'Employed',
-   },
-   {
-      name: 'Samuel Roberts',
-      status: 'Employed',
-   },
-   {
-      name: 'Adam Moore',
-      status: 'Employed',
-   },
-];
 
 /*
  * Компонент - Сборщик.
  * @props:
  *     {Function} handleChange - функция, вызываемая по событию в сборщике.
- *     {Array} costs - Массив издержек:
- *       {String} name - Имя издержки.
- *       {String} value - Вес издержки.
- *     {Array} protections - Массив критериев "Защищенность":
- *       {String} name - Имя критерия.
- *       {String} value - Вес критерия.
+ *     {Array} alternatives - Массив издержек:
+ *       {String} name - Имя альтернативы.
+ *       {String} value - Вес альтернативы.
  *     {String} name - имя таблицы
  *     {Boolean} active
  */
@@ -85,23 +49,38 @@ export default class TableFields extends React.Component {
          multiSelectable: false,
          enableSelectAll: false,
          deselectOnClickaway: true,
-         height: '300px',
+         height: '300px'
       };
    }
+   componentWillMount() {
 
-   //
-   //handleToggle(event, toggled){
-   //   this.setState({
-   //      [event.target.name]: toggled,
-   //   });
-      //}
-      //
-      //handleChange(event){
-      //   this.setState({height: event.target.value});
-      //}
+   }
+   componentWillReceiveProps (nextProps) {
+      if(typeof this.state.struct !== 'undefined' && this.props.active){
+         let struct = [];
+         struct.push(new Array(this.props.alternatives.length + 1));
+         this.setState({
+            struct: struct
+         });
+      }
+   }
+
+   addItem(){
+      let state = this.state,
+         struct = state.struct;
+      struct.push(new Array(this.props.alternatives.length + 1));
+
+      this.setState({
+         struct: struct
+      })
+   }
+
+
 
    render() {
-      let props = this.props;
+      let props = this.props,
+         alternatives = props.alternatives;
+
       if (props.active){
          return (
             <div>
@@ -110,20 +89,20 @@ export default class TableFields extends React.Component {
                   fixedHeader={true}
                   selectable={false}
                >
-                  <TableHeader>
+                  <TableHeader displaySelectAll={false} adjustForCheckbox={false} >
                      <TableRow>
-                        <TableHeaderColumn colSpan="3" tooltip="Super Header" style={{textAlign: 'center'}}>
+                        <TableHeaderColumn colSpan={protections.length + costs.length}
+                                           tooltip={props.name}
+                                           style={{textAlign: 'center'}}>
                            {props.name}
                         </TableHeaderColumn>
                      </TableRow>
                      <TableRow>
-                        {props.protections.map( (item, i) => (
-                           <TableHeaderColumn key={i + 'protections'} tooltip={item.value}>
-                              {item.name}
-                           </TableHeaderColumn>
-                        ))}
-                        {props.costs.map( (item, i) => (
-                           <TableHeaderColumn key={i + 'costs'} tooltip={item.value}>
+                        <TableHeaderColumn tooltip='Наименование альтернативы'>
+                           Наименование альтернативы
+                        </TableHeaderColumn>
+                        {alternatives.map( (item, i) => (
+                           <TableHeaderColumn key={i + 'alternatives'} tooltip={item.value}>
                               {item.name}
                            </TableHeaderColumn>
                         ))}
