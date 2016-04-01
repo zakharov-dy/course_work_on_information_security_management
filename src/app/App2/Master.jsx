@@ -162,7 +162,13 @@ export default class Master extends React.Component {
                                         handleChange={this.validateNextStep}/>
                   </div>
                   <div>
-                     <TableFields />
+                     <TableFields costs={state.costs}
+                                  protections={state.protections}
+                                  name={state.functionalSubsystemName}
+                                  handleChange={this.validateNextStep}
+                                  active={state.contentIndex === 3}
+
+                     />
                   </div>
                </SwipeableViews>
             </CardText>
@@ -224,7 +230,7 @@ class GeneratorFeatures extends React.Component {
 
       this.setState({
          items: items
-      })
+      });
 
       this.props.handleChange(items)
    }

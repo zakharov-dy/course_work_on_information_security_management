@@ -6,8 +6,9 @@ import TableHeader from 'material-ui/lib/table/table-header';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import TableBody from 'material-ui/lib/table/table-body';
 import TableFooter from 'material-ui/lib/table/table-footer';
-// import TextField from 'material-ui/lib/text-field';
-import ValidationField from './../core/ValidationField2.jsx'
+//import TextField from 'material-ui/lib/text-field';
+import ValidationField2 from './../core/ValidationField2.jsx'
+
 
 const styles = {
    propContainerStyle: {
@@ -24,16 +25,16 @@ const tableData = [
    {
       name: 'John Smith',
       status: 'Employed',
-      selected: true,
+      selected: true
    },
    {
       name: 'Randal White',
-      status: 'Unemployed',
+      status: 'Unemployed'
    },
    {
       name: 'Stephanie Sanders',
       status: 'Employed',
-      selected: true,
+      selected: true
    },
    {
       name: 'Steve Brown',
@@ -63,14 +64,16 @@ const tableData = [
  *     {Array} protections - Массив критериев "Защищенность":
  *       {String} name - Имя критерия.
  *       {String} value - Вес критерия.
+ *     {String} name - имя таблицы
+ *     {Boolean} active
  */
 export default class TableFields extends React.Component {
 
    constructor(props) {
       super(props);
       
-      this.handleToggle = this.handleToggle.bind(this);
-      this.handleChange = this.handleChange.bind(this);
+      //this.handleToggle = this.handleToggle.bind(this);
+      //this.handleChange = this.handleChange.bind(this);
       
       
       this.state = {
@@ -86,125 +89,142 @@ export default class TableFields extends React.Component {
       };
    }
 
-   handleToggle = (event, toggled) => {
-      this.setState({
-         [event.target.name]: toggled,
-      });
-   };
-
-   handleChange = (event) => {
-      this.setState({height: event.target.value});
-   };
+   //
+   //handleToggle(event, toggled){
+   //   this.setState({
+   //      [event.target.name]: toggled,
+   //   });
+      //}
+      //
+      //handleChange(event){
+      //   this.setState({height: event.target.value});
+      //}
 
    render() {
-      console.log('lalala');
-      return (
-         <div>
-            <Table
-               height={this.state.height}
-               fixedHeader={this.state.fixedHeader}
-               fixedFooter={this.state.fixedFooter}
-               selectable={this.state.selectable}
-               multiSelectable={this.state.multiSelectable}
-               onRowSelection={this._onRowSelection}
-            >
-               <TableHeader enableSelectAll={this.state.enableSelectAll}>
-                  <TableRow>
-                     <TableHeaderColumn colSpan="3" tooltip="Super Header" style={{textAlign: 'center'}}>
-                        Super Header
-                     </TableHeaderColumn>
-                  </TableRow>
-                  <TableRow>
-                     <TableHeaderColumn tooltip="The ID">ID</TableHeaderColumn>
-                     <TableHeaderColumn tooltip="The Name">Name</TableHeaderColumn>
-                     <TableHeaderColumn tooltip="The Status">Status</TableHeaderColumn>
-                  </TableRow>
-               </TableHeader>
-               <TableBody
-                  deselectOnClickaway={this.state.deselectOnClickaway}
-                  showRowHover={this.state.showRowHover}
-                  stripedRows={this.state.stripedRows}
+      let props = this.props;
+      if (props.active){
+         return (
+            <div>
+               <Table
+                  height={this.state.height}
+                  fixedHeader={true}
+                  selectable={false}
                >
-                  {tableData.map( (row, index) => (
-                     <TableRow key={index} selected={row.selected}>
-                        <TableRowColumn>{index}</TableRowColumn>
-                        <TableRowColumn>{row.name}</TableRowColumn>
-                        <TableRowColumn>{row.status}</TableRowColumn>
+                  <TableHeader>
+                     <TableRow>
+                        <TableHeaderColumn colSpan="3" tooltip="Super Header" style={{textAlign: 'center'}}>
+                           {props.name}
+                        </TableHeaderColumn>
                      </TableRow>
-                  ))}
-               </TableBody>
-               <TableFooter>
-                  <TableRow>
-                     <TableRowColumn>ID</TableRowColumn>
-                     <TableRowColumn>Name</TableRowColumn>
-                     <TableRowColumn>Status</TableRowColumn>
-                  </TableRow>
-                  <TableRow>
-                     <TableRowColumn colSpan="3" style={{textAlign: 'center'}}>
-                        Super Footer
-                     </TableRowColumn>
-                  </TableRow>
-               </TableFooter>
-            </Table>
+                     <TableRow>
+                        {props.protections.map( (item, i) => (
+                           <TableHeaderColumn key={i + 'protections'} tooltip={item.value}>
+                              {item.name}
+                           </TableHeaderColumn>
+                        ))}
+                        {props.costs.map( (item, i) => (
+                           <TableHeaderColumn key={i + 'costs'} tooltip={item.value}>
+                              {item.name}
+                           </TableHeaderColumn>
+                        ))}
+                     </TableRow>
+                  </TableHeader>
 
-            <div style={styles.propContainerStyle}>
-               <h3>Table Properties</h3>
-               <TextField
-                  floatingLabelText="Table Body Height"
-                  defaultValue={this.state.height}
-                  onChange={this.handleChange}
-               />
-               <Toggle
-                  name="fixedHeader"
-                  label="Fixed Header"
-                  onToggle={this.handleToggle}
-                  defaultToggled={this.state.fixedHeader}
-               />
-               <Toggle
-                  name="fixedFooter"
-                  label="Fixed Footer"
-                  onToggle={this.handleToggle}
-                  defaultToggled={this.state.fixedFooter}
-               />
-               <Toggle
-                  name="selectable"
-                  label="Selectable"
-                  onToggle={this.handleToggle}
-                  defaultToggled={this.state.selectable}
-               />
-               <Toggle
-                  name="multiSelectable"
-                  label="Multi-Selectable"
-                  onToggle={this.handleToggle}
-                  defaultToggled={this.state.multiSelectable}
-               />
-               <Toggle
-                  name="enableSelectAll"
-                  label="Enable Select All"
-                  onToggle={this.handleToggle}
-                  defaultToggled={this.state.enableSelectAll}
-               />
-               <h3 style={styles.propToggleHeader}>TableBody Properties</h3>
-               <Toggle
-                  name="deselectOnClickaway"
-                  label="Deselect On Clickaway"
-                  onToggle={this.handleToggle}
-                  defaultToggled={this.state.deselectOnClickaway}
-               />
-               <Toggle
-                  name="stripedRows"
-                  label="Stripe Rows"
-                  onToggle={this.handleToggle}
-                  defaultToggled={this.state.stripedRows}
-               />
-               <Toggle
-                  name="showRowHover"
-                  label="Show Row Hover"
-                  onToggle={this.handleToggle}
-                  defaultToggled={this.state.showRowHover}
-               />
+               </Table>
+
+
             </div>
-         </div>
-      );
+         );
+      }
+      else return (<div></div>)
+
    }
 }
+//<TableBody
+//   deselectOnClickaway={this.state.deselectOnClickaway}
+//   showRowHover={this.state.showRowHover}
+//   stripedRows={this.state.stripedRows}
+//>
+//   {tableData.map( (row, index) => (
+//      <TableRow key={index} selected={row.selected}>
+//         <TableRowColumn>
+//            <ValidationField2 id={index + 'id'} value={index}/>
+//         </TableRowColumn>
+//         <TableRowColumn>
+//            <ValidationField2 id={index + 'name'} value={row.name}/>
+//         </TableRowColumn>
+//         <TableRowColumn>
+//            <ValidationField2 id={index + 'status'} value={row.status}/>
+//         </TableRowColumn>
+//      </TableRow>
+//   ))}
+//</TableBody>
+//<TableFooter>
+//<TableRow>
+//<TableRowColumn>ID</TableRowColumn>
+//<TableRowColumn>Name</TableRowColumn>
+//<TableRowColumn>Status</TableRowColumn>
+//</TableRow>
+//<TableRow>
+//<TableRowColumn colSpan="3" style={{textAlign: 'center'}}>
+//Super Footer
+//</TableRowColumn>
+//</TableRow>
+//</TableFooter>
+//<div style={styles.propContainerStyle}>
+//   <h3>Table Properties</h3>
+//   <TextField
+//      floatingLabelText="Table Body Height"
+//      defaultValue={this.state.height}
+//      onChange={this.handleChange}
+//   />
+//   <Toggle
+//      name="fixedHeader"
+//      label="Fixed Header"
+//      onToggle={this.handleToggle}
+//      defaultToggled={this.state.fixedHeader}
+//   />
+//   <Toggle
+//      name="fixedFooter"
+//      label="Fixed Footer"
+//      onToggle={this.handleToggle}
+//      defaultToggled={this.state.fixedFooter}
+//   />
+//   <Toggle
+//      name="selectable"
+//      label="Selectable"
+//      onToggle={this.handleToggle}
+//      defaultToggled={this.state.selectable}
+//   />
+//   <Toggle
+//      name="multiSelectable"
+//      label="Multi-Selectable"
+//      onToggle={this.handleToggle}
+//      defaultToggled={this.state.multiSelectable}
+//   />
+//   <Toggle
+//      name="enableSelectAll"
+//      label="Enable Select All"
+//      onToggle={this.handleToggle}
+//      defaultToggled={this.state.enableSelectAll}
+//   />
+//   <h3 style={styles.propToggleHeader}>TableBody Properties</h3>
+//   <Toggle
+//      name="deselectOnClickaway"
+//      label="Deselect On Clickaway"
+//      onToggle={this.handleToggle}
+//      defaultToggled={this.state.deselectOnClickaway}
+//   />
+//   <Toggle
+//      name="stripedRows"
+//      label="Stripe Rows"
+//      onToggle={this.handleToggle}
+//      defaultToggled={this.state.stripedRows}
+//   />
+//   <Toggle
+//      name="showRowHover"
+//      label="Show Row Hover"
+//      onToggle={this.handleToggle}
+//      defaultToggled={this.state.showRowHover}
+//   />
+//</div>
