@@ -1,5 +1,7 @@
 import React from 'react';
 import Master from './Master.jsx'
+import RaisedButton from 'material-ui/lib/raised-button';
+import Dialog from 'material-ui/lib/dialog';
 
 const styles = {
    headline: {
@@ -42,14 +44,50 @@ export default class TabsExampleSwipeable extends React.Component {
 
    constructor(props) {
       super(props);
+
+
+      this.onCloseDialog = this.onCloseDialog.bind(this);
+      this.onAddSet = this.onAddSet.bind(this);
+
       this.state = {
-         slideIndex: 0
+         sets: [],
+         isDialogOpen: false
       };
    }
 
    render() {
-      return (
-         <Master text={text}/>
+      let closeButton = (
+         <RaisedButton
+            label='Закрыть'
+            onMouseDown={this.onCloseDialog}
+            primary={true}
+         />
       );
+      return (
+         <div>
+            <RaisedButton label='Добавить набор'
+                          onMouseDown={this.onAddSet}
+                          secondary={true}
+            />
+            <Dialog
+               title='Создание набора альтернатив'
+               actions={closeButton}
+               open={this.state.isDialogOpen}
+               children={
+                  <Master text={text}/>
+               }
+            />
+         </div>
+      );
+   }
+
+
+
+   onAddSet() {
+      this.setState({isDialogOpen: true})
+   }
+
+   onCloseDialog() {
+      this.setState({isDialogOpen: false})
    }
 }
