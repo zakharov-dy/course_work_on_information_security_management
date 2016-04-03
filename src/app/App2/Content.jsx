@@ -1,7 +1,14 @@
 import React from 'react';
-import Master from './Master.jsx'
+import Master from './../core/Master.jsx'
 import RaisedButton from 'material-ui/lib/raised-button';
 import Dialog from 'material-ui/lib/dialog';
+import Table from 'material-ui/lib/table/table';
+import TableHeaderColumn from 'material-ui/lib/table/table-header-column';
+import TableRow from 'material-ui/lib/table/table-row';
+import TableHeader from 'material-ui/lib/table/table-header';
+import TableRowColumn from 'material-ui/lib/table/table-row-column';
+import TableBody from 'material-ui/lib/table/table-body';
+// import CalculationTable from './CalculationTable.jsx';
 
 const styles = {
    headline: {
@@ -48,6 +55,7 @@ export default class Content2 extends React.Component {
 
       this.onCloseDialog = this.onCloseDialog.bind(this);
       this.onAddSet = this.onAddSet.bind(this);
+      this.generateSet = this.generateSet.bind(this);
 
       this.state = {
          sets: [],
@@ -58,26 +66,32 @@ export default class Content2 extends React.Component {
    render() {
       let state = this.state,
          sets = state.sets,
-         tables = sets.map(function(item, i, array){
-            (
+         tables = sets.map(function(table, i, array){
+            return (
                <Table
+                  key={i}
                   fixedHeader={true}
                   selectable={false}
                >
                   <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                      <TableRow>
-                        <TableHeaderColumn colSpan={alternatives.length + 1}
-                                           tooltip={item.name}
+                        <TableHeaderColumn colSpan={table.protections.length + table.costs.length + 1}
+                                           tooltip={table.name}
                                            style={{textAlign: 'center'}}>
-                           {props.name}
+                           {table.name}
                         </TableHeaderColumn>
                      </TableRow>
                      <TableRow>
                         <TableHeaderColumn tooltip='Наименование альтернативы'>
                            Наименование альтернативы
                         </TableHeaderColumn>
-                        {alternatives.map( (item, i) => (
-                           <TableHeaderColumn key={i + 'alternatives'} tooltip={item.value}>
+                        {table.protections.map( (item, i) => (
+                           <TableHeaderColumn key={i + 'protection'} tooltip={item.value}>
+                              {item.name}
+                           </TableHeaderColumn>
+                        ))}
+                        {table.costs.map( (item, i) => (
+                           <TableHeaderColumn key={i + 'cost'} tooltip={item.value}>
                               {item.name}
                            </TableHeaderColumn>
                         ))}
@@ -85,18 +99,13 @@ export default class Content2 extends React.Component {
                   </TableHeader>
                   <TableBody
                      showRowHover={true}
-                     stripedRows={this.state.stripedRows}
                      displayRowCheckbox={false}
                   >
-                     {struct.map( (row, i) => (
+                     {table.struct.map( (row, i) => (
                         <TableRow key={i}>
                            {row.map((item, j) => (
                               <TableRowColumn key={j}>
-                                 <ValidationField2 id={[i, j]}
-                                                   value={item}
-                                                   type={j===0?'strinng':'number'}
-                                                   handleChange={self.onFieldChange}
-                                 />
+                                 {item}
                               </TableRowColumn>
                            ))}
                         </TableRow>
@@ -105,7 +114,7 @@ export default class Content2 extends React.Component {
                </Table>
             )
          });
-1
+
       let closeButton = (
          <RaisedButton
             label='Закрыть'
@@ -117,6 +126,7 @@ export default class Content2 extends React.Component {
 
       return (
          <div>
+            {tables}
             <RaisedButton label='Добавить набор'
                           onMouseDown={this.onAddSet}
                           secondary={true}
@@ -126,16 +136,33 @@ export default class Content2 extends React.Component {
                actions={closeButton}
                open={this.state.isDialogOpen}
                children={
-                  <Master text={text}/>
+                  <Master text={text} onFinish={this.generateSet}/>
                }
             />
+
          </div>
       );
    }
+// <Dialog
+//    title='Создание набора альтернатив'
+//    actions={closeButton}
+//    open={this.state.isDialogOpen}
+//    children={
+//       <CalculationTable sets={sets}/>
+//    }
+// />
 
+   generateSet(name, protections, costs, struct) {
+      let sets = this.state.sets;
+      sets.push({name: name,
+         protections: protections,
+         costs: costs,
+         struct: struct});
 
-   generateSet(protections, costs, struct) {
-      //
+      this.setState({
+         isDialogOpen: false,
+         sets: sets
+      })
    }
 
    onAddSet() {

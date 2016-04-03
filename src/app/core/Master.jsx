@@ -1,16 +1,16 @@
 import React from 'react';
-import Card from 'material-ui/lib/card/card';
-import CardActions from 'material-ui/lib/card/card-actions';
-import CardHeader from 'material-ui/lib/card/card-header';
-import RaisedButton from 'material-ui/lib/raised-button';
-import FloatingActionButton from 'material-ui/lib/floating-action-button';
-import CardText from 'material-ui/lib/card/card-text';
-import ValidationField from './../core/ValidationField2.jsx'
+import Card from '../../../node_modules/material-ui/lib/card/card';
+import CardActions from '../../../node_modules/material-ui/lib/card/card-actions';
+import CardHeader from '../../../node_modules/material-ui/lib/card/card-header';
+import RaisedButton from '../../../node_modules/material-ui/lib/raised-button';
+import FloatingActionButton from '../../../node_modules/material-ui/lib/floating-action-button';
+import CardText from '../../../node_modules/material-ui/lib/card/card-text';
+import ValidationField from './ValidationField2.jsx'
 import SwipeableViews from 'react-swipeable-views';
-import LinearProgress from 'material-ui/lib/linear-progress';
-import ContentAdd from 'material-ui/lib/svg-icons/content/add';
-import ContentRemove from 'material-ui/lib/svg-icons/content/remove';
-import TableFields from './../core/TableFields.jsx'
+import LinearProgress from '../../../node_modules/material-ui/lib/linear-progress';
+import ContentAdd from '../../../node_modules/material-ui/lib/svg-icons/content/add';
+import ContentRemove from '../../../node_modules/material-ui/lib/svg-icons/content/remove';
+import TableFields from './TableFields.jsx'
 
 const styles = {
    headline: {
@@ -145,7 +145,8 @@ export default class Master extends React.Component {
          contentIndex = state.contentIndex,
          costs = state.costs,
          protections = state.protections,
-         struct = state.struct;
+         struct = state.struct,
+         name = state.functionalSubsystemName;
 
       if (contentIndex !== 3){
          this.setState({
@@ -154,7 +155,7 @@ export default class Master extends React.Component {
          });
       }
       else {
-         this.props.onFinish(protections, costs, struct);
+         this.props.onFinish(name, protections, costs, struct);
       }
    }
 
