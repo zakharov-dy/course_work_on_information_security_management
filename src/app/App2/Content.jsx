@@ -40,7 +40,7 @@ const text = [
 
 ];
 
-export default class TabsExampleSwipeable extends React.Component {
+export default class Content2 extends React.Component {
 
    constructor(props) {
       super(props);
@@ -56,6 +56,56 @@ export default class TabsExampleSwipeable extends React.Component {
    }
 
    render() {
+      let state = this.state,
+         sets = state.sets,
+         tables = sets.map(function(item, i, array){
+            (
+               <Table
+                  fixedHeader={true}
+                  selectable={false}
+               >
+                  <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                     <TableRow>
+                        <TableHeaderColumn colSpan={alternatives.length + 1}
+                                           tooltip={item.name}
+                                           style={{textAlign: 'center'}}>
+                           {props.name}
+                        </TableHeaderColumn>
+                     </TableRow>
+                     <TableRow>
+                        <TableHeaderColumn tooltip='Наименование альтернативы'>
+                           Наименование альтернативы
+                        </TableHeaderColumn>
+                        {alternatives.map( (item, i) => (
+                           <TableHeaderColumn key={i + 'alternatives'} tooltip={item.value}>
+                              {item.name}
+                           </TableHeaderColumn>
+                        ))}
+                     </TableRow>
+                  </TableHeader>
+                  <TableBody
+                     showRowHover={true}
+                     stripedRows={this.state.stripedRows}
+                     displayRowCheckbox={false}
+                  >
+                     {struct.map( (row, i) => (
+                        <TableRow key={i}>
+                           {row.map((item, j) => (
+                              <TableRowColumn key={j}>
+                                 <ValidationField2 id={[i, j]}
+                                                   value={item}
+                                                   type={j===0?'strinng':'number'}
+                                                   handleChange={self.onFieldChange}
+                                 />
+                              </TableRowColumn>
+                           ))}
+                        </TableRow>
+                     ))}
+                  </TableBody>
+               </Table>
+            )
+         });
+1
       let closeButton = (
          <RaisedButton
             label='Закрыть'
@@ -63,6 +113,8 @@ export default class TabsExampleSwipeable extends React.Component {
             primary={true}
          />
       );
+
+
       return (
          <div>
             <RaisedButton label='Добавить набор'
@@ -82,6 +134,9 @@ export default class TabsExampleSwipeable extends React.Component {
    }
 
 
+   generateSet(protections, costs, struct) {
+      //
+   }
 
    onAddSet() {
       this.setState({isDialogOpen: true})

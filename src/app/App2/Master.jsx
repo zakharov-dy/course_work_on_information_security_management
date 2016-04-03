@@ -43,7 +43,14 @@ const progressProps = {
  *       {Number} value - Текущее значение прогресса.
  *     {Array} buttons:
  *       {String} caption - Надпись.
- *       {Boolean}isDisable - кнопка отключена?
+ *       {Boolean} isDisable - кнопка отключена?
+ * @state:
+ *     {Array} protections - массив "хороших" критериев.
+ *     {Array} costs - массив издержек.
+ *     {Array} struct - структура, хранящая в себе значения по всем
+ *     критериям и названия альтернатив.
+ *     {Boolean} isNextButtonDisable - кнопка перехода к следующему
+ *     состоянию активна?
  */
 
 export default class Master extends React.Component {
@@ -61,77 +68,7 @@ export default class Master extends React.Component {
       };
    }
 
-   onRightButtonClick(){
-      let contentIndex = this.state.contentIndex;
-      if (contentIndex !== 3){
-         this.setState({
-            contentIndex: contentIndex + 1,
-            isNextButtonDisable: true
-         });
-      }
-      else {
-         console.log('Ура, товарищи!');
-         //this.props.onFinish(this.state.structure);
-      }
-   }
-
-   getRightButtonName(){
-      return this.state.contentIndex !== 3 ? 'Далее' : 'Готово'
-   }
-
-
-   validateNextStep(params) {
-      // let state = this.state;
-      let isNextButtonDisable = true;
-      switch (this.state.contentIndex){
-         case 0:
-            if(params.value !== ''){
-               isNextButtonDisable = false;
-            }
-
-            this.setState({
-               functionalSubsystemName: params.value,
-               isNextButtonDisable: isNextButtonDisable
-            });
-            break;
-
-         case 1:
-            isNextButtonDisable = !(params.every(function(item){
-               return item.errorValueText === '' && item.errorNameText === ''
-            }));
-            this.setState({
-               protections: params,
-               isNextButtonDisable: isNextButtonDisable
-            });
-            break;
-
-         case 2:
-            isNextButtonDisable = !(params.every(function(item){
-               return item.errorValueText === '' && item.errorNameText === ''
-            }));
-            this.setState({
-               costs: params,
-               isNextButtonDisable: isNextButtonDisable
-            });
-            break;
-
-         case 3:
-            isNextButtonDisable = !(params.every(function(row){
-
-               return row.every(function(item){return item !== ''});
-            }));
-
-            this.setState({
-               isNextButtonDisable: isNextButtonDisable
-            });
-            break;
-      }
-
-   }
-
    render(){
-      //costs={state.costs}
-      //protections={state.protections}
       let props = this.props,
          state = this.state,
          costs = state.costs,
@@ -200,6 +137,82 @@ export default class Master extends React.Component {
 
          </Card>
       );
+   }
+
+
+   onRightButtonClick(){
+      let state = this.state,
+         contentIndex = state.contentIndex,
+         costs = state.costs,
+         protections = state.protections,
+         struct = state.struct;
+
+      if (contentIndex !== 3){
+         this.setState({
+            contentIndex: contentIndex + 1,
+            isNextButtonDisable: true
+         });
+      }
+      else {
+         this.props.onFinish(protections, costs, struct);
+      }
+   }
+
+   getRightButtonName(){
+      return this.state.contentIndex !== 3 ? 'Далее' : 'Готово'
+   }
+
+
+   validateNextStep(params) {
+      // let state = this.state;
+      let isNextButtonDisable = true;
+      switch (this.state.contentIndex){
+         case 0:
+            if(params.value !== ''){
+               isNextButtonDisable = false;
+            }
+
+            this.setState({
+               functionalSubsystemName: params.value,
+               isNextButtonDisable: isNextButtonDisable
+            });
+            break;
+
+         case 1:
+            isNextButtonDisable = !(params.every(function(item){
+               return item.errorValueText === '' && item.errorNameText === ''
+            }));
+            this.setState({
+               protections: params,
+               isNextButtonDisable: isNextButtonDisable
+            });
+            break;
+
+         case 2:
+            isNextButtonDisable = !(params.every(function(item){
+               return item.errorValueText === '' && item.errorNameText === ''
+            }));
+            this.setState({
+               costs: params,
+               isNextButtonDisable: isNextButtonDisable
+            });
+            break;
+
+         case 3:
+            isNextButtonDisable = !(params.every(function(row){
+               return row.every(function(item){return item !== ''});
+            }));
+
+            if (!isNextButtonDisable) {
+               this.setState({
+                  struct: params
+               })
+            }
+            this.setState({
+               isNextButtonDisable: isNextButtonDisable
+            });
+            break;
+      }
    }
 }
 
@@ -300,33 +313,33 @@ class GeneratorFeatures extends React.Component {
          return (
             <table key={i}>
                <tbody>
-                  <tr>
-                     <td>
-                        <ValidationField  type="string"
-                                          caption={self.props.criteriaCaption}
-                                          value={item.name}
-                                          id={i}
-                                          handleChange={self.handleStringFieldChange}/>
-                     </td>
-                     <td>
-                        <ValidationField  type="number"
-                                          caption={self.props.criteriaWeight}
-                                          value={item.value}
-                                          id={i}
-                                          min={0}
-                                          max={1}
-                                          handleChange={self.handleNumberFieldChange}/>
-                     </td>
-                     <td>
-                        <FloatingActionButton
-                           id={i}
-                           mini={true}
-                           secondary={true}
-                           onMouseDown={deleteItem}>
-                           <ContentRemove />
-                        </FloatingActionButton>
-                     </td>
-                  </tr>
+               <tr>
+                  <td>
+                     <ValidationField  type="string"
+                                       caption={self.props.criteriaCaption}
+                                       value={item.name}
+                                       id={i}
+                                       handleChange={self.handleStringFieldChange}/>
+                  </td>
+                  <td>
+                     <ValidationField  type="number"
+                                       caption={self.props.criteriaWeight}
+                                       value={item.value}
+                                       id={i}
+                                       min={0}
+                                       max={1}
+                                       handleChange={self.handleNumberFieldChange}/>
+                  </td>
+                  <td>
+                     <FloatingActionButton
+                        id={i}
+                        mini={true}
+                        secondary={true}
+                        onMouseDown={deleteItem}>
+                        <ContentRemove />
+                     </FloatingActionButton>
+                  </td>
+               </tr>
                </tbody>
             </table>
          )
