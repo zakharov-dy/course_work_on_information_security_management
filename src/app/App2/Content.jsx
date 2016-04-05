@@ -63,6 +63,7 @@ export default class Content2 extends React.Component {
       super(props);
 
       this.onCloseDialog = this.onCloseDialog.bind(this);
+      this.onCloseResultDialog = this.onCloseResultDialog.bind(this);
       this.onAddSet = this.onAddSet.bind(this);
       this.generateSet = this.generateSet.bind(this);
       this.openResultDialog = this.openResultDialog.bind(this);
@@ -133,6 +134,13 @@ export default class Content2 extends React.Component {
             primary={true}
          />
       );
+      let closeResultButton = (
+         <RaisedButton
+            label='Закрыть'
+            onMouseDown={this.onCloseResultDialog}
+            primary={true}
+         />
+      );
 
 
       return (
@@ -159,7 +167,7 @@ export default class Content2 extends React.Component {
             />
             <Dialog
                title='Создание набора альтернатив'
-               actions={closeButton}
+               actions={closeResultButton}
                open={this.state.isResultDialogOpen}
                children={
                   <CalculationTable sets={sets}/>
@@ -193,5 +201,8 @@ export default class Content2 extends React.Component {
 
    onCloseDialog() {
       this.setState({isDialogOpen: false})
+   }
+   onCloseResultDialog() {
+      this.setState({isResultDialogOpen: false})
    }
 }

@@ -36,11 +36,8 @@ export default class TableFields extends React.Component {
       super(props);
 
       this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
-      this.onAddItemClick = this.onAddItemClick.bind(this);
-      this.onRemoveItemClick = this.onRemoveItemClick.bind(this);
-      this.addItem = this.addItem.bind(this);
-      this.onFieldChange = this.onFieldChange.bind(this);
-
+      this.componentDidMount = this.componentDidMount.bind(this);
+      this.updateGeneralSets = this.updateGeneralSets.bind(this);
 
       this.state = {
          struct: undefined
@@ -48,6 +45,68 @@ export default class TableFields extends React.Component {
    }
 
    componentWillReceiveProps (nextProps) {
+      this.updateGeneralSets(nextProps)
+   }
+
+   render() {
+      let data = this.state.struct;
+      if (typeof data !== 'undefined'){
+         return (
+            <Table
+               fixedHeader={true}
+               selectable={false}
+            >
+               <TableHeader displaySelectAll={false} adjustForCheckbox={false} >
+                  <TableRow>
+                     <TableHeaderColumn colSpan={3}
+                                        style={{textAlign: 'center'}}>
+                        Список наборов альтернатив
+                     </TableHeaderColumn>
+                  </TableRow>
+                  <TableRow>
+                     <TableHeaderColumn>
+                        Место
+                     </TableHeaderColumn>
+                     <TableHeaderColumn>
+                        Значение
+                     </TableHeaderColumn>
+                     <TableHeaderColumn>
+                        Альтернативы
+                     </TableHeaderColumn>
+                  </TableRow>
+               </TableHeader>
+               <TableBody
+                  showRowHover={true}
+                  stripedRows={this.state.stripedRows}
+                  displayRowCheckbox={false}
+               >
+                  {data.map( (row, i) => (
+                     <TableRow key={i}>
+                        <TableHeaderColumn>
+                           {i}
+                        </TableHeaderColumn>
+                        
+                        <TableHeaderColumn>
+                           {row.value}
+                        </TableHeaderColumn>
+                        
+                        <TableHeaderColumn>
+                           {row.names.join(' ')}
+                        </TableHeaderColumn>
+                     </TableRow>
+                  ))}
+               </TableBody>
+            </Table>
+         )
+      }
+      else return (<div></div>)
+   }
+
+   componentDidMount(){
+      this.updateGeneralSets(this.props)
+   }
+
+   updateGeneralSets(props){
       let normalize = function(array, widthArray){
          for(let i=0; i<array[0].length; i++){
             let max = +array[0][i];
@@ -67,204 +126,89 @@ export default class TableFields extends React.Component {
                return sum + current;
             }, 0)})
       };
+      if(props.sets.length !== 0 ){
+         //преобразовываем исходный массив к удобному для нас виду
+         let functionalSets = props.sets.map(function(functionalSet){
+            let costs = functionalSet.costs,
+               protections = functionalSet.protections,
+               name = functionalSet.name,
+               setData = functionalSet.struct,
+               protectionsValue,
+               alternativeNames;
 
-      //преобразовываем исходный массив к удобному для нас виду
-      let functionalSets = sets.map(function(functionalSet){
-         let costs = functionalSet.costs,
-            protections = functionalSet.protections,
-            name = functionalSet.name,
-            setData = functionalSet.struct,
-            protectionsValue,
-            alternativeNames;
+            alternativeNames = setData.map(function(item, i, setData){
+               return setData[i].shift()
+            });
 
-         alternativeNames = setData.map(function(item, i, setData){
-            return setData[i].shift()
-         });
+            setData.forEach(function(row, i) {
+               row.forEach(function(item, j) {setData[i][j] = +item})
+            });
 
-         setData.forEach(function(row, i) {
-            row.forEach(function(item, j) {setData[i][j] = +item})
-         });
-         
-         protectionsValue = setData.map(function(item, i, setData){
-            let alternativeData = [];
-            for(let j=0; j<protections.length; j++){
-               alternativeData[j] = setData[i].shift()
+            protectionsValue = setData.map(function(item, i, setData){
+               let alternativeData = [];
+               for(let j=0; j<protections.length; j++){
+                  alternativeData[j] = setData[i].shift()
+               }
+               return alternativeData
+            });
+
+            costs = normalize(setData, costs);
+            protections = normalize(protectionsValue, protections);
+
+            return {
+               name: name,
+               alternativeNames: alternativeNames,
+               protections: protections,
+               costs: costs
             }
-            return alternativeData
          });
 
-         costs = normalize(setData, costs);
-         protections = normalize(protectionsValue, protections);
+         // Для формирования массива массивов с номерами мест, каждое из
+         // которых будет определять номер альтернативы в наборе, при этом
+         // место в массиве будет определяться номером набора, сформируем
+         // массив длинн наборов альтернатив.
 
-         return {
-            name: name,
-            alternativeNames: alternativeNames,
-            protections: protections,
-            costs: costs
-         }
-      });
+         let functionalSetsLengths = functionalSets.map(function(item){
+            return item.alternativeNames.length
+         });
 
-      // Для формирования массива массивов с номерами мест, каждое из
-      // которых будет определять номер альтернативы в наборе, при этом
-      // место в массиве будет определяться номером набора, сформируем
-      // массив длинн наборов альтернатив.
-
-      let functionalSetsLengths = functionalSets.map(function(item){
-         return item.alternativeNames.length
-      });
-
-      let sets = [];
-      let currentSet = new Array(functionalSets.length);
-      let branch = function branch (depth, currentSet) {
-         for(let i=0; i<functionalSetsLengths[depth]; i++){
-            currentSet[depth] = i;
-            if (depth === functionalSetsLengths.length-1) {
-               sets.push(currentSet.map(function(item){return item}));
+         let sets = [];
+         let currentSet = new Array(functionalSets.length);
+         let branch = function branch (depth, currentSet) {
+            for(let i=0; i<functionalSetsLengths[depth]; i++){
+               currentSet[depth] = i;
+               if (depth === functionalSetsLengths.length-1) {
+                  sets.push(currentSet.map(function(item){return item}));
+               }
+               else branch(depth+1, currentSet)
             }
-            else branch(depth+1, currentSet)
-         }
-      };
-      branch(0, currentSet);
-      console.log(sets);
-      console.log(functionalSets);
+         };
+         branch(0, currentSet);
 
-      let generalSets = sets.map(function (set) {
-         let names,
-            value,
-            alternativeValues = set.reduce(function(sum, item, index){
-               sum.protections += functionalSets[index].protections[item];
-               sum.costs += functionalSets[index].costs[item]
-               return sum
-            }, {costs:0, protections:0});
-         value = alternativeValues.protections / alternativeValues.costs;
+         let generalSets = sets.map(function (set) {
+            let names,
+               value,
+               alternativeValues = set.reduce(function(sum, item, index){
+                  sum.protections += functionalSets[index].protections[item];
+                  sum.costs += functionalSets[index].costs[item];
+                  return sum
+               }, {costs:0, protections:0});
+            value = alternativeValues.protections / alternativeValues.costs;
 
-         names = set.map(function (item, i) {
-            return functionalSets[i].alternativeNames[item]
+            names = set.map(function (item, i) {
+               return functionalSets[i].alternativeNames[item]
+            });
+
+            return {
+               names: names,
+               value: value
+            }
          });
 
-         return {
-            names: names,
-            value: value
-         }
-      });
-
-      this.setState({
-         generalSets: generalSets
-      })
-   }
-
-   render() {
-      //let self = this,
-      //   props = this.props,
-      //   state = this.state,
-      //   alternatives = props.alternatives,
-      //   struct = state.struct;
-      //
-      //if (props.active){
-      //   return (
-      //      <div>
-      //         <Table
-      //            fixedHeader={true}
-      //            selectable={false}
-      //         >
-      //            <TableHeader displaySelectAll={false} adjustForCheckbox={false} >
-      //               <TableRow>
-      //                  <TableHeaderColumn colSpan={alternatives.length + 1}
-      //                                     tooltip={props.name}
-      //                                     style={{textAlign: 'center'}}>
-      //                     {props.name}
-      //                  </TableHeaderColumn>
-      //               </TableRow>
-      //               <TableRow>
-      //                  <TableHeaderColumn tooltip='Наименование альтернативы'>
-      //                     Наименование альтернативы
-      //                  </TableHeaderColumn>
-      //                  {alternatives.map( (item, i) => (
-      //                     <TableHeaderColumn key={i + 'alternatives'} tooltip={item.value}>
-      //                        {item.name}
-      //                     </TableHeaderColumn>
-      //                  ))}
-      //               </TableRow>
-      //            </TableHeader>
-      //            <TableBody
-      //               showRowHover={true}
-      //               stripedRows={this.state.stripedRows}
-      //               displayRowCheckbox={false}
-      //            >
-      //               {struct.map( (row, i) => (
-      //                  <TableRow key={i}>
-      //                     {row.map((item, j) => (
-      //                        <TableRowColumn key={j}>
-      //                           <ValidationField2 id={[i, j]}
-      //                                             value={item}
-      //                                             type={j===0?'strinng':'number'}
-      //                                             handleChange={self.onFieldChange}
-      //                           />
-      //                        </TableRowColumn>
-      //                     ))}
-      //                  </TableRow>
-      //               ))}
-      //            </TableBody>
-      //         </Table>
-      //         <FloatingActionButton
-      //            mini={true}
-      //            secondary={true}
-      //            onMouseDown={this.onAddItemClick}>
-      //            <ContentAdd />
-      //         </FloatingActionButton>
-      //         <FloatingActionButton
-      //            mini={true}
-      //            secondary={true}
-      //            onMouseDown={this.onRemoveItemClick}>
-      //            <ContentRemove />
-      //         </FloatingActionButton>
-      //      </div>
-      //   );
-      //}
-      //else return (<div></div>)
-      return (<div></div>)
-
-   }
-
-   onAddItemClick(){
-      let struct = this.addItem(this.state.struct, this.props);
-      this.setState({
-         struct: struct
-      });
-      this.props.handleChange(struct);
-   }
-
-   onRemoveItemClick(){
-      let struct = this.state.struct;
-      struct.pop();
-      this.setState({
-         struct: struct
-      });
-      this.props.handleChange(struct);
-   }
-
-   addItem(struct, props){
-      struct.push(new Array(props.alternatives.length + 1));
-      let index = struct.length - 1;
-      for (let i = 0; i<struct[index].length; i++) {
-         i === 0? struct[index][i] = '' : struct[index][i] = 0
+         this.setState({
+            struct: generalSets
+         })
       }
-      return struct
    }
 
-   onFieldChange(id, errorText, value){
-      let struct = this.state.struct;
-
-      if(errorText !== ''){
-         value = ''
-      }
-
-      struct[id[0]][id[1]] = value;
-
-      this.setState({
-         struct: struct
-      });
-
-      this.props.handleChange(struct)
-   }
 }
