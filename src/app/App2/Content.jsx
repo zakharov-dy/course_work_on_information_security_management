@@ -8,7 +8,7 @@ import TableRow from 'material-ui/lib/table/table-row';
 import TableHeader from 'material-ui/lib/table/table-header';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import TableBody from 'material-ui/lib/table/table-body';
-// import CalculationTable from './CalculationTable.jsx';
+import CalculationTable from './CalculationTable.jsx';
 
 const styles = {
    headline: {
@@ -19,6 +19,16 @@ const styles = {
    },
    slide: {
       padding: 10
+   },
+
+   dialog: {
+      height: '90%',
+      width: '100%',
+      maxWidth: 'none',
+      maxHeight: 'none'
+   },
+   bodyStyle: {
+      // height: '90%'
    }
 };
 
@@ -52,14 +62,15 @@ export default class Content2 extends React.Component {
    constructor(props) {
       super(props);
 
-
       this.onCloseDialog = this.onCloseDialog.bind(this);
       this.onAddSet = this.onAddSet.bind(this);
       this.generateSet = this.generateSet.bind(this);
-
+      this.openResultDialog = this.openResultDialog.bind(this);
+      
       this.state = {
          sets: [],
-         isDialogOpen: false
+         isDialogOpen: false,
+         isResultDialogOpen: false
       };
    }
 
@@ -135,22 +146,29 @@ export default class Content2 extends React.Component {
                title='Создание набора альтернатив'
                actions={closeButton}
                open={this.state.isDialogOpen}
+               contentStyle={styles.dialog}
+               autoScrollBodyContent={true}
                children={
                   <Master text={text} onFinish={this.generateSet}/>
                }
             />
 
+            <RaisedButton label='Показать результат'
+                          onMouseDown={this.openResultDialog}
+                          secondary={true}
+            />
+            <Dialog
+               title='Создание набора альтернатив'
+               actions={closeButton}
+               open={this.state.isResultDialogOpen}
+               children={
+                  <CalculationTable sets={sets}/>
+               }
+            />
          </div>
       );
    }
-// <Dialog
-//    title='Создание набора альтернатив'
-//    actions={closeButton}
-//    open={this.state.isDialogOpen}
-//    children={
-//       <CalculationTable sets={sets}/>
-//    }
-// />
+
 
    generateSet(name, protections, costs, struct) {
       let sets = this.state.sets;
@@ -167,6 +185,10 @@ export default class Content2 extends React.Component {
 
    onAddSet() {
       this.setState({isDialogOpen: true})
+   }
+
+   openResultDialog(){
+      this.setState({isResultDialogOpen: true})
    }
 
    onCloseDialog() {

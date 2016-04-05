@@ -85,8 +85,6 @@ export default class Master extends React.Component {
             <CardHeader
                title={props.text[contentIndex].title}
                subtitle={props.text[contentIndex].subtitle}
-               actAsExpander={true}
-               showExpandableButton={true}
             />
             <CardText>
                <LinearProgress
@@ -103,21 +101,21 @@ export default class Master extends React.Component {
                <SwipeableViews
                   index={this.state.contentIndex}
                >
-                  <div>
+                  <div style={styles.slideContent}>
                      <FirstStep handleChange={this.validateNextStep}/>
                   </div>
-                  <div>
+                  <div style={styles.slideContent}>
                      <GeneratorFeatures criteriaCaption='Название критерия'
                                         criteriaWeight='Вес критерия'
                                         handleChange={this.validateNextStep}
                      />
                   </div>
-                  <div>
+                  <div style={styles.slideContent}>
                      <GeneratorFeatures criteriaCaption='Название критерия'
                                         criteriaWeight='Вес критерия'
                                         handleChange={this.validateNextStep}/>
                   </div>
-                  <div>
+                  <div style={styles.slideContent}>
                      <TableFields alternatives={alternatives}
                                   name={state.functionalSubsystemName}
                                   handleChange={this.validateNextStep}
@@ -165,7 +163,6 @@ export default class Master extends React.Component {
 
 
    validateNextStep(params) {
-      // let state = this.state;
       let isNextButtonDisable = true;
       switch (this.state.contentIndex){
          case 0:

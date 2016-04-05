@@ -27,6 +27,8 @@ const styles = {
  *       {Array} costs - массив издержек.
  *       {Array} struct - структура, хранящая в себе значения по всем
  *          критериям и названия альтернатив.
+ * @state:
+ *     {Array} generalSets - массив результатов вычисления наборов.
  */
 export default class TableFields extends React.Component {
 
@@ -67,13 +69,12 @@ export default class TableFields extends React.Component {
       };
 
       //преобразовываем исходный массив к удобному для нас виду
-      let sets = nextProps.sets.map(function(set, i, sets){
-         let costs = set.costs,
-            protections = set.protections,
-            name = set.name,
-            setData = set.struct,
+      let functionalSets = sets.map(function(functionalSet){
+         let costs = functionalSet.costs,
+            protections = functionalSet.protections,
+            name = functionalSet.name,
+            setData = functionalSet.struct,
             protectionsValue,
-            costsValue,
             alternativeNames;
 
          alternativeNames = setData.map(function(item, i, setData){
@@ -103,103 +104,125 @@ export default class TableFields extends React.Component {
          }
       });
 
-      let setsLength = sets.map(function(item){
-         return item.protections.length
+      // Для формирования массива массивов с номерами мест, каждое из
+      // которых будет определять номер альтернативы в наборе, при этом
+      // место в массиве будет определяться номером набора, сформируем
+      // массив длинн наборов альтернатив.
+
+      let functionalSetsLengths = functionalSets.map(function(item){
+         return item.alternativeNames.length
       });
 
-      let generalLength = setsLength.reduce(function(mul, current) {
-         return mul * current;
-      }, 1);
+      let sets = [];
+      let currentSet = new Array(functionalSets.length);
+      let branch = function branch (depth, currentSet) {
+         for(let i=0; i<functionalSetsLengths[depth]; i++){
+            currentSet[depth] = i;
+            if (depth === functionalSetsLengths.length-1) {
+               sets.push(currentSet.map(function(item){return item}));
+            }
+            else branch(depth+1, currentSet)
+         }
+      };
+      branch(0, currentSet);
+      console.log(sets);
+      console.log(functionalSets);
 
-      let general = [];
+      let generalSets = sets.map(function (set) {
+         let names,
+            value,
+            alternativeValues = set.reduce(function(sum, item, index){
+               sum.protections += functionalSets[index].protections[item];
+               sum.costs += functionalSets[index].costs[item]
+               return sum
+            }, {costs:0, protections:0});
+         value = alternativeValues.protections / alternativeValues.costs;
 
-      for(let i=0; i<generalLength; i++){
-         general.push(new Array);
-      }
+         names = set.map(function (item, i) {
+            return functionalSets[i].alternativeNames[item]
+         });
 
-      let something = setsLength.map(function(item, i){
-         let seats = [],
-            pushCount = generalLength / item;
-         for (let c=0; c < pushCount - 1; c++){
-            
+         return {
+            names: names,
+            value: value
          }
       });
 
-
-
-
+      this.setState({
+         generalSets: generalSets
+      })
    }
 
-
    render() {
-      let self = this,
-         props = this.props,
-         state = this.state,
-         alternatives = props.alternatives,
-         struct = state.struct;
-
-      if (props.active){
-         return (
-            <div>
-               <Table
-                  fixedHeader={true}
-                  selectable={false}
-               >
-                  <TableHeader displaySelectAll={false} adjustForCheckbox={false} >
-                     <TableRow>
-                        <TableHeaderColumn colSpan={alternatives.length + 1}
-                                           tooltip={props.name}
-                                           style={{textAlign: 'center'}}>
-                           {props.name}
-                        </TableHeaderColumn>
-                     </TableRow>
-                     <TableRow>
-                        <TableHeaderColumn tooltip='Наименование альтернативы'>
-                           Наименование альтернативы
-                        </TableHeaderColumn>
-                        {alternatives.map( (item, i) => (
-                           <TableHeaderColumn key={i + 'alternatives'} tooltip={item.value}>
-                              {item.name}
-                           </TableHeaderColumn>
-                        ))}
-                     </TableRow>
-                  </TableHeader>
-                  <TableBody
-                     showRowHover={true}
-                     stripedRows={this.state.stripedRows}
-                     displayRowCheckbox={false}
-                  >
-                     {struct.map( (row, i) => (
-                        <TableRow key={i}>
-                           {row.map((item, j) => (
-                              <TableRowColumn key={j}>
-                                 <ValidationField2 id={[i, j]}
-                                                   value={item}
-                                                   type={j===0?'strinng':'number'}
-                                                   handleChange={self.onFieldChange}
-                                 />
-                              </TableRowColumn>
-                           ))}
-                        </TableRow>
-                     ))}
-                  </TableBody>
-               </Table>
-               <FloatingActionButton
-                  mini={true}
-                  secondary={true}
-                  onMouseDown={this.onAddItemClick}>
-                  <ContentAdd />
-               </FloatingActionButton>
-               <FloatingActionButton
-                  mini={true}
-                  secondary={true}
-                  onMouseDown={this.onRemoveItemClick}>
-                  <ContentRemove />
-               </FloatingActionButton>
-            </div>
-         );
-      }
-      else return (<div></div>)
+      //let self = this,
+      //   props = this.props,
+      //   state = this.state,
+      //   alternatives = props.alternatives,
+      //   struct = state.struct;
+      //
+      //if (props.active){
+      //   return (
+      //      <div>
+      //         <Table
+      //            fixedHeader={true}
+      //            selectable={false}
+      //         >
+      //            <TableHeader displaySelectAll={false} adjustForCheckbox={false} >
+      //               <TableRow>
+      //                  <TableHeaderColumn colSpan={alternatives.length + 1}
+      //                                     tooltip={props.name}
+      //                                     style={{textAlign: 'center'}}>
+      //                     {props.name}
+      //                  </TableHeaderColumn>
+      //               </TableRow>
+      //               <TableRow>
+      //                  <TableHeaderColumn tooltip='Наименование альтернативы'>
+      //                     Наименование альтернативы
+      //                  </TableHeaderColumn>
+      //                  {alternatives.map( (item, i) => (
+      //                     <TableHeaderColumn key={i + 'alternatives'} tooltip={item.value}>
+      //                        {item.name}
+      //                     </TableHeaderColumn>
+      //                  ))}
+      //               </TableRow>
+      //            </TableHeader>
+      //            <TableBody
+      //               showRowHover={true}
+      //               stripedRows={this.state.stripedRows}
+      //               displayRowCheckbox={false}
+      //            >
+      //               {struct.map( (row, i) => (
+      //                  <TableRow key={i}>
+      //                     {row.map((item, j) => (
+      //                        <TableRowColumn key={j}>
+      //                           <ValidationField2 id={[i, j]}
+      //                                             value={item}
+      //                                             type={j===0?'strinng':'number'}
+      //                                             handleChange={self.onFieldChange}
+      //                           />
+      //                        </TableRowColumn>
+      //                     ))}
+      //                  </TableRow>
+      //               ))}
+      //            </TableBody>
+      //         </Table>
+      //         <FloatingActionButton
+      //            mini={true}
+      //            secondary={true}
+      //            onMouseDown={this.onAddItemClick}>
+      //            <ContentAdd />
+      //         </FloatingActionButton>
+      //         <FloatingActionButton
+      //            mini={true}
+      //            secondary={true}
+      //            onMouseDown={this.onRemoveItemClick}>
+      //            <ContentRemove />
+      //         </FloatingActionButton>
+      //      </div>
+      //   );
+      //}
+      //else return (<div></div>)
+      return (<div></div>)
 
    }
 
