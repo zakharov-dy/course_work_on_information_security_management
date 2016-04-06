@@ -169,6 +169,7 @@ export default class Content2 extends React.Component {
                title='Создание набора альтернатив'
                actions={closeResultButton}
                open={this.state.isResultDialogOpen}
+               autoScrollBodyContent={true}
                children={
                   <CalculationTable sets={sets}/>
                }

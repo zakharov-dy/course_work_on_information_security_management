@@ -128,7 +128,8 @@ export default class TableFields extends React.Component {
       };
       if(props.sets.length !== 0 ){
          //преобразовываем исходный массив к удобному для нас виду
-         let functionalSets = props.sets.map(function(functionalSet){
+         let sets = JSON.parse(JSON.stringify(props.sets));
+         let functionalSets = sets.map(function(functionalSet){
             let costs = functionalSet.costs,
                protections = functionalSet.protections,
                name = functionalSet.name,
