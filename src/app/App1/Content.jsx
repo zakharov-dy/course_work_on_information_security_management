@@ -33,6 +33,12 @@ const styles = {
       left: 0,
       width: '100%',
       opacity: 0
+   },
+   dialog: {
+      textAlign: 'center',
+      width: '100%',
+      maxWidth: 'none',
+      maxHeight: 'none'
    }
 };
 
@@ -46,7 +52,7 @@ class Content extends React.Component {
       this.onCloseDialog = this.onCloseDialog.bind(this);
       this.state = {
          scheme: 0,
-         damages: this.getClearDamages(1),
+         damages: this.getClearDamages(0),
          stepParams: {},
          isDialogChartOpen: false
       };
@@ -59,7 +65,7 @@ class Content extends React.Component {
     */
    getClearDamages(scheme) {
       let damages;
-      scheme === 1 ? damages = [{},{},{},{}] : damages = [{},{},{}];
+      scheme === 1 ? damages = [{},{},{}] : damages = [{},{},{}, {}];
 
       for (let i = 0; i < damages.length; i++) {
          damages[i].name = 'C(v' + (i + 1) + ')';
@@ -200,13 +206,16 @@ class Content extends React.Component {
                      label='Строить график зависимости целевой функции от значений ущерба '
                      onMouseDown={this.onGeneralButtonClick}
                      disabled={!this.isGenerateButtonReady()}
+                     secondary={true}
+                     secondary={true}
                   />
                </CardText>
             </Card>
             <Dialog
-               title='График'
+               title='Варианты реагирования на события нарушения ИБ'
                actions={closeButton}
                open={this.state.isDialogChartOpen}
+               contentStyle={styles.dialog}
                children={
                 <ChartData
                   index={this.state.scheme}
@@ -220,8 +229,6 @@ class Content extends React.Component {
       );
    }
 }
-
-
 export default Content;
 
 

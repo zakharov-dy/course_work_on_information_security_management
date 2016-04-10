@@ -20,15 +20,17 @@ const styles = {
    slide: {
       padding: 10
    },
-
    dialog: {
-      height: '90%',
       width: '100%',
       maxWidth: 'none',
-      maxHeight: 'none'
+      maxHeight: '80%'
    },
-   bodyStyle: {
-      // height: '90%'
+   overlayStyle:{
+      paddingTop: '10%'
+   },
+
+   button: {
+      margin: 12
    }
 };
 
@@ -146,25 +148,34 @@ export default class Content2 extends React.Component {
       return (
          <div>
             {tables}
-            <RaisedButton label='Добавить набор'
-                          onMouseDown={this.onAddSet}
-                          secondary={true}
-            />
+            <div style={{textAlign: 'center'}}>
+               <RaisedButton label='Добавить набор'
+                             onMouseDown={this.onAddSet}
+                             secondary={true}
+                             style={styles.button}
+               />
+
+               <RaisedButton label='Показать результат'
+                             onMouseDown={this.openResultDialog}
+                             secondary={true}
+                             style={styles.button}
+                             disabled={tables.length === 0}
+               />
+            </div>
+
             <Dialog
                title='Создание набора альтернатив'
                actions={closeButton}
                open={this.state.isDialogOpen}
                contentStyle={styles.dialog}
                autoScrollBodyContent={true}
+               overlayStyle={styles.overlayStyle}
                children={
                   <Master text={text} onFinish={this.generateSet}/>
                }
             />
 
-            <RaisedButton label='Показать результат'
-                          onMouseDown={this.openResultDialog}
-                          secondary={true}
-            />
+
             <Dialog
                title='Создание набора альтернатив'
                actions={closeResultButton}

@@ -6,7 +6,6 @@ import RaisedButton from '../../../node_modules/material-ui/lib/raised-button';
 import FloatingActionButton from '../../../node_modules/material-ui/lib/floating-action-button';
 import CardText from '../../../node_modules/material-ui/lib/card/card-text';
 import ValidationField from './ValidationField2.jsx'
-import SwipeableViews from 'react-swipeable-views';
 import LinearProgress from '../../../node_modules/material-ui/lib/linear-progress';
 import ContentAdd from '../../../node_modules/material-ui/lib/svg-icons/content/add';
 import ContentRemove from '../../../node_modules/material-ui/lib/svg-icons/content/remove';
@@ -21,6 +20,9 @@ const styles = {
    },
    slide: {
       padding: 10
+   },
+   slideContent: {
+      height: '300px'
    }
 };
 
@@ -74,56 +76,59 @@ export default class Master extends React.Component {
          costs = state.costs,
          protections = state.protections,
          contentIndex = state.contentIndex,
+         content,
          alternatives;
 
       if(typeof costs !== 'undefined') {
          alternatives = protections.concat(costs);
       }
+      console.log(alternatives);
 
+      switch (contentIndex){
+         case 0:
+            content = (<FirstStep handleChange={this.validateNextStep}/>);
+            break;
+         case 1:
+            content = (<GeneratorFeatures criteriaCaption='Название критерия'
+                                          contentIndex={contentIndex}
+                                               criteriaWeight='Вес критерия'
+                                               handleChange={this.validateNextStep}
+            />);
+            break;
+         case 2:
+            content = (<GeneratorFeatures criteriaCaption='Название критерия'
+                                          contentIndex={contentIndex}
+                                               criteriaWeight='Вес критерия'
+                                               handleChange={this.validateNextStep}
+            />);
+            break;
+         case 3:
+            content = (<TableFields alternatives={alternatives}
+                                        name={state.functionalSubsystemName}
+                                        handleChange={this.validateNextStep}
+                                        active={state.contentIndex === 3}
+            />);
+            break;
+
+      }
       return (
          <Card>
             <CardHeader
                title={props.text[contentIndex].title}
                subtitle={props.text[contentIndex].subtitle}
+               showExpandableButton={true}
+               actAsExpander={true}
             />
-            <CardText>
+            <CardText expandable={true}>
                <LinearProgress
                   min={progressProps.min}
                   mode="determinate"
                   max={progressProps.max}
                   value={this.state.contentIndex} />
+               <p>{props.text[contentIndex].content}</p>
             </CardText>
             <CardText>
-               {props.text[contentIndex].content}
-            </CardText>
-
-            <CardText>
-               <SwipeableViews
-                  index={this.state.contentIndex}
-               >
-                  <div style={styles.slideContent}>
-                     <FirstStep handleChange={this.validateNextStep}/>
-                  </div>
-                  <div style={styles.slideContent}>
-                     <GeneratorFeatures criteriaCaption='Название критерия'
-                                        criteriaWeight='Вес критерия'
-                                        handleChange={this.validateNextStep}
-                     />
-                  </div>
-                  <div style={styles.slideContent}>
-                     <GeneratorFeatures criteriaCaption='Название критерия'
-                                        criteriaWeight='Вес критерия'
-                                        handleChange={this.validateNextStep}/>
-                  </div>
-                  <div style={styles.slideContent}>
-                     <TableFields alternatives={alternatives}
-                                  name={state.functionalSubsystemName}
-                                  handleChange={this.validateNextStep}
-                                  active={state.contentIndex === 3}
-
-                     />
-                  </div>
-               </SwipeableViews>
+               {content}
             </CardText>
             <CardActions>
                <RaisedButton label={this.getRightButtonName()}
@@ -235,6 +240,136 @@ class FirstStep extends React.Component {
 }
 
 class GeneratorFeatures extends React.Component {
+   constructor(props, context)
+   {
+      super(props, context);
+      this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
+      this.handleNumberFieldChange = this.handleNumberFieldChange.bind(this);
+      this.handleStringFieldChange = this.handleStringFieldChange.bind(this);
+      this.deleteItem = this.deleteItem.bind(this);
+      this.addItem = this.addItem.bind(this);
+
+
+      this.state = {
+         items: [{name: '', value: 1, errorValueText: '', errorNameText: ''}]
+      };
+   }
+
+   componentWillReceiveProps(nextProps){
+      if(nextProps.contentIndex !== this.props.contentIndex){
+         this.setState({
+            items: [{name: '', value: 1, errorValueText: '', errorNameText: ''}]
+         });
+      }
+   }
+
+   handleNumberFieldChange(id, errorText, value){
+      let state = this.state,
+         items = state.items;
+
+      items[id].value = value;
+      items[id].errorValueText = errorText;
+
+      this.setState({
+         items: items
+      });
+
+      this.props.handleChange(items)
+   }
+
+   handleStringFieldChange(id, errorText, value){
+      let state = this.state,
+         items = state.items;
+
+      items[id].name = value;
+      items[id].errorNameText = errorText;
+
+      this.setState({
+         items: items
+      });
+
+      this.props.handleChange(items)
+   }
+
+   deleteItem(value) {
+      let state = this.state,
+         items = state.items;
+      items.splice(value, 1);
+
+      this.setState({
+         items: items
+      });
+
+      this.props.handleChange(items)
+   }
+
+   addItem(){
+      let state = this.state,
+         items = state.items;
+      items.push({name: '', value: 1, errorValueText: '', errorNameText: ''});
+
+      this.setState({
+         items: items
+      })
+   }
+
+   render(){
+      let state = this.state;
+      let self = this;
+      let features = state.items.map(function(item, i, array){
+         let deleteItem = function(){
+            let value = i;
+            self.deleteItem(value);
+         };
+         return (
+            <table key={i}>
+               <tbody>
+               <tr>
+                  <td>
+                     <ValidationField  type="string"
+                                       caption={self.props.criteriaCaption}
+                                       value={item.name}
+                                       id={i}
+                                       handleChange={self.handleStringFieldChange}/>
+                  </td>
+                  <td>
+                     <ValidationField  type="number"
+                                       caption={self.props.criteriaWeight}
+                                       value={item.value}
+                                       id={i}
+                                       min={0}
+                                       max={1}
+                                       handleChange={self.handleNumberFieldChange}/>
+                  </td>
+                  <td>
+                     <FloatingActionButton
+                        id={i}
+                        mini={true}
+                        secondary={true}
+                        onMouseDown={deleteItem}>
+                        <ContentRemove />
+                     </FloatingActionButton>
+                  </td>
+               </tr>
+               </tbody>
+            </table>
+         )
+      });
+      return (
+         <div>
+            {features}
+            <FloatingActionButton
+               mini={true}
+               secondary={true}
+               onMouseDown={this.addItem}>
+               <ContentAdd />
+            </FloatingActionButton>
+         </div>
+      );
+   }
+}
+
+class GeneratorFeaturesCosts extends React.Component {
    constructor(props, context)
    {
       super(props, context);

@@ -173,7 +173,7 @@ export default class TableFields extends React.Component {
             return item.alternativeNames.length
          });
 
-         let sets = [];
+         sets = [];
          let currentSet = new Array(functionalSets.length);
          let branch = function branch (depth, currentSet) {
             for(let i=0; i<functionalSetsLengths[depth]; i++){
@@ -206,6 +206,10 @@ export default class TableFields extends React.Component {
             }
          });
 
+         generalSets.sort(function (a, b) {
+            return a.value - b.value;
+         });
+         generalSets.reverse();
          this.setState({
             struct: generalSets
          })

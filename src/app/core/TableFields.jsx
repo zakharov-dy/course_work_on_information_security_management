@@ -36,16 +36,16 @@ export default class TableFields extends React.Component {
 
    constructor(props) {
       super(props);
-      
+
       this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
       this.onAddItemClick = this.onAddItemClick.bind(this);
       this.onRemoveItemClick = this.onRemoveItemClick.bind(this);
       this.addItem = this.addItem.bind(this);
       this.onFieldChange = this.onFieldChange.bind(this);
 
-      
+      let struct = [];
       this.state = {
-         struct: undefined
+         struct: this.addItem(struct, this.props)
       };
    }
 
@@ -131,6 +131,19 @@ export default class TableFields extends React.Component {
       else return (<div></div>)
 
    }
+
+   // componentWillMount(){
+   //    if(typeof this.state.struct === 'undefined' && nextProps.active){
+   //       let struct = [];
+   //       struct = this.addItem(struct, nextProps);
+   //
+   //       console.log(struct);
+   //
+   //       this.setState({
+   //          struct: struct
+   //       });
+   //    }
+   // }
 
    onAddItemClick(){
       let struct = this.addItem(this.state.struct, this.props);

@@ -303,8 +303,8 @@ class AppChart extends React.Component {
 
    render(){
       return (
-         <canvas id="myChart" width="800px" height="400px">
-
+         <canvas id="myChart" width="1000px" height="500px">
+            
          </canvas>
       );
    }

@@ -19,7 +19,7 @@ const styles = {
    }
 };
 
-class AppHeader extends React.Component {
+export default class AppHeader extends React.Component {
    constructor(props, context) {
       super(props, context);
    }
@@ -50,8 +50,8 @@ class AppHeader extends React.Component {
                   value={this.props.activeTab}
                   style={styles.tabsStyle}
                >
-                  <Tab label="1" value={0} onActive={this.props.onTabActive}/>
-                  <Tab label="2" value={1} onActive={this.props.onTabActive}/>
+                  <Tab label="Принятие решения" value={0} onActive={this.props.onTabActive}/>
+                  <Tab label="Синтез наборов СЗИ" value={1} onActive={this.props.onTabActive}/>
                </Tabs>
          }
 
@@ -70,5 +70,3 @@ class AppHeader extends React.Component {
       );
    }
 }
-
-export default AppHeader;
