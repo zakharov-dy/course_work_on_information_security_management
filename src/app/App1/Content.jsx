@@ -36,6 +36,7 @@ const styles = {
    },
    dialog: {
       textAlign: 'center',
+      peddingBottom: '10px',
       width: '100%',
       maxWidth: 'none',
       maxHeight: 'none'
@@ -216,6 +217,7 @@ class Content extends React.Component {
                actions={closeButton}
                open={this.state.isDialogChartOpen}
                contentStyle={styles.dialog}
+               autoScrollBodyContent={true}
                children={
                 <ChartData
                   index={this.state.scheme}
