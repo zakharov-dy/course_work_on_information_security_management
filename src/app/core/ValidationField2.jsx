@@ -12,6 +12,8 @@
  *     {String, Boolean} errorText - имя ошибки.
  */
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+
 import TextField from 'material-ui/lib/text-field';
 
 const styles = {
@@ -24,6 +26,8 @@ class ValidationField extends React.Component {
 
    constructor(props, context) {
       super(props, context);
+      this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+
       this.onChange = this.onChange.bind(this);
       this.state = {
          errorText: false

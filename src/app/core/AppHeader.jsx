@@ -1,6 +1,7 @@
 import React from 'react';
-import AppBar from 'material-ui/lib/app-bar';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 
+import AppBar from 'material-ui/lib/app-bar';
 import IconButton from 'material-ui/lib/icon-button';
 import IconMenu from 'material-ui/lib/menus/icon-menu';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
@@ -22,6 +23,7 @@ const styles = {
 export default class AppHeader extends React.Component {
    constructor(props, context) {
       super(props, context);
+      this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
    }
 
    componentWillMount() {

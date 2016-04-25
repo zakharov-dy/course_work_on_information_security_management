@@ -2,6 +2,8 @@ import React from 'react';
 import RaisedButton from 'material-ui/lib/raised-button';
 import Dialog from 'material-ui/lib/dialog';
 import Paper from 'material-ui/lib/paper';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+
 
 import SwipeableViews from 'react-swipeable-views';
 
@@ -21,6 +23,8 @@ const styles = {
 class AppContent extends React.Component {
    constructor(props, context) {
       super(props, context);
+
+      this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
 
       this.handleChange = this.handleChange.bind(this);
 

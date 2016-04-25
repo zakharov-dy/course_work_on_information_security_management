@@ -280,7 +280,6 @@ let chartLogic = {
  */
 function updateChart(data, options) {
    if (typeof myChart !== 'undefined' && typeof myChart.datasets !== 'undefined') {
-      console.log(myChart);
       myChart.destroy();
       let ctx = document.querySelector('canvas').getContext('2d');
       myChart = new Chart(ctx).Line(data, options);

@@ -1,4 +1,6 @@
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+
 import Table from 'material-ui/lib/table/table';
 import TableHeaderColumn from 'material-ui/lib/table/table-header-column';
 import TableRow from 'material-ui/lib/table/table-row';
@@ -34,6 +36,8 @@ export default class TableFields extends React.Component {
 
    constructor(props) {
       super(props);
+
+      this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
 
       this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
       this.componentDidMount = this.componentDidMount.bind(this);

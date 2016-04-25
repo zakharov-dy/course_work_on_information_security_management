@@ -1,4 +1,6 @@
 import React from 'react';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+
 import Card from '../../../node_modules/material-ui/lib/card/card';
 import CardActions from '../../../node_modules/material-ui/lib/card/card-actions';
 import CardHeader from '../../../node_modules/material-ui/lib/card/card-header';
@@ -59,6 +61,7 @@ export default class Master extends React.Component {
    constructor(props, context)
    {
       super(props, context);
+      this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
 
       this.onRightButtonClick = this.onRightButtonClick.bind(this);
       this.getRightButtonName = this.getRightButtonName.bind(this);
@@ -82,7 +85,6 @@ export default class Master extends React.Component {
       if(typeof costs !== 'undefined') {
          alternatives = protections.concat(costs);
       }
-      console.log(alternatives);
 
       switch (contentIndex){
          case 0:
