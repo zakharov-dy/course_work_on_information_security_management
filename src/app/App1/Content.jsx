@@ -36,10 +36,12 @@ const styles = {
    },
    dialog: {
       textAlign: 'center',
-      peddingBottom: '10px',
+      position: 'absolute',
       width: '100%',
       maxWidth: 'none',
-      maxHeight: 'none'
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%)'
    }
 };
 

@@ -9,6 +9,8 @@ import TableHeader from 'material-ui/lib/table/table-header';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import TableBody from 'material-ui/lib/table/table-body';
 import CalculationTable from './CalculationTable.jsx';
+import LeftNav from 'material-ui/lib/left-nav';
+
 
 const styles = {
    headline: {
@@ -21,9 +23,12 @@ const styles = {
       padding: 10
    },
    dialog: {
+      position: 'absolute',
       width: '100%',
       maxWidth: 'none',
-      maxHeight: '80%'
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%)'
    },
    overlayStyle:{
       paddingTop: '10%'
@@ -170,6 +175,7 @@ export default class Content2 extends React.Component {
                contentStyle={styles.dialog}
                autoScrollBodyContent={true}
                overlayStyle={styles.overlayStyle}
+               repositionOnUpdate={false}
                children={
                   <Master text={text} onFinish={this.generateSet}/>
                }
@@ -179,6 +185,7 @@ export default class Content2 extends React.Component {
             <Dialog
                title='Создание набора альтернатив'
                actions={closeResultButton}
+               contentStyle={styles.dialog}
                open={this.state.isResultDialogOpen}
                autoScrollBodyContent={true}
                children={

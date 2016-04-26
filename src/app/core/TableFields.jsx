@@ -107,6 +107,7 @@ export default class TableFields extends React.Component {
                              <TableRowColumn key={j}>
                                 <ValidationField2 id={[i, j]}
                                                   value={item}
+                                                  min={0}
                                                   type={j===0?'strinng':'number'}
                                                   handleChange={self.onFieldChange}
                                 />

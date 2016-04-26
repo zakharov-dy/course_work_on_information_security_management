@@ -87,7 +87,7 @@ class NumberField extends React.Component {
          else if (min && value < min) errorText = 'Значение меньше' +
             ' нижней' +
             ' границы';
-         else if (max && value >= max) errorText = 'Значение больше' +
+         else if (max && value > max) errorText = 'Значение больше' +
             ' верхней границы';
 
          this.setState({

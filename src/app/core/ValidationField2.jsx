@@ -82,7 +82,7 @@ class ValidationField extends React.Component {
             numberValue = +value;
 
          if (isNaN(numberValue)) errorText = 'Невалидное значение';
-         else if (min && numberValue <= min) errorText = 'Значение меньше' +
+         else if (min && numberValue < min) errorText = 'Значение меньше' +
             ' нижней границы';
          else if (max && numberValue > max) errorText = 'Значение больше' +
             ' верхней границы';
