@@ -301,8 +301,17 @@ class AppChart extends React.Component {
    }
 
    render(){
+
+      let width = 1000,
+         halfBodyWidth = document.body.clientWidth * 0.75;
+      if(width < halfBodyWidth){
+         width = halfBodyWidth;
+      }
+
+      let height = width / 3;
+
       return (
-         <canvas id="myChart" width="1000px" height="380px">
+         <canvas id="myChart" width={width} height={height}>
             
          </canvas>
       );
