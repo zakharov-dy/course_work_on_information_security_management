@@ -41,13 +41,7 @@ const progressProps = {
  *       {String} title - титульник.
  *       {String} subtitle - подзаголовок.
  *       {String} content - текст.
- *     {Object} progressProps:
- *       {Number} min - минимальное значение.
- *       {Number} max - максимальное значение.
- *       {Number} value - Текущее значение прогресса.
- *     {Array} buttons:
- *       {String} caption - Надпись.
- *       {Boolean} isDisable - кнопка отключена?
+ *     {Number} startProgressValue
  * @state:
  *     {Array} protections - массив "хороших" критериев.
  *     {Array} costs - массив издержек.
@@ -66,9 +60,9 @@ export default class Master extends React.Component {
       this.onRightButtonClick = this.onRightButtonClick.bind(this);
       this.getRightButtonName = this.getRightButtonName.bind(this);
       this.validateNextStep = this.validateNextStep.bind(this);
-
+      let startProgressValue = this.props.startProgressValue || 0
       this.state = {
-         contentIndex: 0,
+         contentIndex: startProgressValue,
          isNextButtonDisable: true
       };
    }

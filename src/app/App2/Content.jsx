@@ -9,7 +9,6 @@ import TableHeader from 'material-ui/lib/table/table-header';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import TableBody from 'material-ui/lib/table/table-body';
 import CalculationTable from './CalculationTable.jsx';
-import LeftNav from 'material-ui/lib/left-nav';
 
 
 const styles = {
@@ -183,7 +182,7 @@ export default class Content2 extends React.Component {
 
 
             <Dialog
-               title='Создание набора альтернатив'
+               title='Результаты'
                actions={closeResultButton}
                contentStyle={styles.dialog}
                open={this.state.isResultDialogOpen}

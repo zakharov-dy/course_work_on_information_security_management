@@ -8,14 +8,16 @@ import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 
 import FirstAppContent from './App1/Content.jsx';
 import SecondAppContent from './App2/Content.jsx';
+import ThirdAppContent from './app3/Content.jsx';
+
 
 import {deepOrange500} from '../../node_modules/material-ui/lib/styles/colors';
 import getMuiTheme from '../../node_modules/material-ui/lib/styles/getMuiTheme';
 import MuiThemeProvider from '../../node_modules/material-ui/lib/MuiThemeProvider';
 
-const appNames = ['ЛР1', 'ЛР2'],
-   appContents = [FirstAppContent, SecondAppContent],
-   appNumber = 0;
+const appNames = ['ЛР1', 'ЛР2', 'ЛР3'],
+   appContents = [FirstAppContent, SecondAppContent, ThirdAppContent],
+   appNumber = 2;
 
 const styles = {
    container: {
