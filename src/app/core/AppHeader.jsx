@@ -7,7 +7,6 @@ import IconMenu from 'material-ui/lib/menus/icon-menu';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import FontIcon from 'material-ui/lib/font-icon';
-
 import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
 
@@ -45,17 +44,17 @@ export default class AppHeader extends React.Component {
 
    render() {
       return (
-      <AppBar
-         title={this.props.title}
-         children={
-             <Tabs
-                  value={this.props.activeTab}
-                  style={styles.tabsStyle}
-               >
-                  <Tab label="Принятие решения" value={0} onActive={this.props.onTabActive}/>
-                  <Tab label="Синтез наборов СЗИ" value={1} onActive={this.props.onTabActive}/>
-               </Tabs>
-         }
+        <AppBar
+           title={this.props.title}
+           children={
+               <Tabs
+                    value={this.props.activeTab}
+                    style={styles.tabsStyle}
+                 >
+                    <Tab label="Принятие решения" value={0} onActive={this.props.onTabActive}/>
+                    <Tab label="Синтез наборов СЗИ" value={1} onActive={this.props.onTabActive}/>
+                 </Tabs>
+           }
 
          iconElementLeft={
             <IconMenu
