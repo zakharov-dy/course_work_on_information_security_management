@@ -168,29 +168,30 @@ export default class Content2 extends React.Component {
 
       let newStruct = struct.reduce(function(result, set){
          result.push({name: set.shift()})
-
-         console.log(result[result.length -1 ].name)
-
          return result
          }, []);
 
       for(let i=0; i<alternativesLength; i++){
          maxMin.push(struct.reduce(function (result, current, j) {
             if(current[i] > result.max) result.max = current[i]
-            else if(result.min < current[i]) result.min = current[i]
+            if(current[i] < result.min) result.min = current[i]
             return result
-            }, {max: 0, min: 0}))
+            }, {max: 0, min: Infinity}))
       }
 
       let normalizeStrict = struct.map(function (set, i) {
          return set.map(function (item, j) {
             let min = maxMin[j].min,
-               max = maxMin[j].max;
-            if(j < protections.length){
-               item = (item - min)/ (max - min)
+               max = maxMin[j].max,
+               alternativesLength = struct[0].length,
+               protectionsLength = protections.length;
+            if(j < protectionsLength){
+               let weight = protections[j].value;
+               item = weight * (item - min) / (max - min);
             }
             else {
-               item = (max - item)/ (max - min)
+               let weight = costs[alternativesLength - protectionsLength - 1].value;
+               item = weight * (max - item) / (max - min);
             }
             return item
          })
@@ -204,8 +205,11 @@ export default class Content2 extends React.Component {
       })
 
       console.log(newStruct)
+      console.log(normalizeStrict)
+      console.log(maxMin)
 
-      //let maxMin = struct.reduce(function (result, current, i) {
+
+      // let maxMin = struct.reduce(function (result, current, i) {
       //
       //}, [])
    }
