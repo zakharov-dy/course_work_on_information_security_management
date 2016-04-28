@@ -200,7 +200,7 @@ export default class Content2 extends React.Component {
       newStruct.forEach(function (item, i) {
          item.result = normalizeStrict[i].reduce(function (result, item) {
             result = result + item
-            return item
+            return result
          }, 0)
       })
 
