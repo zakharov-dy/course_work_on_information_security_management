@@ -69,63 +69,64 @@ export default class Content2 extends React.Component {
    constructor(props) {
       super(props);
 
-      //this.onCloseDialog = this.onCloseDialog.bind(this);
       this.onCloseDialog = this.onCloseDialog.bind(this);
-      //this.onAddSet = this.onAddSet.bind(this);
       this.generateSet = this.generateSet.bind(this);
       this.onOpenDialog = this.onOpenDialog.bind(this);
-      
+
       this.state = {
-         struct: [],
+         firstMethod: [],
+         secondMethod: [],
          isDialogOpen: false,
          isResultDialogOpen: false
       };
    }
 
    render() {
+
       let closeResultButton = (
             <RaisedButton
                label='Закрыть'
-               onMouseDown={}
+               onMouseDown={this.onCloseDialog}
                primary={true}
             />
          ),
          newSessionButton = (
             <RaisedButton
+               style={styles.button}
+               secondary={true}
                label='Ввести данные'
                onMouseDown={this.onOpenDialog}
-               primary={true}
             />
          ),
          DialogContent;
 
-         if (this.state.struct.length !== 0) {
-            DialogContent = (
-               <div>
-                  <h1>
-                     Результаты по первому методу
-                  </h1>
-                  <ol>
-                     {this.state.struct.map(function (item, i) {
-                        return (<li>{item.name}: {item.result}</li>)
-                     })}
-                  </ol>
-                  {newSessionButton}
-               </div>
-            )
-         } else {
-            DialogContent = (
-               <div>
-                  {newSessionButton}
-               </div>
-               )
-         }  
+      if (this.state.firstMethod.length !== 0) {
+         DialogContent = (
+            <div>
+               <h1>
+                  Результаты по первому методу
+               </h1>
+               <ol>
+                  {this.state.firstMethod.map(function (item, i) {
+                     return (<li>{item.name}: {item.result}</li>)
+                  })}
+               </ol>
+               {newSessionButton}
+            </div>
+         )
+      } else {
+         DialogContent = (
+            <div>
+               {newSessionButton}
+            </div>
+         )
+      }
       return (
          <div style={styles.content}>
             {DialogContent}
             <Dialog
-               title='Результаты'
                actions={closeResultButton}
+               title='Результаты'
                contentStyle={styles.dialog}
                open={this.state.isResultDialogOpen}
                autoScrollBodyContent={true}
@@ -144,27 +145,41 @@ export default class Content2 extends React.Component {
 
       // Преобразование данных в числовые значения
       struct = struct.map(function (set) {return set.map(function (item, i) {
-         if(i !== 0) item = +item
+         if(i !== 0) item = +item;
          return item
       })});
 
       // Формирование массива с именами альтернатив и обрезание имен у исходного массива
       let newStruct = struct.reduce(function(result, set){
-         result.push({name: set.shift()})
+         result.push({name: set.shift()});
          return result
-         }, []);
+      }, []);
 
-      // Нахождение минимального и максимального значений для каждого критерия 
+      // Нахождение минимального и максимального значений для каждого критерия
       for(let i=0; i<alternativesLength; i++){
          maxMin.push(struct.reduce(function (result, current, j) {
-            if(current[i] > result.max) result.max = current[i]
-            if(current[i] < result.min) result.min = current[i]
+            if(current[i] > result.max) result.max = current[i];
+            if(current[i] < result.min) result.min = current[i];
             return result
-            }, {max: 0, min: Infinity}))
+         }, {max: 0, min: Infinity}))
       }
 
-      // дублируем исходные данные для второго метода.  
+      // дублируем исходные данные для второго метода.
       let secondStrict = JSON.parse(JSON.stringify(struct));
+
+      //
+      let arrayForSecondMethod = newStruct.map(function(item){return {name: item.name, result: 0}});
+      for(let i = 0; i < secondStrict[0].length; i++){
+         // для каждого столбца формируем сортированный массив его элементов
+         let sortedColumn = [];
+         for(let j=0; j<secondStrict.length; j++){sortedColumn[j] = secondStrict[j][i]}
+         sortedColumn.sort(function (a, b) {return a - b});
+
+         //
+         for(let j=0; j<secondStrict.length; j++){
+            arrayForSecondMethod[j].result += (sortedColumn.indexOf(secondStrict[j][i]) + 1)
+         };
+      }
 
       // Нормализация структуры.
       let normalizeStrict = struct.map(function (set, i) {
@@ -184,28 +199,37 @@ export default class Content2 extends React.Component {
             }
             return item
          })
-      })
+      });
 
       // Схлопывание всех критериев по альтернативе в одно значение
       newStruct.forEach(function (item, i) {
          item.result = normalizeStrict[i].reduce(function (result, item) {
-            result = result + item
+            result = result + item;
             return result
          }, 0)
-      })
+      });
 
       // Сортировка всех значений в одно
       newStruct.sort(function (a, b) {
          return a.result - b.result
-      }).reverse()
+      }).reverse();
+
+      // Сортировка всех значений в одно
+      arrayForSecondMethod.sort(function (a, b) {
+         return a.result - b.result
+      });
 
       this.setState({
          isResultDialogOpen: false,
-         struct: newStruct
+         firstMethod: newStruct,
+         secondMethod: arrayForSecondMethod
       })
    }
 
    onOpenDialog() {
-     this.setState({isResultDialogOpen: true})
+      this.setState({isResultDialogOpen: true})
+   }
+   onCloseDialog() {
+      this.setState({isResultDialogOpen: false})
    }
 }
