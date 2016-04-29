@@ -34,6 +34,9 @@ const styles = {
 
    button: {
       margin: 12
+   },
+   content:{
+      textAlign: 'center'
    }
 };
 
@@ -56,9 +59,8 @@ const text = [
    {
       title: 'Определение альтернатив',
       subtitle: 'Этап №3',
-      content: 'Определите набор альтернатив для заданной функциональной подсистемы'
+      content: 'Определите набор альтернатив функциональной подсистемы'
    }
-
 
 ];
 
@@ -68,109 +70,91 @@ export default class Content2 extends React.Component {
       super(props);
 
       //this.onCloseDialog = this.onCloseDialog.bind(this);
-      //this.onCloseResultDialog = this.onCloseResultDialog.bind(this);
+      this.onCloseDialog = this.onCloseDialog.bind(this);
       //this.onAddSet = this.onAddSet.bind(this);
       this.generateSet = this.generateSet.bind(this);
-      //this.openResultDialog = this.openResultDialog.bind(this);
+      this.onOpenDialog = this.onOpenDialog.bind(this);
       
       this.state = {
-         sets: [],
+         struct: [],
          isDialogOpen: false,
          isResultDialogOpen: false
       };
    }
 
    render() {
-      //let state = this.state,
-      //   sets = state.sets,
-      //   tables = sets.map(function(table, i, array){
-      //      return (
-      //         <Table
-      //            key={i}
-      //            fixedHeader={true}
-      //            selectable={false}
-      //         >
-      //            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-      //               <TableRow>
-      //                  <TableHeaderColumn colSpan={table.protections.length + table.costs.length + 1}
-      //                                     tooltip={table.name}
-      //                                     style={{textAlign: 'center'}}>
-      //                     {table.name}
-      //                  </TableHeaderColumn>
-      //               </TableRow>
-      //               <TableRow>
-      //                  <TableHeaderColumn tooltip='Наименование альтернативы'>
-      //                     Наименование альтернативы
-      //                  </TableHeaderColumn>
-      //                  {table.protections.map( (item, i) => (
-      //                     <TableHeaderColumn key={i + 'protection'} tooltip={item.value}>
-      //                        {item.name}
-      //                     </TableHeaderColumn>
-      //                  ))}
-      //                  {table.costs.map( (item, i) => (
-      //                     <TableHeaderColumn key={i + 'cost'} tooltip={item.value}>
-      //                        {item.name}
-      //                     </TableHeaderColumn>
-      //                  ))}
-      //               </TableRow>
-      //            </TableHeader>
-      //            <TableBody
-      //               showRowHover={true}
-      //               displayRowCheckbox={false}
-      //            >
-      //               {table.struct.map( (row, i) => (
-      //                  <TableRow key={i}>
-      //                     {row.map((item, j) => (
-      //                        <TableRowColumn key={j}>
-      //                           {item}
-      //                        </TableRowColumn>
-      //                     ))}
-      //                  </TableRow>
-      //               ))}
-      //            </TableBody>
-      //         </Table>
-      //      )
-      //   });
-      //
-      //let closeButton = (
-      //   <RaisedButton
-      //      label='Закрыть'
-      //      onMouseDown={this.onCloseDialog}
-      //      primary={true}
-      //   />
-      //);
-      //let closeResultButton = (
-      //   <RaisedButton
-      //      label='Закрыть'
-      //      onMouseDown={this.onCloseResultDialog}
-      //      primary={true}
-      //   />
-      //);
+      let closeResultButton = (
+            <RaisedButton
+               label='Закрыть'
+               onMouseDown={}
+               primary={true}
+            />
+         ),
+         newSessionButton = (
+            <RaisedButton
+               label='Ввести данные'
+               onMouseDown={this.onOpenDialog}
+               primary={true}
+            />
+         ),
+         DialogContent;
 
-
+         if (this.state.struct.length !== 0) {
+            DialogContent = (
+               <div>
+                  <h1>
+                     Результаты по первому методу
+                  </h1>
+                  <ol>
+                     {this.state.struct.map(function (item, i) {
+                        return (<li>{item.name}: {item.result}</li>)
+                     })}
+                  </ol>
+                  {newSessionButton}
+               </div>
+            )
+         } else {
+            DialogContent = (
+               <div>
+                  {newSessionButton}
+               </div>
+               )
+         }  
       return (
-         <div>
-            <Master text={text} onFinish={this.generateSet} startProgressValue={1}/>
+         <div style={styles.content}>
+            {DialogContent}
+            <Dialog
+               title='Результаты'
+               actions={closeResultButton}
+               contentStyle={styles.dialog}
+               open={this.state.isResultDialogOpen}
+               autoScrollBodyContent={true}
+               children={
+                  <Master text={text} onFinish={this.generateSet} startProgressValue={1}/>
+               }
+            />
          </div>
       );
    }
-
 
    generateSet(name, protections, costs, struct) {
 
       let alternativesLength = struct[0].length,
          maxMin = [];
 
+      // Преобразование данных в числовые значения
       struct = struct.map(function (set) {return set.map(function (item, i) {
          if(i !== 0) item = +item
          return item
       })});
 
+      // Формирование массива с именами альтернатив и обрезание имен у исходного массива
       let newStruct = struct.reduce(function(result, set){
          result.push({name: set.shift()})
          return result
          }, []);
 
+      // Нахождение минимального и максимального значений для каждого критерия 
       for(let i=0; i<alternativesLength; i++){
          maxMin.push(struct.reduce(function (result, current, j) {
             if(current[i] > result.max) result.max = current[i]
@@ -179,24 +163,30 @@ export default class Content2 extends React.Component {
             }, {max: 0, min: Infinity}))
       }
 
+      // дублируем исходные данные для второго метода.  
+      let secondStrict = JSON.parse(JSON.stringify(struct));
+
+      // Нормализация структуры.
       let normalizeStrict = struct.map(function (set, i) {
          return set.map(function (item, j) {
             let min = maxMin[j].min,
                max = maxMin[j].max,
                alternativesLength = struct[0].length,
-               protectionsLength = protections.length;
+               protectionsLength = protections.length,
+               weight;
             if(j < protectionsLength){
-               let weight = protections[j].value;
+               weight = protections[j].value;
                item = weight * (item - min) / (max - min);
             }
             else {
-               let weight = costs[alternativesLength - protectionsLength - 1].value;
+               weight = costs[alternativesLength - protectionsLength - 1].value;
                item = weight * (max - item) / (max - min);
             }
             return item
          })
       })
 
+      // Схлопывание всех критериев по альтернативе в одно значение
       newStruct.forEach(function (item, i) {
          item.result = normalizeStrict[i].reduce(function (result, item) {
             result = result + item
@@ -204,28 +194,18 @@ export default class Content2 extends React.Component {
          }, 0)
       })
 
-      console.log(newStruct)
-      console.log(normalizeStrict)
-      console.log(maxMin)
+      // Сортировка всех значений в одно
+      newStruct.sort(function (a, b) {
+         return a.result - b.result
+      }).reverse()
 
-
-      // let maxMin = struct.reduce(function (result, current, i) {
-      //
-      //}, [])
+      this.setState({
+         isResultDialogOpen: false,
+         struct: newStruct
+      })
    }
 
-   //onAddSet() {
-   //   this.setState({isDialogOpen: true})
-   //}
-   //
-   //openResultDialog(){
-   //   this.setState({isResultDialogOpen: true})
-   //}
-   //
-   //onCloseDialog() {
-   //   this.setState({isDialogOpen: false})
-   //}
-   //onCloseResultDialog() {
-   //   this.setState({isResultDialogOpen: false})
-   //}
+   onOpenDialog() {
+     this.setState({isResultDialogOpen: true})
+   }
 }

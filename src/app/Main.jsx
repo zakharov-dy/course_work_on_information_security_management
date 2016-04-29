@@ -15,7 +15,11 @@ import {deepOrange500} from '../../node_modules/material-ui/lib/styles/colors';
 import getMuiTheme from '../../node_modules/material-ui/lib/styles/getMuiTheme';
 import MuiThemeProvider from '../../node_modules/material-ui/lib/MuiThemeProvider';
 
-const appNames = ['ЛР1', 'ЛР2', 'ЛР3'],
+
+const appNames = [
+   'Выбор рационального варианта реагирования на событие нарушения ИБ',
+   'Комбинаторно-морфологический метод синтеза наборов СЗИ',
+   'Выбор СЗИ методами линейной свертки и ранжирования альтернатив'],
    appContents = [FirstAppContent, SecondAppContent, ThirdAppContent],
    appNumber = 2;
 
@@ -52,11 +56,13 @@ class Main extends React.Component {
          },
          {
             name: 'О программе',
-            action: 'about'
+            action: 'about',
+            link: 'https://github.com/dmitry22/course_work_on_information_security_management'
          },
          {
             name: 'Исходники',
-            action: 'git'
+            action: 'git',
+            link: 'https://github.com/dmitry22/course_work_on_information_security_management'
          }],
          dialogParams = [
             {
@@ -69,15 +75,24 @@ class Main extends React.Component {
                }
             }
          ];
+
       let barContent = myBarButtonsParams.map(function (item, i) {
-                  return (
-                     <MenuItem
-                        key={i}
-                        primaryText={item.name}
-                        onMouseDown={item.onButtonClick}
-                     />
-                  )
-               }),
+         if (item.link) {
+            return (
+               <MenuItem 
+                  key={i}
+                  linkButton={true} 
+                  href={item.link} 
+                  primaryText={item.name} />
+               )
+         } else {
+            return (
+               <MenuItem
+                  key={i}
+                  primaryText={item.name}
+                  onMouseDown={item.onButtonClick}/>)
+               }
+         }),
          Content = appContents[appNumber];
 
       return (
