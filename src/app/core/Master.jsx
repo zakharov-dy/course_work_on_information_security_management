@@ -111,11 +111,8 @@ export default class Master extends React.Component {
          <Card>
             <CardHeader
                title={props.text[contentIndex].title}
-               subtitle={props.text[contentIndex].subtitle}
-               showExpandableButton={true}
-               actAsExpander={true}
-            />
-            <CardText expandable={true}>
+               subtitle={props.text[contentIndex].subtitle}/>
+            <CardText>
                <LinearProgress
                   min={progressProps.min}
                   mode="determinate"

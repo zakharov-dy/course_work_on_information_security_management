@@ -154,7 +154,7 @@ export default class Content2 extends React.Component {
             {DialogContent}
             <Dialog
                actions={closeResultButton}
-               title='Результаты'
+               title='Ввод исходных данных'
                contentStyle={styles.dialog}
                open={this.state.isResultDialogOpen}
                autoScrollBodyContent={true}

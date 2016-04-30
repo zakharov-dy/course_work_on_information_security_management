@@ -21,6 +21,9 @@ const styles = {
    },
    propToggleHeader: {
       margin: '20px auto 10px'
+   },
+   floatingButton: {
+      margin: 15
    }
 };
 
@@ -118,12 +121,14 @@ export default class TableFields extends React.Component {
                   </TableBody>
                </Table>
                <FloatingActionButton
+                  style={styles.floatingButton}
                   mini={true}
                   secondary={true}
                   onMouseDown={this.onAddItemClick}>
                   <ContentAdd />
                </FloatingActionButton>
                <FloatingActionButton
+                  style={styles.floatingButton}
                   mini={true}
                   secondary={true}
                   onMouseDown={this.onRemoveItemClick}>

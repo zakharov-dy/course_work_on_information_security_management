@@ -5,11 +5,10 @@
   "main": "index.html",
   "author": "Developer",
   "window": {
-    "toolbar": false,
-    "width": 500,
-    "height": 200
+    "toolbar": false
   },
   "devDependencies": {
-    "nw-builder": "^2.2.0"
+    "nw-builder": "^2.2.0",
+    "open": "0.0.5"
   }
 }

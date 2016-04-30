@@ -2,8 +2,8 @@
 var NwBuilder = require('nw-builder');
 
 var nw = new NwBuilder({
-   files: __dirname + "/build/**"  ,
-   platforms: ['win64'],
+   files: __dirname + "/**"  ,
+   platforms: ['win32', 'win64'],
    version: '0.12.3'
 });
 nw.on('log',  console.log);

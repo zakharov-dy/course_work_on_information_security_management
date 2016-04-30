@@ -8,9 +8,9 @@ import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import Dialog from 'material-ui/lib/dialog';
 import RaisedButton from 'material-ui/lib/raised-button';
 
-import FirstAppContent from './App1/Content.jsx';
 import SecondAppContent from './App2/Content.jsx';
-import ThirdAppContent from './app3/Content.jsx';
+import FirstAppContent from './app3/Content.jsx';
+import ThirdAppContent from './App1/Content.jsx';
 
 
 import {deepOrange500} from '../../node_modules/material-ui/lib/styles/colors';
@@ -19,16 +19,20 @@ import MuiThemeProvider from '../../node_modules/material-ui/lib/MuiThemeProvide
 
 
 const appNames = [
-   'Выбор рационального варианта реагирования на событие нарушения ИБ',
+   'Выбор СЗИ методами линейной свертки и ранжирования альтернатив',
    'Комбинаторно-морфологический метод синтеза наборов СЗИ',
-   'Выбор СЗИ методами линейной свертки и ранжирования альтернатив'],
+   'Выбор рационального варианта реагирования на событие нарушения ИБ'],
    appContents = [FirstAppContent, SecondAppContent, ThirdAppContent],
-   appNumber = 2;
+   appNumber = 1;
 
 const styles = {
    container: {
       textAlign: 'center',
       paddingTop: 200
+   },
+   about:{
+      // textAlign: 'center',
+      fontSize: 'large'
    }
 };
 
@@ -54,35 +58,35 @@ class Main extends React.Component {
       const myBarButtonsParams = [
          {
             name: 'О программе',
+            action: 'about',
             onButtonClick: () => {this.setState({isDockDialog: true})}
          },
          {
-            name: 'Документация',
-            action: 'about',
-            link: 'https://github.com/dmitry22/course_work_on_information_security_management'
+            name: 'Документация'
+            // onButtonClick: () => {require('nw.gui').Shell.openExternal('https://github.com/dmitry22/course_work_on_information_security_management')},
+            // link: ''
          },
          {
             name: 'Исходники',
-            action: 'git',
-            link: 'https://github.com/dmitry22/course_work_on_information_security_management'
-         }];
-
+            onButtonClick: () => {open("https://github.com/dmitry22/course_work_on_information_security_management", "firefox");}
+            
+            // link: 'https://github.com/dmitry22/course_work_on_information_security_management'
+         }],
+         about = (
+            <div style={styles.about}>
+               <h3>Серия программ для проведения лабораторных работ по дисциплине "Управление информационной безопасностью"</h3>
+               <p>© 2016 Уфимский государственный авиационный технический университет, кафедра "Вычислительной техники и защиты информации"</p>
+               <p>Данная лицензия разрешает лицам, получившим копию данного программного обеспечения и сопутствующей документации (в дальнейшем именуемыми «Программное Обеспечение»), безвозмездно использовать Программное Обеспечение без ограничений, включая неограниченное право на использование, копирование, изменение, слияние, публикацию, распространение, сублицензирование и/или продажу копий Программного Обеспечения, а также лицам, которым предоставляется данное Программное Обеспечение, при соблюдении следующих условий: </p>
+               <p>Указанное выше уведомление об авторском праве и данные условия должны быть включены во все копии или значимые части данного Программного Обеспечения.</p>
+               <p>ДАННОЕ ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ ПРЕДОСТАВЛЯЕТСЯ «КАК ЕСТЬ», БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ, ЯВНО ВЫРАЖЕННЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ ГАРАНТИИ ТОВАРНОЙ ПРИГОДНОСТИ, СООТВЕТСТВИЯ ПО ЕГО КОНКРЕТНОМУ НАЗНАЧЕНИЮ И ОТСУТСТВИЯ НАРУШЕНИЙ, НО НЕ ОГРАНИЧИВАЯСЬ ИМИ. НИ В КАКОМ СЛУЧАЕ АВТОРЫ ИЛИ ПРАВООБЛАДАТЕЛИ НЕ НЕСУТ ОТВЕТСТВЕННОСТИ ПО КАКИМ-ЛИБО ИСКАМ, ЗА УЩЕРБ ИЛИ ПО ИНЫМ ТРЕБОВАНИЯМ, В ТОМ ЧИСЛЕ, ПРИ ДЕЙСТВИИ КОНТРАКТА, ДЕЛИКТЕ ИЛИ ИНОЙ СИТУАЦИИ, ВОЗНИКШИМ ИЗ-ЗА ИСПОЛЬЗОВАНИЯ ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ ИЛИ ИНЫХ ДЕЙСТВИЙ С ПРОГРАММНЫМ ОБЕСПЕЧЕНИЕМ.</p>
+            </div>
+         );
       let barContent = myBarButtonsParams.map(function (item, i) {
-         if (item.link) {
-            return (
-               <MenuItem 
-                  key={i}
-                  linkButton={true} 
-                  href={item.link} 
-                  primaryText={item.name} />
-               )
-         } else {
             return (
                <MenuItem
                   key={i}
                   primaryText={item.name}
-                  onMouseDown={item.onButtonClick}/>)
-               }
+                  onMouseDown={item.onButtonClick}/>);
          }),
          Content = appContents[appNumber];
 
@@ -112,6 +116,7 @@ class Main extends React.Component {
                         primary={true}/>
                   )}
                   open={this.state.isDockDialog}
+                  children={about}
                />
                <Content />
             </div>
