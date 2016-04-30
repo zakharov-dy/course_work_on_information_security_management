@@ -2,12 +2,6 @@ import React from 'react';
 import Master from './../core/Master.jsx'
 import RaisedButton from 'material-ui/lib/raised-button';
 import Dialog from 'material-ui/lib/dialog';
-import Table from 'material-ui/lib/table/table';
-import TableHeaderColumn from 'material-ui/lib/table/table-header-column';
-import TableRow from 'material-ui/lib/table/table-row';
-import TableHeader from 'material-ui/lib/table/table-header';
-import TableRowColumn from 'material-ui/lib/table/table-row-column';
-import TableBody from 'material-ui/lib/table/table-body';
 
 
 const styles = {
@@ -35,9 +29,28 @@ const styles = {
    button: {
       margin: 12
    },
-   content:{
+   buttonContainer:{
       textAlign: 'center'
+   },
+   leftResult:{
+      display: 'inline-block',
+      float: 'left',
+      marginLeft: '100',
+      maxWidth: '35%'
+   },
+   rightResult:{
+      display: 'inline-block',
+      float: 'right',
+      marginRight: '100',
+      maxWidth: '35%'
+   },
+   resultHeader:{
+      textAlign: 'center'
+   },
+   listStyle:{
+      fontSize: 'large'
    }
+
 };
 
 const text = [
@@ -90,11 +103,12 @@ export default class Content2 extends React.Component {
                primary={true}
             />
          ),
+         buttonLabel = (this.state.firstMethod.length === 0)? 'ввести данные' : "Начать сначала",
          newSessionButton = (
             <RaisedButton
                style={styles.button}
                secondary={true}
-               label='Ввести данные'
+               label={buttonLabel}
                onMouseDown={this.onOpenDialog}
             />
          ),
@@ -103,15 +117,29 @@ export default class Content2 extends React.Component {
       if (this.state.firstMethod.length !== 0) {
          DialogContent = (
             <div>
-               <h1>
-                  Результаты по первому методу
-               </h1>
-               <ol>
-                  {this.state.firstMethod.map(function (item, i) {
-                     return (<li>{item.name}: {item.result}</li>)
-                  })}
-               </ol>
-               {newSessionButton}
+               <div style={styles.buttonContainer}>
+                  {newSessionButton}
+               </div>
+               <div style={styles.leftResult}>
+                  <h1 style={styles.resultHeader}>
+                     Результаты по методу "линейной свертки критериев"
+                  </h1>
+                  <ol style={styles.listStyle}>
+                     {this.state.firstMethod.map(function (item) {
+                        return (<li>{item.name}: {item.result}</li>)
+                     })}
+                  </ol>
+               </div>
+               <div style={styles.rightResult}>
+                  <h1 style={styles.resultHeader}>
+                     Результаты по методу "ранжирования альтернатив по свойстваам"
+                  </h1>
+                  <ol style={styles.listStyle}>
+                     {this.state.secondMethod.map(function (item) {
+                        return (<li>{item.name}: {item.result}</li>)
+                     })}
+                  </ol>
+               </div>
             </div>
          )
       } else {
@@ -150,7 +178,7 @@ export default class Content2 extends React.Component {
       })});
 
       // Формирование массива с именами альтернатив и обрезание имен у исходного массива
-      let newStruct = struct.reduce(function(result, set){
+      let arrayForFirstMethod = struct.reduce(function(result, set){
          result.push({name: set.shift()});
          return result
       }, []);
@@ -168,7 +196,7 @@ export default class Content2 extends React.Component {
       let secondStrict = JSON.parse(JSON.stringify(struct));
 
       //
-      let arrayForSecondMethod = newStruct.map(function(item){return {name: item.name, result: 0}});
+      let arrayForSecondMethod = arrayForFirstMethod.map(function(item){return {name: item.name, result: 0}});
       for(let i = 0; i < secondStrict[0].length; i++){
          // для каждого столбца формируем сортированный массив его элементов
          let sortedColumn = [];
@@ -178,7 +206,7 @@ export default class Content2 extends React.Component {
          //
          for(let j=0; j<secondStrict.length; j++){
             arrayForSecondMethod[j].result += (sortedColumn.indexOf(secondStrict[j][i]) + 1)
-         };
+         }
       }
 
       // Нормализация структуры.
@@ -202,7 +230,7 @@ export default class Content2 extends React.Component {
       });
 
       // Схлопывание всех критериев по альтернативе в одно значение
-      newStruct.forEach(function (item, i) {
+      arrayForFirstMethod.forEach(function (item, i) {
          item.result = normalizeStrict[i].reduce(function (result, item) {
             result = result + item;
             return result
@@ -210,7 +238,7 @@ export default class Content2 extends React.Component {
       });
 
       // Сортировка всех значений в одно
-      newStruct.sort(function (a, b) {
+      arrayForFirstMethod.sort(function (a, b) {
          return a.result - b.result
       }).reverse();
 
@@ -221,7 +249,7 @@ export default class Content2 extends React.Component {
 
       this.setState({
          isResultDialogOpen: false,
-         firstMethod: newStruct,
+         firstMethod: arrayForFirstMethod,
          secondMethod: arrayForSecondMethod
       })
    }

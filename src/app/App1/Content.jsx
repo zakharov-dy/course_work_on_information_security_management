@@ -14,7 +14,6 @@ import CardHeader from 'material-ui/lib/card/card-header';
 import CardText from 'material-ui/lib/card/card-text';
 import CardMedia from 'material-ui/lib/card/card-media';
 import Dialog from 'material-ui/lib/dialog';
-import CardTitle from 'material-ui/lib/card/card-title';
 
 const styles = {
    firstAppContainer: {

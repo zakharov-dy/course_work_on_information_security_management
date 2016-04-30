@@ -5,6 +5,8 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconButton from 'material-ui/lib/icon-button';
 import IconMenu from 'material-ui/lib/menus/icon-menu';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
+import Dialog from 'material-ui/lib/dialog';
+import RaisedButton from 'material-ui/lib/raised-button';
 
 import FirstAppContent from './App1/Content.jsx';
 import SecondAppContent from './App2/Content.jsx';
@@ -51,11 +53,11 @@ class Main extends React.Component {
 
       const myBarButtonsParams = [
          {
-            name: 'Документация',
+            name: 'О программе',
             onButtonClick: () => {this.setState({isDockDialog: true})}
          },
          {
-            name: 'О программе',
+            name: 'Документация',
             action: 'about',
             link: 'https://github.com/dmitry22/course_work_on_information_security_management'
          },
@@ -63,18 +65,7 @@ class Main extends React.Component {
             name: 'Исходники',
             action: 'git',
             link: 'https://github.com/dmitry22/course_work_on_information_security_management'
-         }],
-         dialogParams = [
-            {
-               title: 'Документация',
-               isOpen: this.state.isDockDialog,
-               content: 'Документация',
-               buttonCloseParams: {
-                  caption: 'закрыть',
-                  onClick: () => {this.setState({isDockDialog: false})}
-               }
-            }
-         ];
+         }];
 
       let barContent = myBarButtonsParams.map(function (item, i) {
          if (item.link) {
@@ -111,6 +102,16 @@ class Main extends React.Component {
                         {barContent}
                      </IconMenu>
                   }
+               />
+               <Dialog
+                  title='О программе'
+                  actions={(
+                     <RaisedButton
+                        label='закрыть'
+                        onMouseDown={() => {this.setState({isDockDialog: false})}}
+                        primary={true}/>
+                  )}
+                  open={this.state.isDockDialog}
                />
                <Content />
             </div>
