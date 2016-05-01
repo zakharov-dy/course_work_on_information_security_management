@@ -23,7 +23,7 @@ const appNames = [
    'Комбинаторно-морфологический метод синтеза наборов СЗИ',
    'Выбор рационального варианта реагирования на событие нарушения ИБ'],
    appContents = [FirstAppContent, SecondAppContent, ThirdAppContent],
-   appNumber = 1;
+   appNumber = 2;
 
 const styles = {
    container: {
@@ -69,7 +69,7 @@ class Main extends React.Component {
          {
             name: 'Исходники',
             onButtonClick: () => {open("https://github.com/dmitry22/course_work_on_information_security_management", "firefox");}
-            
+
             // link: 'https://github.com/dmitry22/course_work_on_information_security_management'
          }],
          about = (
@@ -126,5 +126,3 @@ class Main extends React.Component {
 }
 
 export default Main;
-
-

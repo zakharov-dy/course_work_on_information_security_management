@@ -1,6 +1,7 @@
 import React from 'react';
 import Master from './../core/Master.jsx'
 import RaisedButton from 'material-ui/lib/raised-button';
+import Divider from 'material-ui/lib/divider';
 import Dialog from 'material-ui/lib/dialog';
 import Table from 'material-ui/lib/table/table';
 import TableHeaderColumn from 'material-ui/lib/table/table-header-column';
@@ -35,6 +36,9 @@ const styles = {
 
    button: {
       margin: 12
+   },
+   sectionStyle: {
+      textAlign: 'center'
    }
 };
 
@@ -73,7 +77,8 @@ export default class Content2 extends React.Component {
       this.onAddSet = this.onAddSet.bind(this);
       this.generateSet = this.generateSet.bind(this);
       this.openResultDialog = this.openResultDialog.bind(this);
-      
+      this.onDeleteTable = this.onDeleteTable.bind(this);
+
       this.state = {
          sets: [],
          isDialogOpen: false,
@@ -82,54 +87,64 @@ export default class Content2 extends React.Component {
    }
 
    render() {
-      let state = this.state,
+      let self = this,
+         state = this.state,
          sets = state.sets,
          tables = sets.map(function(table, i, array){
             return (
-               <Table
-                  key={i}
-                  fixedHeader={true}
-                  selectable={false}
-               >
-                  <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-                     <TableRow>
-                        <TableHeaderColumn colSpan={table.protections.length + table.costs.length + 1}
-                                           tooltip={table.name}
-                                           style={{textAlign: 'center'}}>
-                           {table.name}
-                        </TableHeaderColumn>
-                     </TableRow>
-                     <TableRow>
-                        <TableHeaderColumn tooltip='Наименование альтернативы'>
-                           Наименование альтернативы
-                        </TableHeaderColumn>
-                        {table.protections.map( (item, i) => (
-                           <TableHeaderColumn key={i + 'protection'} tooltip={item.value}>
-                              {item.name}
-                           </TableHeaderColumn>
-                        ))}
-                        {table.costs.map( (item, i) => (
-                           <TableHeaderColumn key={i + 'cost'} tooltip={item.value}>
-                              {item.name}
-                           </TableHeaderColumn>
-                        ))}
-                     </TableRow>
-                  </TableHeader>
-                  <TableBody
-                     showRowHover={true}
-                     displayRowCheckbox={false}
+               <div key={i} style={styles.sectionStyle}>
+                  <Table
+                     fixedHeader={true}
+                     selectable={false}
                   >
-                     {table.struct.map( (row, i) => (
-                        <TableRow key={i}>
-                           {row.map((item, j) => (
-                              <TableRowColumn key={j}>
-                                 {item}
-                              </TableRowColumn>
+                     <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                        <TableRow>
+                           <TableHeaderColumn colSpan={table.protections.length + table.costs.length + 1}
+                                              tooltip={table.name}
+                                              style={{textAlign: 'center'}}>
+                              {table.name}
+                           </TableHeaderColumn>
+                        </TableRow>
+                        <TableRow>
+                           <TableHeaderColumn tooltip='Имя альтернативы'>
+                              Имя альтернативы
+                           </TableHeaderColumn>
+                           {table.protections.map( (item, i) => (
+                              <TableHeaderColumn key={i + 'protection'} tooltip={item.value}>
+                                 {item.name}
+                              </TableHeaderColumn>
+                           ))}
+                           {table.costs.map( (item, i) => (
+                              <TableHeaderColumn key={i + 'cost'} tooltip={item.value}>
+                                 {item.name}
+                              </TableHeaderColumn>
                            ))}
                         </TableRow>
-                     ))}
-                  </TableBody>
-               </Table>
+                     </TableHeader>
+                     <TableBody
+                        showRowHover={true}
+                        displayRowCheckbox={false}
+                     >
+                        {table.struct.map( (row, i) => (
+                           <TableRow key={i}>
+                              {row.map((item, j) => (
+                                 <TableRowColumn key={j}>
+                                    {item}
+                                 </TableRowColumn>
+                              ))}
+                           </TableRow>
+                        ))}
+                     </TableBody>
+                  </Table>
+                  <RaisedButton
+                     key={i + 'deleteTableButton'}
+                     label='Удалить функциональный набор'
+                     onMouseDown={self.onDeleteTable.bind(null, i)}
+                     primary={true}
+                     style={styles.button}
+                  />
+                  <Divider />
+               </div>
             )
          });
 
@@ -168,7 +183,7 @@ export default class Content2 extends React.Component {
             </div>
 
             <Dialog
-               title='Создание набора альтернатив'
+               title='Мастер создания набора альтернатив'
                actions={closeButton}
                open={this.state.isDialogOpen}
                contentStyle={styles.dialog}
@@ -220,7 +235,17 @@ export default class Content2 extends React.Component {
    onCloseDialog() {
       this.setState({isDialogOpen: false})
    }
+
    onCloseResultDialog() {
       this.setState({isResultDialogOpen: false})
+   }
+
+   onDeleteTable(i, e) {
+      e.stopPropagation();
+      let sets = this.state.sets;
+      sets.splice(i, 1);
+      this.setState({
+         sets: sets
+      });
    }
 }

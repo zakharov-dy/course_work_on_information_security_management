@@ -3,7 +3,6 @@ import Master from './../core/Master.jsx'
 import RaisedButton from 'material-ui/lib/raised-button';
 import Dialog from 'material-ui/lib/dialog';
 
-
 const styles = {
    headline: {
       fontSize: 24,
