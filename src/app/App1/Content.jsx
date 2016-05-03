@@ -15,6 +15,11 @@ import CardText from 'material-ui/lib/card/card-text';
 import CardMedia from 'material-ui/lib/card/card-media';
 import Dialog from 'material-ui/lib/dialog';
 
+const images = [
+   require('./../images/0.png'),
+   require('./../images/1.png'),
+   require('./../images/2.png')
+]
 const styles = {
    firstAppContainer: {
       width: '60%',
@@ -77,7 +82,7 @@ class Content extends React.Component {
    }
 
    /*
-    * Функция смены значения селектора и построения 'чистых' инпутов. 
+    * Функция смены значения селектора и построения 'чистых' инпутов.
     * Вызывается при событии в селекторе.
     *
     */
@@ -100,7 +105,7 @@ class Content extends React.Component {
    }
 
    /*
-    * Функция смены значения input'а и присваивания ему состояния и ошибки, в 
+    * Функция смены значения input'а и присваивания ему состояния и ошибки, в
     * случае, если значение не является валидным. Вызывается при событии в input.
     *
     */
@@ -126,7 +131,7 @@ class Content extends React.Component {
    onGeneralButtonClick() {
       this.setState({isDialogChartOpen: true})
    }
-   
+
    onCloseDialog() {
       this.setState({isDialogChartOpen: false})
    }
@@ -144,7 +149,7 @@ class Content extends React.Component {
          )
       });
       let damages = {};
-      
+
       if(this.isGenerateButtonReady()){
          let stateDamages = this.state.damages;
          for(let i=0; i<stateDamages.length; i++){
@@ -160,7 +165,7 @@ class Content extends React.Component {
             primary={true}
          />
       );
-      
+
       return (
          <div style={styles.firstAppContainer}>
             <Card>
@@ -180,7 +185,8 @@ class Content extends React.Component {
                </CardText>
                <CardMedia
                >
-                  <img src={`/images/${this.state.scheme}.png`}/>
+                  {/*<img src={`/images/${this.state.scheme}.png`}/>*/}
+                  <img src={images[this.state.scheme]}/>
                </CardMedia>
             </Card>
             <Card>
@@ -233,5 +239,3 @@ class Content extends React.Component {
    }
 }
 export default Content;
-
-

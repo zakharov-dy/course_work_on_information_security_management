@@ -8,22 +8,25 @@ import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import Dialog from 'material-ui/lib/dialog';
 import RaisedButton from 'material-ui/lib/raised-button';
 
-import SecondAppContent from './App2/Content.jsx';
-import FirstAppContent from './app3/Content.jsx';
-import ThirdAppContent from './App1/Content.jsx';
-
-
 import {deepOrange500} from '../../node_modules/material-ui/lib/styles/colors';
 import getMuiTheme from '../../node_modules/material-ui/lib/styles/getMuiTheme';
 import MuiThemeProvider from '../../node_modules/material-ui/lib/MuiThemeProvider';
 
+import codeIcon from 'material-ui/lib/svg-icons/action/code'
+import copyrightIcon from 'material-ui/lib/svg-icons/action/copyright'
+import folderIcon from 'material-ui/lib/svg-icons/file/folder'
 
-const appNames = [
-   'Выбор СЗИ методами линейной свертки и ранжирования альтернатив',
-   'Комбинаторно-морфологический метод синтеза наборов СЗИ',
-   'Выбор рационального варианта реагирования на событие нарушения ИБ'],
-   appContents = [FirstAppContent, SecondAppContent, ThirdAppContent],
-   appNumber = 2;
+// Первое приложение
+// import AppContent from './app3/Content.jsx';
+// const appNames = 'Выбор СЗИ методами линейной свертки и ранжирования альтернатив';
+
+// Второе приложение
+// import AppContent from './App2/Content.jsx';
+// const appNames = 'Комбинаторно-морфологический метод синтеза наборов СЗИ';
+
+// Третье приложение
+import AppContent from './App1/Content.jsx';
+const appNames = 'Выбор рационального варианта реагирования на событие нарушения ИБ';
 
 const styles = {
    container: {
@@ -58,19 +61,18 @@ class Main extends React.Component {
       const myBarButtonsParams = [
          {
             name: 'О программе',
-            action: 'about',
+            icon: copyrightIcon,
             onButtonClick: () => {this.setState({isDockDialog: true})}
          },
          {
-            name: 'Документация'
-            // onButtonClick: () => {require('nw.gui').Shell.openExternal('https://github.com/dmitry22/course_work_on_information_security_management')},
-            // link: ''
+            name: 'Исходники',
+            icon: codeIcon,
+            onButtonClick: () => {open("https://github.com/dmitry22/course_work_on_information_security_management", "firefox");}
          },
          {
-            name: 'Исходники',
-            onButtonClick: () => {open("https://github.com/dmitry22/course_work_on_information_security_management", "firefox");}
-
-            // link: 'https://github.com/dmitry22/course_work_on_information_security_management'
+            name: 'Документация',
+            icon: folderIcon,
+            onButtonClick: () => {open("https://github.com/dmitry22/course_work_on_information_security_management/blob/master/doc.md", "firefox");}
          }],
          about = (
             <div style={styles.about}>
@@ -86,15 +88,16 @@ class Main extends React.Component {
                <MenuItem
                   key={i}
                   primaryText={item.name}
-                  onMouseDown={item.onButtonClick}/>);
-         }),
-         Content = appContents[appNumber];
+                  onMouseDown={item.onButtonClick}
+                  rightIcon={<item.icon />}
+               />);
+         });
 
       return (
          <MuiThemeProvider muiTheme={muiTheme}>
             <div>
                <AppBar
-                  title={appNames[appNumber]}
+                  title={appNames}
                   iconElementLeft={
                      <IconMenu
                        iconButtonElement={
@@ -118,7 +121,7 @@ class Main extends React.Component {
                   open={this.state.isDockDialog}
                   children={about}
                />
-               <Content />
+            <AppContent />
             </div>
          </MuiThemeProvider>
       );

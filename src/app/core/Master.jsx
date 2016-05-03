@@ -120,6 +120,7 @@ export default class Master extends React.Component {
                   value={this.state.contentIndex} />
                <p>{props.text[contentIndex].content}</p>
             </CardText>
+            {props.text[contentIndex].picture}
             <CardText>
                {content}
             </CardText>

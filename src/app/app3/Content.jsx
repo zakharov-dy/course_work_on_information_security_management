@@ -2,6 +2,9 @@ import React from 'react';
 import Master from './../core/Master.jsx'
 import RaisedButton from 'material-ui/lib/raised-button';
 import Dialog from 'material-ui/lib/dialog';
+// import  from 'increasingFunction.png';
+let increasingFunction = require('./../images/increasingFunction.png');
+let decreasingFunction = require('./../images/decreasingFunction.png');
 
 const styles = {
    headline: {
@@ -61,12 +64,14 @@ const text = [
    {
       title: 'Показатель "Защищенность"',
       subtitle: 'Этап №1',
-      content: 'Осуществите ввод критериев показателя "Защищенность" и определите соответствующие им весовые коэффициенты.'
+      content: 'Осуществите ввод критериев для возрастающей функции предпочтения и определите соответствующие им весовые коэффициенты.',
+      picture: (<img src={increasingFunction}/>)
    },
    {
       title: 'Показатель "Издержки"',
       subtitle: 'Этап №2',
-      content: 'Осуществите ввод критериев показателя "Издержки" и определите соответствующие им весовые коэффициенты.'
+      content: 'Осуществите ввод критериев для убывающей функции предпочтения и определите соответствующие им весовые коэффициенты.',
+      picture: (<img src={decreasingFunction}/>)
    },
    {
       title: 'Определение альтернатив',
@@ -102,7 +107,7 @@ export default class Content2 extends React.Component {
                primary={true}
             />
          ),
-         buttonLabel = (this.state.firstMethod.length === 0)? 'ввести данные' : "Начать сначала",
+         buttonLabel = (this.state.firstMethod.length === 0)? 'Ввод исходных данных' : "Начать сначала",
          newSessionButton = (
             <RaisedButton
                style={styles.button}
@@ -143,7 +148,7 @@ export default class Content2 extends React.Component {
          )
       } else {
          DialogContent = (
-            <div>
+            <div style={styles.buttonContainer}>
                {newSessionButton}
             </div>
          )
@@ -153,7 +158,7 @@ export default class Content2 extends React.Component {
             {DialogContent}
             <Dialog
                actions={closeResultButton}
-               title='Ввод исходных данных'
+               title='Мастер создания матрицы ранжирования средств защиты информации'
                contentStyle={styles.dialog}
                open={this.state.isResultDialogOpen}
                autoScrollBodyContent={true}

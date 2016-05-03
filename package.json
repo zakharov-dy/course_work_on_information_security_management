@@ -21,15 +21,18 @@
     "webpack-dev-server": "^1.14.0",
     "chart.js": "^1.0.2",
     "nw-builder": "2.2.0",
-    "react-swipeable-views": "^0.4.7"
+    "react-swipeable-views": "^0.4.7",
+    "image-webpack-loader": "1.8.0"
   },
   "dependencies": {
+    "file-loader": "^0.8.5",
     "material-ui": "0.14.4",
     "open": "0.0.5",
     "react": "^0.14.0",
     "react-addons-pure-render-mixin": "0.14.0",
     "react-dom": "^0.14.3",
     "react-motion": "^0.4.3",
-    "react-tap-event-plugin": "^0.2.1"
+    "react-tap-event-plugin": "^0.2.1",
+    "url-loader": "^0.5.7"
   }
 }
