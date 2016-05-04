@@ -88,11 +88,11 @@ export default class TableFields extends React.Component {
                         <TableHeaderColumn>
                            {i}
                         </TableHeaderColumn>
-                        
+
                         <TableHeaderColumn>
                            {row.value}
                         </TableHeaderColumn>
-                        
+
                         <TableHeaderColumn>
                            {row.names.join(' ')}
                         </TableHeaderColumn>
@@ -212,6 +212,8 @@ export default class TableFields extends React.Component {
          generalSets.sort(function (a, b) {
             return a.value - b.value;
          });
+         if (generalSets.length > 5)  generalSets.length = 5
+
          generalSets.reverse();
          this.setState({
             struct: generalSets

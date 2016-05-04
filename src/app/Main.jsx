@@ -21,12 +21,12 @@ import folderIcon from 'material-ui/lib/svg-icons/file/folder'
 // const appNames = 'Выбор СЗИ методами линейной свертки и ранжирования альтернатив';
 
 // Второе приложение
-// import AppContent from './App2/Content.jsx';
-// const appNames = 'Комбинаторно-морфологический метод синтеза наборов СЗИ';
+import AppContent from './App2/Content.jsx';
+const appNames = 'Комбинаторно-морфологический метод синтеза наборов СЗИ';
 
 // Третье приложение
-import AppContent from './App1/Content.jsx';
-const appNames = 'Выбор рационального варианта реагирования на событие нарушения ИБ';
+// import AppContent from './App1/Content.jsx';
+// const appNames = 'Выбор рационального варианта реагирования на событие нарушения ИБ';
 
 const styles = {
    container: {
