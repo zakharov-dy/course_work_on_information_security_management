@@ -81,6 +81,7 @@ export default class Content2 extends React.Component {
 
       this.state = {
          sets: [],
+         brotherSets: [],
          isDialogOpen: false,
          isResultDialogOpen: false
       };
@@ -90,6 +91,7 @@ export default class Content2 extends React.Component {
       let self = this,
          state = this.state,
          sets = state.sets,
+         brotherSets = state.brotherSets,
          tables = sets.map(function(table, i, array){
             return (
                <div key={i} style={styles.sectionStyle}>
@@ -145,8 +147,38 @@ export default class Content2 extends React.Component {
                   />
                   <Divider />
                </div>
-            )
+            );
          });
+      if (brotherSets.length > 0) {
+         tables.unshift(
+            <div style={styles.sectionStyle}>
+               <Table
+                  fixedHeader={true}
+                  selectable={false}
+               >
+                  <TableBody
+                     showRowHover={true}
+                     displayRowCheckbox={false}
+                  >
+                     {brotherSets.map( (row, i) => (
+                        <TableRow key={i} >
+                           <TableRowColumn>
+                              {row.name}
+                           </TableRowColumn>
+                           {row.costs.map((item, j) => (
+                              <TableRowColumn key={j} >
+                                 <p style={styles.sectionStyle}>{row.protections[j]}</p>
+                                 <p style={styles.sectionStyle}>{row.costs[j]}</p>
+                              </TableRowColumn>
+                           ))}
+                        </TableRow>
+                     ))}
+                  </TableBody>
+               </Table>
+            </div>
+         )
+      }
+
 
       let closeButton = (
          <RaisedButton
@@ -218,8 +250,67 @@ export default class Content2 extends React.Component {
          costs: costs,
          struct: struct});
 
+      // Метод нормализации
+      let normalize = function(array, widthArray){
+         for(let i=0; i<array[0].length; i++){
+            let max = +array[0][i];
+
+            for(let j=0; j<array.length; j++) {
+               if(array[j][i] > max) max = array[j][i];
+            }
+
+            for(let j=0; j<array.length; j++) {
+               array[j][i] = (array[j][i] / max) * widthArray[i].value;
+            }
+         }
+
+         // Склеивает двумерный массив в одномерный
+         return array.map(function(item){
+            return item.reduce(function(sum, current) {
+               return sum + current;
+            }, 0)})
+      };
+
+      //преобразовываем исходный массив к удобному для нас виду
+      let brotherSets = JSON.parse(JSON.stringify(sets));
+      let functionalSets = brotherSets.map(function(functionalSet){
+         let costs = functionalSet.costs,
+            protections = functionalSet.protections,
+            name = functionalSet.name,
+            setData = functionalSet.struct,
+            protectionsValue,
+            alternativeNames;
+
+         alternativeNames = setData.map(function(item, i, setData){
+            return setData[i].shift()
+         });
+
+         setData.forEach(function(row, i) {
+            row.forEach(function(item, j) {setData[i][j] = +item})
+         });
+
+         protectionsValue = setData.map(function(item, i, setData){
+            let alternativeData = [];
+            for(let j=0; j<protections.length; j++){
+               alternativeData[j] = setData[i].shift()
+            }
+            return alternativeData
+         });
+
+         costs = normalize(setData, costs);
+         protections = normalize(protectionsValue, protections);
+
+         return {
+            name: name,
+            alternativeNames: alternativeNames,
+            protections: protections,
+            costs: costs
+         }
+      });
+
       this.setState({
          isDialogOpen: false,
+         brotherSets: functionalSets,
          sets: sets
       })
    }
