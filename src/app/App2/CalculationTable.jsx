@@ -86,7 +86,7 @@ export default class TableFields extends React.Component {
                   {data.map( (row, i) => (
                      <TableRow key={i}>
                         <TableHeaderColumn>
-                           {i}
+                           {i+1}
                         </TableHeaderColumn>
 
                         <TableHeaderColumn>
@@ -212,7 +212,7 @@ export default class TableFields extends React.Component {
          generalSets.sort(function (a, b) {
             return a.value - b.value;
          });
-         if (generalSets.length > 5)  generalSets.length = 5
+         if (generalSets.length > 5)  generalSets.length = 5;
 
          generalSets.reverse();
          this.setState({

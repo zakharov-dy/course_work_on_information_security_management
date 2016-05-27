@@ -11,6 +11,11 @@ import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import TableBody from 'material-ui/lib/table/table-body';
 import CalculationTable from './CalculationTable.jsx';
 
+const initialValue = [
+   '[{"name":"Функциональная подсистема 1","protections":[{"name":"Критерий 1","value":1,"errorValueText":"","errorNameText":""},{"name":"Критерий 2","value":1,"errorValueText":"","errorNameText":""}],"costs":[{"name":"Критерий 3","value":1,"errorValueText":"","errorNameText":""},{"name":"Критерий 4","value":1,"errorValueText":"","errorNameText":""}],"struct":[["Элем. альтернатива 1","1","2","3","4"],["Элем. альтернатива 2","2","3","2","1"],["Элем. альтернатива 3","2","3","4","8"],["Элем. альтернатива 4","1","2","3","6"]]}]',
+   '[{"name":"Функциональная подсистема 1","alternativeNames":["Элем.альтернатива 1","Элем. альтернатива 2","Элем. альтернатива 3","Элем. альтернатива 4"],"protections":[1.1666666666666665,2,2,1.1666666666666665],"costs":[1.25,0.625,2,1.5]}]'
+];
+
 
 const styles = {
    headline: {
@@ -80,8 +85,8 @@ export default class Content2 extends React.Component {
       this.onDeleteTable = this.onDeleteTable.bind(this);
 
       this.state = {
-         sets: [],
-         brotherSets: [],
+         sets: [JSON.parse(initialValue[0])[0]],
+         brotherSets: [JSON.parse(initialValue[1])[0]],
          isDialogOpen: false,
          isResultDialogOpen: false
       };
@@ -152,6 +157,7 @@ export default class Content2 extends React.Component {
       if (brotherSets.length > 0) {
          tables.unshift(
             <div style={styles.sectionStyle}>
+               <h1></h1>
                <Table
                   fixedHeader={true}
                   selectable={false}
@@ -168,6 +174,7 @@ export default class Content2 extends React.Component {
                            {row.costs.map((item, j) => (
                               <TableRowColumn key={j} >
                                  <p style={styles.sectionStyle}>{row.protections[j]}</p>
+
                                  <p style={styles.sectionStyle}>{row.costs[j]}</p>
                               </TableRowColumn>
                            ))}
@@ -333,10 +340,13 @@ export default class Content2 extends React.Component {
 
    onDeleteTable(i, e) {
       e.stopPropagation();
-      let sets = this.state.sets;
+      let sets = this.state.sets,
+         brotherSets = this.state.brotherSets;
       sets.splice(i, 1);
+      brotherSets.splice(i, 1);
       this.setState({
-         sets: sets
+         sets: sets,
+         brotherSets: brotherSets
       });
    }
 }
