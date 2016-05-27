@@ -12,8 +12,8 @@ import TableBody from 'material-ui/lib/table/table-body';
 import CalculationTable from './CalculationTable.jsx';
 
 const initialValue = [
-   '[{"name":"Функциональная подсистема 1","protections":[{"name":"Критерий 1","value":1,"errorValueText":"","errorNameText":""},{"name":"Критерий 2","value":1,"errorValueText":"","errorNameText":""}],"costs":[{"name":"Критерий 3","value":1,"errorValueText":"","errorNameText":""},{"name":"Критерий 4","value":1,"errorValueText":"","errorNameText":""}],"struct":[["Элем. альтернатива 1","1","2","3","4"],["Элем. альтернатива 2","2","3","2","1"],["Элем. альтернатива 3","2","3","4","8"],["Элем. альтернатива 4","1","2","3","6"]]}]',
-   '[{"name":"Функциональная подсистема 1","alternativeNames":["Элем.альтернатива 1","Элем. альтернатива 2","Элем. альтернатива 3","Элем. альтернатива 4"],"protections":[1.1666666666666665,2,2,1.1666666666666665],"costs":[1.25,0.625,2,1.5]}]'
+   '[{"name":"Функциональная подсистема 1","protections":[{"name":"Критерий 1","value":1,"errorValueText":"","errorNameText":""},{"name":"Критерий 2","value":1,"errorValueText":"","errorNameText":""}],"costs":[{"name":"Критерий 3","value":1,"errorValueText":"","errorNameText":""},{"name":"Критерий 4","value":1,"errorValueText":"","errorNameText":""}],"struct":[["Элем. альтернатива 1","1","2","3","4"],["Элем. альтернатива 2","2","3","2","1"],["Элем. альтернатива 3","2","3","4","8"],["Элем. альтернатива 4","1","2","3","6"]]},{"name":"Функциональная система 2","protections":[{"name":"критерий 1","value":1,"errorValueText":"","errorNameText":""},{"name":"критерий 2","value":1,"errorValueText":"","errorNameText":""}],"costs":[{"name":"критерий 3","value":1,"errorValueText":"","errorNameText":""},{"name":"критерий 4","value":1,"errorValueText":"","errorNameText":""}],"struct":[["Элем. альтернатива 1","12","22","43","6"],["Элем. альтернатива 2","23","77","99","9"],["Элем. альтернатива 3","23","22","88",0]]}]',
+   '[{"name":"Функциональная подсистема 1","alternativeNames":["Элем. альтернатива 1","Элем. альтернатива 2","Элем. альтернатива 3","Элем. альтернатива 4"],"protections":[1.1666666666666665,2,2,1.1666666666666665],"costs":[1.25,0.625,2,1.5]},{"name":"Функциональная система 2","alternativeNames":["Элем. альтернатива 1","Элем. альтернатива 2","Элем. альтернатива 3"],"protections":[0.8074534161490683,2,1.2857142857142856],"costs":[1.101010101010101,2,0.8888888888888888]}]'
 ];
 
 
@@ -38,12 +38,14 @@ const styles = {
    overlayStyle:{
       paddingTop: '10%'
    },
-
    button: {
       margin: 12
    },
    sectionStyle: {
       textAlign: 'center'
+   },
+   divider: {
+      borderBottom: '1px solid'
    }
 };
 
@@ -66,7 +68,7 @@ const text = [
    {
       title: 'Определение альтернатив',
       subtitle: 'Этап №4',
-      content: 'Определите набор альтернатив для заданной функциональной подсистемы'
+      content: 'Определите элементарные альтернативы для заданной функциональной подсистемы'
    }
 
 
@@ -85,8 +87,8 @@ export default class Content2 extends React.Component {
       this.onDeleteTable = this.onDeleteTable.bind(this);
 
       this.state = {
-         sets: [JSON.parse(initialValue[0])[0]],
-         brotherSets: [JSON.parse(initialValue[1])[0]],
+         sets: JSON.parse(initialValue[0]),
+         brotherSets: JSON.parse(initialValue[1]),
          isDialogOpen: false,
          isResultDialogOpen: false
       };
@@ -145,7 +147,7 @@ export default class Content2 extends React.Component {
                   </Table>
                   <RaisedButton
                      key={i + 'deleteTableButton'}
-                     label='Удалить функциональный набор'
+                     label='Удалить таблицу функциональной подсистемы'
                      onMouseDown={self.onDeleteTable.bind(null, i)}
                      primary={true}
                      style={styles.button}
@@ -157,7 +159,7 @@ export default class Content2 extends React.Component {
       if (brotherSets.length > 0) {
          tables.unshift(
             <div style={styles.sectionStyle}>
-               <h1></h1>
+               <h2>Отношения показателей "Защищенность" к "Издержкам" для элементарных альтернатив</h2>
                <Table
                   fixedHeader={true}
                   selectable={false}
@@ -174,7 +176,7 @@ export default class Content2 extends React.Component {
                            {row.costs.map((item, j) => (
                               <TableRowColumn key={j} >
                                  <p style={styles.sectionStyle}>{row.protections[j]}</p>
-
+                                 <p style={styles.divider}></p>
                                  <p style={styles.sectionStyle}>{row.costs[j]}</p>
                               </TableRowColumn>
                            ))}
@@ -182,6 +184,7 @@ export default class Content2 extends React.Component {
                      ))}
                   </TableBody>
                </Table>
+               <h2>{brotherSets.length === 1 ? 'Таблица функциональной подсистемы' : 'Таблицы функциональных подсистем'}</h2>
             </div>
          )
       }
@@ -206,9 +209,9 @@ export default class Content2 extends React.Component {
          <div>
             {tables}
             <div style={{textAlign: 'center'}}>
-               <RaisedButton label={sets.length === 0 ? 'Задать' +
-                ' функциональную' +
-                ' подсистему' : 'Добавить функциональную подсистему'}
+               <RaisedButton label={sets.length === 0 ? 'Задать таблицу' +
+                ' функциональной' +
+                ' подсистемы' : 'Добавить таблицу функциональной подсистемы'}
                              onMouseDown={this.onAddSet}
                              secondary={true}
                              style={styles.button}
@@ -243,7 +246,7 @@ export default class Content2 extends React.Component {
                open={this.state.isResultDialogOpen}
                autoScrollBodyContent={true}
                children={
-                  <CalculationTable sets={sets}/>
+                  <CalculationTable sets={brotherSets}/>
                }
             />
          </div>

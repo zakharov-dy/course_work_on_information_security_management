@@ -4,9 +4,9 @@ import PureRenderMixin from 'react-addons-pure-render-mixin';
 import Table from 'material-ui/lib/table/table';
 import TableHeaderColumn from 'material-ui/lib/table/table-header-column';
 import TableRow from 'material-ui/lib/table/table-row';
+import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import TableHeader from 'material-ui/lib/table/table-header';
 import TableBody from 'material-ui/lib/table/table-body';
-
 
 const styles = {
    propContainerStyle: {
@@ -63,7 +63,7 @@ export default class TableFields extends React.Component {
                   <TableRow>
                      <TableHeaderColumn colSpan={3}
                                         style={{textAlign: 'center'}}>
-                        Список наборов альтернатив
+                        Наборы средств защиты информации с максимальным значением целевой функции.
                      </TableHeaderColumn>
                   </TableRow>
                   <TableRow>
@@ -85,17 +85,17 @@ export default class TableFields extends React.Component {
                >
                   {data.map( (row, i) => (
                      <TableRow key={i}>
-                        <TableHeaderColumn>
+                        <TableRowColumn>
                            {i+1}
-                        </TableHeaderColumn>
+                        </TableRowColumn>
 
-                        <TableHeaderColumn>
+                        <TableRowColumn>
                            {row.value}
-                        </TableHeaderColumn>
+                        </TableRowColumn>
 
-                        <TableHeaderColumn>
-                           {row.names.join(' ')}
-                        </TableHeaderColumn>
+                        <TableRowColumn>
+                           {row.names.join(', ')}
+                        </TableRowColumn>
                      </TableRow>
                   ))}
                </TableBody>
@@ -110,63 +110,8 @@ export default class TableFields extends React.Component {
    }
 
    updateGeneralSets(props){
-      let normalize = function(array, widthArray){
-         for(let i=0; i<array[0].length; i++){
-            let max = +array[0][i];
-
-            for(let j=0; j<array.length; j++) {
-               if(array[j][i] > max) max = array[j][i];
-            }
-
-            for(let j=0; j<array.length; j++) {
-               array[j][i] = (array[j][i] / max) * widthArray[i].value;
-            }
-         }
-
-         // Склеивает двумерный массив в одномерный
-         return array.map(function(item){
-            return item.reduce(function(sum, current) {
-               return sum + current;
-            }, 0)})
-      };
-      if(props.sets.length !== 0 ){
-         //преобразовываем исходный массив к удобному для нас виду
-         let sets = JSON.parse(JSON.stringify(props.sets));
-         let functionalSets = sets.map(function(functionalSet){
-            let costs = functionalSet.costs,
-               protections = functionalSet.protections,
-               name = functionalSet.name,
-               setData = functionalSet.struct,
-               protectionsValue,
-               alternativeNames;
-
-            alternativeNames = setData.map(function(item, i, setData){
-               return setData[i].shift()
-            });
-
-            setData.forEach(function(row, i) {
-               row.forEach(function(item, j) {setData[i][j] = +item})
-            });
-
-            protectionsValue = setData.map(function(item, i, setData){
-               let alternativeData = [];
-               for(let j=0; j<protections.length; j++){
-                  alternativeData[j] = setData[i].shift()
-               }
-               return alternativeData
-            });
-
-            costs = normalize(setData, costs);
-            protections = normalize(protectionsValue, protections);
-
-            return {
-               name: name,
-               alternativeNames: alternativeNames,
-               protections: protections,
-               costs: costs
-            }
-         });
-
+      let functionalSets = props.sets;
+      if(functionalSets.length !== 0 ){
          // Для формирования массива массивов с номерами мест, каждое из
          // которых будет определять номер альтернативы в наборе, при этом
          // место в массиве будет определяться номером набора, сформируем
@@ -176,7 +121,7 @@ export default class TableFields extends React.Component {
             return item.alternativeNames.length
          });
 
-         sets = [];
+         let sets = [];
          let currentSet = new Array(functionalSets.length);
          let branch = function branch (depth, currentSet) {
             for(let i=0; i<functionalSetsLengths[depth]; i++){
