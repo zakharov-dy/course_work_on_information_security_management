@@ -202,12 +202,13 @@ export default class Content2 extends React.Component {
          />
       );
 
-
       return (
          <div>
             {tables}
             <div style={{textAlign: 'center'}}>
-               <RaisedButton label='Добавить набор'
+               <RaisedButton label={sets.length === 0 ? 'Задать' +
+                ' функциональную' +
+                ' подсистему' : 'Добавить функциональную подсистему'}
                              onMouseDown={this.onAddSet}
                              secondary={true}
                              style={styles.button}
