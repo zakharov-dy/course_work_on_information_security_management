@@ -16,6 +16,12 @@ const styles = {
    },
    propToggleHeader: {
       margin: '20px auto 10px'
+   },
+   rowColumn1: {
+      width: 50
+   },
+   rowColumn2: {
+      width: 150
    }
 };
 
@@ -66,30 +72,29 @@ export default class TableFields extends React.Component {
                         Наборы средств защиты информации с максимальным значением целевой функции.
                      </TableHeaderColumn>
                   </TableRow>
-                  <TableRow>
-                     <TableHeaderColumn>
-                        Место
-                     </TableHeaderColumn>
-                     <TableHeaderColumn>
-                        Значение
-                     </TableHeaderColumn>
-                     <TableHeaderColumn>
-                        Альтернативы
-                     </TableHeaderColumn>
-                  </TableRow>
                </TableHeader>
                <TableBody
                   showRowHover={true}
-                  stripedRows={this.state.stripedRows}
                   displayRowCheckbox={false}
                >
+                  <TableRow>
+                     <TableRowColumn style={styles.rowColumn1}>
+                        Место
+                     </TableRowColumn>
+                     <TableRowColumn style={styles.rowColumn2}>
+                        Значение
+                     </TableRowColumn>
+                     <TableRowColumn>
+                        Альтернативы
+                     </TableRowColumn>
+                  </TableRow>
                   {data.map( (row, i) => (
                      <TableRow key={i}>
-                        <TableRowColumn>
+                        <TableRowColumn style={styles.rowColumn1}>
                            {i+1}
                         </TableRowColumn>
 
-                        <TableRowColumn>
+                        <TableRowColumn style={styles.rowColumn2}>
                            {row.value}
                         </TableRowColumn>
 

@@ -139,6 +139,7 @@ let chartLogic = {
       this.deltaP = deltaP;
       // Формируем массив комбинаций для построения z
       this._branch(this.initBranchNumber);
+      console.log(this.combination_set);
       // Формируем массив строк J
       this._formationJ();
       // Формируем массив данных по оси x

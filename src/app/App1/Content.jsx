@@ -19,7 +19,7 @@ const images = [
    require('./../images/0.png'),
    require('./../images/1.png'),
    require('./../images/2.png')
-]
+];
 const styles = {
    firstAppContainer: {
       width: '60%',
@@ -70,7 +70,23 @@ class Content extends React.Component {
     *   построения инпутов ущерба в зависимости от схемы.
     *
     */
-   getClearDamages(scheme) {
+
+   getClearDamages(scheme, refresh) {
+      if(refresh){
+         let state = this.state,
+            cloneDemages = state.damages,
+            currentScheme = state.scheme;
+         console.log(currentScheme);
+         console.log(scheme);
+         if (currentScheme === 1) {
+            cloneDemages.push({name: 'C(v4)', id: 3})
+         }
+         else if(scheme === 1) {
+            cloneDemages.pop();
+         }
+         return cloneDemages;
+      }
+
       let damages;
       scheme === 1 ? damages = [{},{},{}] : damages = [{},{},{}, {}];
 
@@ -87,10 +103,10 @@ class Content extends React.Component {
     *
     */
    handleChangeSelectField(event, index, scheme) {
-      if (scheme !== this.state.value) {
+      if (scheme !== this.state.scheme) {
          this.setState({
             scheme: scheme,
-            damages: this.getClearDamages(scheme)
+            damages: this.getClearDamages(scheme, true)
          })
       }
    }
@@ -145,6 +161,7 @@ class Content extends React.Component {
                min={0}
                max={1}
                handleChange={self.inputChange}
+
                caption={item.name}/>
          )
       });
@@ -185,7 +202,6 @@ class Content extends React.Component {
                </CardText>
                <CardMedia
                >
-                  {/*<img src={`/images/${this.state.scheme}.png`}/>*/}
                   <img src={images[this.state.scheme]}/>
                </CardMedia>
             </Card>
