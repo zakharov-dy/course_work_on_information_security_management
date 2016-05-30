@@ -1,267 +1,257 @@
-import React from 'react';
-import Master from './../core/Master.jsx'
-import RaisedButton from 'material-ui/lib/raised-button';
-import Dialog from 'material-ui/lib/dialog';
-// import  from 'increasingFunction.png';
-let increasingFunction = require('./../images/increasingFunction.png');
-let decreasingFunction = require('./../images/decreasingFunction.png');
+/*
+ * Компонент - контент приложения Расчет рационального варианта реагирования на событие нарушения информационной безопасности
+ *
+ */
 
+import React from 'react';
+import SelectField from 'material-ui/lib/SelectField';
+import ValidationField from './../core/ValidationField.jsx';
+import MenuItem from 'material-ui/lib/menus/menu-item';
+import RaisedButton from 'material-ui/lib/raised-button';
+import ChartData from './Chart.jsx';
+import Card from 'material-ui/lib/card/card';
+import CardHeader from 'material-ui/lib/card/card-header';
+import CardText from 'material-ui/lib/card/card-text';
+import CardMedia from 'material-ui/lib/card/card-media';
+import Dialog from 'material-ui/lib/dialog';
+
+const images = [
+   require('./../images/0.png'),
+   require('./../images/1.png'),
+   require('./../images/2.png')
+];
 const styles = {
-   headline: {
-      fontSize: 24,
-      paddingTop: 16,
-      marginBottom: 12,
-      fontWeight: 400
+   firstAppContainer: {
+      width: '60%',
+      marginLeft: '20%'
    },
-   slide: {
-      padding: 10
+   button: {
+      margin: 12
+   },
+   imageInput: {
+      cursor: 'pointer',
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      right: 0,
+      left: 0,
+      width: '100%',
+      opacity: 0
    },
    dialog: {
+      textAlign: 'center',
       position: 'absolute',
       width: '100%',
       maxWidth: 'none',
       left: '50%',
       top: '50%',
       transform: 'translate(-50%, -50%)'
-   },
-   overlayStyle:{
-      paddingTop: '10%'
-   },
-
-   button: {
-      margin: 12
-   },
-   buttonContainer:{
-      textAlign: 'center'
-   },
-   leftResult:{
-      display: 'inline-block',
-      float: 'left',
-      marginLeft: '100',
-      maxWidth: '35%'
-   },
-   rightResult:{
-      display: 'inline-block',
-      float: 'right',
-      marginRight: '100',
-      maxWidth: '35%'
-   },
-   resultHeader:{
-      textAlign: 'center'
-   },
-   listStyle:{
-      fontSize: 'large'
    }
-
 };
 
-const text = [
-   {
-      title: '',
-      subtitle: '',
-      content: ''
-   },
-   {
-      title: 'Показатель "Защищенность"',
-      subtitle: 'Этап №1',
-      content: 'Осуществите ввод критериев для возрастающей функции предпочтения и определите соответствующие им весовые коэффициенты.',
-      picture: (<img src={increasingFunction}/>)
-   },
-   {
-      title: 'Показатель "Издержки"',
-      subtitle: 'Этап №2',
-      content: 'Осуществите ввод критериев для убывающей функции предпочтения и определите соответствующие им весовые коэффициенты.',
-      picture: (<img src={decreasingFunction}/>)
-   },
-   {
-      title: 'Определение альтернатив',
-      subtitle: 'Этап №3',
-      content: 'Определите набор альтернатив функциональной подсистемы'
-   }
-
-];
-
-export default class Content2 extends React.Component {
-
-   constructor(props) {
-      super(props);
-
+class Content extends React.Component {
+   constructor(props, context) {
+      super(props, context);
+      this.inputChange = this.inputChange.bind(this);
+      this.handleChangeSelectField = this.handleChangeSelectField.bind(this);
+      this.getClearDamages = this.getClearDamages.bind(this);
+      this.onGeneralButtonClick = this.onGeneralButtonClick.bind(this);
       this.onCloseDialog = this.onCloseDialog.bind(this);
-      this.generateSet = this.generateSet.bind(this);
-      this.onOpenDialog = this.onOpenDialog.bind(this);
-
       this.state = {
-         firstMethod: [],
-         secondMethod: [],
-         isDialogOpen: false,
-         isResultDialogOpen: false
+         scheme: 0,
+         damages: this.getClearDamages(0),
+         stepParams: {},
+         isDialogChartOpen: false
       };
    }
 
-   render() {
+   /*
+    * Функция возвращает "чистые" данные для
+    *   построения инпутов ущерба в зависимости от схемы.
+    *
+    */
 
-      let closeResultButton = (
-            <RaisedButton
-               label='Закрыть'
-               onMouseDown={this.onCloseDialog}
-               primary={true}
-            />
-         ),
-         buttonLabel = (this.state.firstMethod.length === 0)? 'Ввод исходных данных' : "Начать сначала",
-         newSessionButton = (
-            <RaisedButton
-               style={styles.button}
-               secondary={true}
-               label={buttonLabel}
-               onMouseDown={this.onOpenDialog}
-            />
-         ),
-         DialogContent;
-
-      if (this.state.firstMethod.length !== 0) {
-         DialogContent = (
-            <div>
-               <div style={styles.buttonContainer}>
-                  {newSessionButton}
-               </div>
-               <div style={styles.leftResult}>
-                  <h1 style={styles.resultHeader}>
-                     Результаты по методу "линейной свертки критериев"
-                  </h1>
-                  <ol style={styles.listStyle}>
-                     {this.state.firstMethod.map(function (item) {
-                        return (<li>{item.name}: {item.result}</li>)
-                     })}
-                  </ol>
-               </div>
-               <div style={styles.rightResult}>
-                  <h1 style={styles.resultHeader}>
-                     Результаты по методу "ранжирования альтернатив по свойстваам"
-                  </h1>
-                  <ol style={styles.listStyle}>
-                     {this.state.secondMethod.map(function (item) {
-                        return (<li>{item.name}: {item.result}</li>)
-                     })}
-                  </ol>
-               </div>
-            </div>
-         )
-      } else {
-         DialogContent = (
-            <div style={styles.buttonContainer}>
-               {newSessionButton}
-            </div>
-         )
+   getClearDamages(scheme, refresh) {
+      if(refresh){
+         let state = this.state,
+            cloneDemages = state.damages,
+            currentScheme = state.scheme;
+         console.log(currentScheme);
+         console.log(scheme);
+         if (currentScheme === 1) {
+            cloneDemages.push({name: 'C(v4)', id: 3})
+         }
+         else if(scheme === 1) {
+            cloneDemages.pop();
+         }
+         return cloneDemages;
       }
+
+      let damages;
+      scheme === 1 ? damages = [{},{},{}] : damages = [{},{},{}, {}];
+
+      for (let i = 0; i < damages.length; i++) {
+         damages[i].name = 'C(v' + (i + 1) + ')';
+         damages[i].id = i;
+      }
+      return damages;
+   }
+
+   /*
+    * Функция смены значения селектора и построения 'чистых' инпутов.
+    * Вызывается при событии в селекторе.
+    *
+    */
+   handleChangeSelectField(event, index, scheme) {
+      if (scheme !== this.state.scheme) {
+         this.setState({
+            scheme: scheme,
+            damages: this.getClearDamages(scheme, true)
+         })
+      }
+   }
+
+
+   isGenerateButtonReady(){
+      let isStepReady = this.state.stepParams.errorText === '';
+      let isDamagesReady = this.state.damages.filter(function(item) {
+         return item.errorText === '';
+      }).length === this.state.damages.length;
+      return isDamagesReady && isStepReady
+   }
+
+   /*
+    * Функция смены значения input'а и присваивания ему состояния и ошибки, в
+    * случае, если значение не является валидным. Вызывается при событии в input.
+    *
+    */
+   inputChange(id, errorText, value){
+      if (id === 'stepId') {
+         let stepParams = this.state.stepParams;
+         stepParams.value = value;
+         stepParams.errorText = errorText;
+         this.setState({
+            stepParams: stepParams
+         })
+      }
+      else {
+         let damages = this.state.damages;
+         damages[id].errorText = errorText;
+         damages[id].value = value;
+         this.setState({
+            damages: damages
+         })
+      }
+   }
+
+   onGeneralButtonClick() {
+      this.setState({isDialogChartOpen: true})
+   }
+
+   onCloseDialog() {
+      this.setState({isDialogChartOpen: false})
+   }
+
+   render() {
+      let self = this;
+      let damagesTextField = this.state.damages.map(function (item, i, array) {
+         return (
+            <ValidationField key={'damagesTextField' + i}
+               id={item.id}
+               min={0}
+               max={1}
+               handleChange={self.inputChange}
+
+               caption={item.name}/>
+         )
+      });
+      let damages = {};
+
+      if(this.isGenerateButtonReady()){
+         let stateDamages = this.state.damages;
+         for(let i=0; i<stateDamages.length; i++){
+            let key = 'v' + (i+1);
+            damages[key] = stateDamages[i].value;
+         }
+      }
+
+      let closeButton = (
+         <RaisedButton
+            label='Закрыть'
+            onMouseDown={this.onCloseDialog}
+            primary={true}
+         />
+      );
+
       return (
-         <div style={styles.content}>
-            {DialogContent}
+         <div style={styles.firstAppContainer}>
+            <Card>
+               <CardHeader
+                  title='Выберите модель принятия решений в виде графа связи вариантов реагирования и исходов.'
+                  subtitle='Этап № 1'
+               />
+               <CardText>
+                  <SelectField
+                     ref='SelectField'
+                     value={this.state.scheme}
+                     onChange={this.handleChangeSelectField}>
+                     <MenuItem value={0} primaryText="Граф №1"/>
+                     <MenuItem value={1} primaryText="Граф №2"/>
+                     <MenuItem value={2} primaryText="Граф №3"/>
+                  </SelectField>
+               </CardText>
+               <CardMedia
+               >
+                  <img src={images[this.state.scheme]}/>
+               </CardMedia>
+            </Card>
+            <Card>
+               <CardHeader
+                  title='Задайте численное значение величин ущербов исходов'
+                  subtitle='Этап № 2'
+               />
+               <CardText>
+                  {damagesTextField}
+               </CardText>
+            </Card>
+            <Card>
+               <CardHeader
+                  title='Задайте интервал между соседними значаниями величины вероятности атаки для построения графика зависимости значений целевой функции J от вероятности атаки'
+                  subtitle='Этап № 3'
+               />
+               <CardText>
+                  <ValidationField
+                     id={'stepId'}
+                     min={0.01}
+                     max={1}
+                     handleChange={this.inputChange}
+                     caption='dP'/>
+                  <RaisedButton
+                     label='Показать результат'
+                     onMouseDown={this.onGeneralButtonClick}
+                     disabled={!this.isGenerateButtonReady()}
+                     secondary={true}
+                     secondary={true}
+                  />
+               </CardText>
+            </Card>
             <Dialog
-               actions={closeResultButton}
-               title='Мастер создания матрицы ранжирования средств защиты информации'
+               title='Варианты реагирования на события нарушения ИБ'
+               actions={closeButton}
+               open={this.state.isDialogChartOpen}
                contentStyle={styles.dialog}
-               open={this.state.isResultDialogOpen}
                autoScrollBodyContent={true}
                children={
-                  <Master text={text} onFinish={this.generateSet} startProgressValue={1}/>
+                <ChartData
+                  index={this.state.scheme}
+                  damages={damages}
+                  step={+this.state.stepParams.value}
+                  disable={!(this.isGenerateButtonReady() && this.state.isDialogChartOpen)}
+                  style={styles.button}/>
                }
             />
          </div>
       );
    }
-
-   generateSet(name, protections, costs, struct) {
-
-      let alternativesLength = struct[0].length,
-         maxMin = [];
-
-      // Преобразование данных в числовые значения
-      struct = struct.map(function (set) {return set.map(function (item, i) {
-         if(i !== 0) item = +item;
-         return item
-      })});
-
-      // Формирование массива с именами альтернатив и обрезание имен у исходного массива
-      let arrayForFirstMethod = struct.reduce(function(result, set){
-         result.push({name: set.shift()});
-         return result
-      }, []);
-
-      // Нахождение минимального и максимального значений для каждого критерия
-      for(let i=0; i<alternativesLength; i++){
-         maxMin.push(struct.reduce(function (result, current, j) {
-            if(current[i] > result.max) result.max = current[i];
-            if(current[i] < result.min) result.min = current[i];
-            return result
-         }, {max: 0, min: Infinity}))
-      }
-
-      // дублируем исходные данные для второго метода.
-      let secondStrict = JSON.parse(JSON.stringify(struct));
-
-      //
-      let arrayForSecondMethod = arrayForFirstMethod.map(function(item){return {name: item.name, result: 0}});
-      for(let i = 0; i < secondStrict[0].length; i++){
-         // для каждого столбца формируем сортированный массив его элементов
-         let sortedColumn = [];
-         for(let j=0; j<secondStrict.length; j++){sortedColumn[j] = secondStrict[j][i]}
-         sortedColumn.sort(function (a, b) {return a - b});
-
-         //
-         for(let j=0; j<secondStrict.length; j++){
-            arrayForSecondMethod[j].result += (sortedColumn.indexOf(secondStrict[j][i]) + 1)
-         }
-      }
-
-      // Нормализация структуры.
-      let normalizeStrict = struct.map(function (set, i) {
-         return set.map(function (item, j) {
-            let min = maxMin[j].min,
-               max = maxMin[j].max,
-               alternativesLength = struct[0].length,
-               protectionsLength = protections.length,
-               weight;
-            if(j < protectionsLength){
-               weight = protections[j].value;
-               item = weight * (item - min) / (max - min);
-            }
-            else {
-               weight = costs[alternativesLength - protectionsLength - 1].value;
-               item = weight * (max - item) / (max - min);
-            }
-            return item
-         })
-      });
-
-      // Схлопывание всех критериев по альтернативе в одно значение
-      arrayForFirstMethod.forEach(function (item, i) {
-         item.result = normalizeStrict[i].reduce(function (result, item) {
-            result = result + item;
-            return result
-         }, 0)
-      });
-
-      // Сортировка всех значений в одно
-      arrayForFirstMethod.sort(function (a, b) {
-         return a.result - b.result
-      }).reverse();
-
-      // Сортировка всех значений в одно
-      arrayForSecondMethod.sort(function (a, b) {
-         return a.result - b.result
-      });
-
-      this.setState({
-         isResultDialogOpen: false,
-         firstMethod: arrayForFirstMethod,
-         secondMethod: arrayForSecondMethod
-      })
-   }
-
-   onOpenDialog() {
-      this.setState({isResultDialogOpen: true})
-   }
-   onCloseDialog() {
-      this.setState({isResultDialogOpen: false})
-   }
 }
+export default Content;

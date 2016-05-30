@@ -12,6 +12,13 @@
 import React from 'react';
 import Chart from 'chart.js/Chart';
 
+import Table from 'material-ui/lib/table/table';
+import TableHeaderColumn from 'material-ui/lib/table/table-header-column';
+import TableRow from 'material-ui/lib/table/table-row';
+import TableRowColumn from 'material-ui/lib/table/table-row-column';
+import TableHeader from 'material-ui/lib/table/table-header';
+import TableBody from 'material-ui/lib/table/table-body';
+
 let myChart = undefined;
 
 /**
@@ -139,7 +146,6 @@ let chartLogic = {
       this.deltaP = deltaP;
       // Формируем массив комбинаций для построения z
       this._branch(this.initBranchNumber);
-      console.log(this.combination_set);
       // Формируем массив строк J
       this._formationJ();
       // Формируем массив данных по оси x
@@ -302,9 +308,68 @@ class AppChart extends React.Component {
    }
 
    render(){
+      console.log(chartLogic.combination_set);
 
       let width = 1000,
-         halfBodyWidth = document.body.clientWidth * 0.75;
+         halfBodyWidth = document.body.clientWidth * 0.75,
+         combination_set = [],
+         combinationSet,
+         table;
+
+      chartLogic.combination_set = [];
+      chartLogic.combination = [];
+      chartLogic.struct = chartLogic.data[this.props.index];
+      chartLogic._branch(chartLogic.initBranchNumber);
+
+      if(chartLogic.combination_set.length !== 0){
+         combinationSet = JSON.parse(JSON.stringify(chartLogic.combination_set));
+         combinationSet[0].forEach(function(){combination_set.push([])});
+         combinationSet.forEach(function (columns) {
+            columns.forEach(function(column, j ) {
+               for(let key in column){
+                  column['key'] = key;
+                  column['value'] = column[key];
+               }
+               combination_set[j].push(column)
+            })
+         });
+
+         table = (
+            <Table
+               fixedHeader={true}
+               selectable={false}
+            >
+               <TableHeader displaySelectAll={false} adjustForCheckbox={false} >
+                  <TableRow>
+                     <TableHeaderColumn>
+                     </TableHeaderColumn>
+                     {combination_set[0].map( (column, i) => (
+                              <TableHeaderColumn>
+                                 z{i+1}, P(z{i+1})
+                              </TableHeaderColumn>
+                     ))}
+                  </TableRow>
+               </TableHeader>
+               <TableBody
+                  showRowHover={true}
+                  displayRowCheckbox={false}
+               >
+                  {combination_set.map( (row, i) => (
+                     <TableRow key={i}>
+                        <TableRowColumn>
+                           u{i+1}
+                        </TableRowColumn>
+                        {row.map( (column, j) => (
+                           <TableRowColumn>
+                              {column['key']}
+                           </TableRowColumn>
+                        ))}
+                     </TableRow>
+                  ))}
+               </TableBody>
+            </Table>
+         );
+      }
       if(width < halfBodyWidth){
          width = halfBodyWidth;
       }
@@ -312,9 +377,13 @@ class AppChart extends React.Component {
       let height = width / 3;
 
       return (
-         <canvas id="myChart" width={width} height={height}>
-
-         </canvas>
+         <div>
+            <h2>Таблица функции реализации</h2>
+            {table}
+            <h2>График зависимости значений целевой функции J от вероятности атаки</h2>
+            <canvas id="myChart" width={width} height={height}>
+            </canvas>
+         </div>
       );
    }
 

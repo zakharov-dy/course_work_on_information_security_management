@@ -2,8 +2,8 @@ import React from 'react';
 import AppHeader from './core/AppHeader.jsx';
 import AppContent from './core/AppContent.jsx';
 
-import FirstAppContent from './App1/Content.jsx';
-import SecondAppContent from './App2/Content.jsx';
+import FirstAppContent from './app3/Content.jsx';
+import SecondAppContent from './app2/Content.jsx';
 
 import {deepOrange500} from '../../node_modules/material-ui/lib/styles/colors';
 import getMuiTheme from '../../node_modules/material-ui/lib/styles/getMuiTheme';

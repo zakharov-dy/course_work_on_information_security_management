@@ -226,7 +226,7 @@ export default class Content2 extends React.Component {
             </div>
 
             <Dialog
-               title='Мастер создания набора альтернатив'
+               title='Мастер создания таблицы для функциональной подсистемы'
                actions={closeButton}
                open={this.state.isDialogOpen}
                contentStyle={styles.dialog}
