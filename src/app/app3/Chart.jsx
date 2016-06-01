@@ -146,6 +146,7 @@ let chartLogic = {
       this.deltaP = deltaP;
       // Формируем массив комбинаций для построения z
       this._branch(this.initBranchNumber);
+      console.log('!!!');
       // Формируем массив строк J
       this._formationJ();
       // Формируем массив данных по оси x
@@ -314,13 +315,20 @@ class AppChart extends React.Component {
          halfBodyWidth = document.body.clientWidth * 0.75,
          combination_set = [],
          combinationSet,
-         table;
+         table1,
+         table2;
 
       chartLogic.combination_set = [];
       chartLogic.combination = [];
       chartLogic.struct = chartLogic.data[this.props.index];
       chartLogic._branch(chartLogic.initBranchNumber);
-
+      let arrayY = [],
+         deltaP = 0.1,
+         lastP = 1;
+      // Формируем массив p-шек
+      for (let i = 0; i <= lastP; i+= deltaP) {
+         arrayY.push(i.toFixed(1));
+      }
       if(chartLogic.combination_set.length !== 0){
          combinationSet = JSON.parse(JSON.stringify(chartLogic.combination_set));
          combinationSet[0].forEach(function(){combination_set.push([])});
@@ -334,7 +342,14 @@ class AppChart extends React.Component {
             })
          });
 
-         table = (
+      let pArray = combinationSet.map(function(item, i){
+         return item.reduce(function(array, jtem, j){
+            array.push('('+jtem.value+')');
+            return array;
+         }, []).join('*')
+      });
+
+         table1 = (
             <Table
                fixedHeader={true}
                selectable={false}
@@ -368,7 +383,40 @@ class AppChart extends React.Component {
                   ))}
                </TableBody>
             </Table>
-         );
+         ),
+         table2 = (
+            <Table
+               fixedHeader={true}
+               selectable={false}
+            >
+               <TableHeader displaySelectAll={false} adjustForCheckbox={false} >
+                  <TableRow>
+                     <TableHeaderColumn>
+                     </TableHeaderColumn>
+                     {arrayY.map( (column, i) => (
+                        <TableHeaderColumn>
+                           {column}
+                        </TableHeaderColumn>
+                     ))}
+                  </TableRow>
+               </TableHeader>
+               <TableBody
+                  showRowHover={true}
+                  displayRowCheckbox={false}
+               >
+                  {pArray.map( (row, i) => (
+                     <TableRow key={i}>
+                        {arrayY.map( (column, i) => (
+                           <TableHeaderColumn>
+                              {row}
+                           </TableHeaderColumn>
+                        ))}
+                     </TableRow>
+                  ))}
+               </TableBody>
+            </Table>
+            )
+
       }
       if(width < halfBodyWidth){
          width = halfBodyWidth;
@@ -379,7 +427,9 @@ class AppChart extends React.Component {
       return (
          <div>
             <h2>Таблица функции реализации</h2>
-            {table}
+               {table1}
+            <h2>Ещё какая-то таблица</h2>
+               {table2}
             <h2>График зависимости значений целевой функции J от вероятности атаки</h2>
             <canvas id="myChart" width={width} height={height}>
             </canvas>
