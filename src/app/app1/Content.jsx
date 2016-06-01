@@ -15,6 +15,20 @@ let increasingFunction = require('./../images/increasingFunction.png');
 let decreasingFunction = require('./../images/decreasingFunction.png');
 
 const styles = {
+   flexboxContainer: {
+      width: '100%',
+      height: '100%',
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      display: 'flex',
+      justifyContent: 'center',
+      overflow: 'auto'
+   },
+   firstAppContainer: {
+      marginTop: '100px',
+      maxWidth: '1200px'
+   },
    headline: {
       fontSize: 24,
       paddingTop: 16,
@@ -83,6 +97,7 @@ export default class Content2 extends React.Component {
       this.onCloseDialog = this.onCloseDialog.bind(this);
       this.generateSet = this.generateSet.bind(this);
       this.onOpenDialog = this.onOpenDialog.bind(this);
+      this.truncation = this.truncation.bind(this);
 
       this.state = {
          resultArray: [],
@@ -94,7 +109,8 @@ export default class Content2 extends React.Component {
 
    render() {
 
-      let state = this.state,
+      let self = this,
+         state = this.state,
          normalizeStrict = state.normalizeStrict,
          criteriaNames = state.criteriaNames,
          resultArray = state.resultArray,
@@ -148,7 +164,7 @@ export default class Content2 extends React.Component {
                               {resultArray[i].name}
                            </TableRowColumn>
                            <TableRowColumn>
-                               {resultArray[i].result} {resultArray[i].firstWinner ? '(max)' : ''}
+                              {self.truncation(resultArray[i].result)} {resultArray[i].firstWinner ? '(max)' : ''}
                            </TableRowColumn>
                            <TableRowColumn>
                               {resultArray[i].result2} {resultArray[i].secondWinner? '(min)' : ''}
@@ -164,7 +180,7 @@ export default class Content2 extends React.Component {
          ),
          table = (
             <div>
-               <h2>Критерии и альтернативы</h2>
+               <h2>Численные значения критериев в относительных единицах</h2>
                <Table
                   fixedHeader={true}
                   selectable={false}
@@ -190,11 +206,11 @@ export default class Content2 extends React.Component {
                            <TableRowColumn>
                               {resultArray[i].name}
                            </TableRowColumn>
-                        {row.map( (column, j) => (
-                           <TableRowColumn>
-                              {column}
-                           </TableRowColumn>
-                        ))}
+                           {row.map( (column, j) => (
+                              <TableRowColumn>
+                                 {self.truncation(column)}
+                              </TableRowColumn>
+                           ))}
                         </TableRow>
                      ))}
                   </TableBody>
@@ -209,19 +225,21 @@ export default class Content2 extends React.Component {
          )
       }
       return (
-         <div style={styles.resultHeader}>
-            {table}
-            <div>
-               {DialogContent}
-               <Dialog
-                  actions={closeResultButton}
-                  contentStyle={styles.dialog}
-                  open={this.state.isResultDialogOpen}
-                  autoScrollBodyContent={true}
-                  children={
+         <div style={styles.flexboxContainer}>
+            <div style={styles.firstAppContainer}>
+               {table}
+               <div>
+                  {DialogContent}
+                  <Dialog
+                     actions={closeResultButton}
+                     contentStyle={styles.dialog}
+                     open={this.state.isResultDialogOpen}
+                     autoScrollBodyContent={true}
+                     children={
                   <Master text={text} onFinish={this.generateSet} startProgressValue={1}/>
                }
-               />
+                  />
+               </div>
             </div>
          </div>
       );
@@ -325,6 +343,17 @@ export default class Content2 extends React.Component {
          normalizeStrict: normalizeStrict,
          criteriaNames: protections.concat(costs)
       })
+   }
+
+   truncation(value) {
+      if (value.toFixed) {
+         if ( parseInt( value ) !== value ) {
+            return value.toFixed(3)
+         } else {
+            return value
+         }
+      }
+      return value
    }
 
    onOpenDialog() {

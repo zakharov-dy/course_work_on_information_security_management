@@ -21,9 +21,19 @@ const images = [
    require('./../images/2.png')
 ];
 const styles = {
+   flexboxContainer: {
+      width: '100%',
+      height: '100%',
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      display: 'flex',
+      justifyContent: 'center',
+      overflow: 'auto'
+   },
    firstAppContainer: {
-      width: '60%',
-      marginLeft: '20%'
+      maxWidth: '1000px',
+      marginTop: '100px'
    },
    button: {
       margin: 12
@@ -184,64 +194,65 @@ class Content extends React.Component {
       );
 
       return (
-         <div style={styles.firstAppContainer}>
-            <Card>
-               <CardHeader
-                  title='Выберите модель принятия решений в виде графа связи вариантов реагирования и исходов.'
-                  subtitle='Этап № 1'
-               />
-               <CardText>
-                  <SelectField
-                     ref='SelectField'
-                     value={this.state.scheme}
-                     onChange={this.handleChangeSelectField}>
-                     <MenuItem value={0} primaryText="Граф №1"/>
-                     <MenuItem value={1} primaryText="Граф №2"/>
-                     <MenuItem value={2} primaryText="Граф №3"/>
-                  </SelectField>
-               </CardText>
-               <CardMedia
-               >
-                  <img src={images[this.state.scheme]}/>
-               </CardMedia>
-            </Card>
-            <Card>
-               <CardHeader
-                  title='Задайте численное значение величин ущербов исходов'
-                  subtitle='Этап № 2'
-               />
-               <CardText>
-                  {damagesTextField}
-               </CardText>
-            </Card>
-            <Card>
-               <CardHeader
-                  title='Задайте интервал между соседними значаниями величины вероятности атаки для построения графика зависимости значений целевой функции J от вероятности атаки'
-                  subtitle='Этап № 3'
-               />
-               <CardText>
-                  <ValidationField
-                     id={'stepId'}
-                     min={0.01}
-                     max={1}
-                     handleChange={this.inputChange}
-                     caption='dP'/>
-                  <RaisedButton
-                     label='Показать результат'
-                     onMouseDown={this.onGeneralButtonClick}
-                     disabled={!this.isGenerateButtonReady()}
-                     secondary={true}
-                     secondary={true}
+         <div style={styles.flexboxContainer}>
+            <div style={styles.firstAppContainer}>
+               <Card>
+                  <CardHeader
+                     title='Выберите модель принятия решений в виде графа связи вариантов реагирования и исходов.'
+                     subtitle='Этап № 1'
                   />
-               </CardText>
-            </Card>
-            <Dialog
-               title='Варианты реагирования на события нарушения ИБ'
-               actions={closeButton}
-               open={this.state.isDialogChartOpen}
-               contentStyle={styles.dialog}
-               autoScrollBodyContent={true}
-               children={
+                  <CardText>
+                     <SelectField
+                        ref='SelectField'
+                        value={this.state.scheme}
+                        onChange={this.handleChangeSelectField}>
+                        <MenuItem value={0} primaryText="Граф №1"/>
+                        <MenuItem value={1} primaryText="Граф №2"/>
+                        <MenuItem value={2} primaryText="Граф №3"/>
+                     </SelectField>
+                  </CardText>
+                  <CardMedia
+                  >
+                     <img src={images[this.state.scheme]}/>
+                  </CardMedia>
+               </Card>
+               <Card>
+                  <CardHeader
+                     title='Задайте численное значение величин ущербов исходов'
+                     subtitle='Этап № 2'
+                  />
+                  <CardText>
+                     {damagesTextField}
+                  </CardText>
+               </Card>
+               <Card>
+                  <CardHeader
+                     title='Задайте интервал между соседними значениями величины вероятности атаки для построения графика зависимости значений целевой функции J от вероятности атаки'
+                     subtitle='Этап № 3'
+                  />
+                  <CardText>
+                     <ValidationField
+                        id={'stepId'}
+                        min={0.01}
+                        max={1}
+                        handleChange={this.inputChange}
+                        caption='dP'/>
+                     <RaisedButton
+                        label='Показать результат'
+                        onMouseDown={this.onGeneralButtonClick}
+                        disabled={!this.isGenerateButtonReady()}
+                        secondary={true}
+                        secondary={true}
+                     />
+                  </CardText>
+               </Card>
+               <Dialog
+                  title='Варианты реагирования на события нарушения ИБ'
+                  actions={closeButton}
+                  open={this.state.isDialogChartOpen}
+                  contentStyle={styles.dialog}
+                  autoScrollBodyContent={true}
+                  children={
                 <ChartData
                   index={this.state.scheme}
                   damages={damages}
@@ -249,7 +260,8 @@ class Content extends React.Component {
                   disable={!(this.isGenerateButtonReady() && this.state.isDialogChartOpen)}
                   style={styles.button}/>
                }
-            />
+               />
+            </div>
          </div>
       );
    }

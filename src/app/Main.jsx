@@ -17,16 +17,16 @@ import copyrightIcon from 'material-ui/lib/svg-icons/action/copyright'
 import folderIcon from 'material-ui/lib/svg-icons/file/folder'
 
  //Первое приложение
- import AppContent from './app1/Content.jsx';
- const appNames = 'Выбор СЗИ методами линейной свертки и ранжирования альтернатив';
+ // import AppContent from './app1/Content.jsx';
+ // const appNames = 'Выбор СЗИ методами линейной свертки и ранжирования альтернатив';
 
 // Второе приложение
-//import AppContent from './app2/Content.jsx';
-//const appNames = 'Комбинаторно-морфологический метод синтеза наборов СЗИ';
+// import AppContent from './app2/Content.jsx';
+// const appNames = 'Комбинаторно-морфологический метод синтеза наборов СЗИ';
 
-//// Третье приложение
-// import AppContent from './app3/Content.jsx';
-// const appNames = 'Выбор рационального варианта реагирования на событие нарушения ИБ';
+// Третье приложение
+import AppContent from './app3/Content.jsx';
+const appNames = 'Выбор рационального варианта реагирования на событие нарушения ИБ';
 
 const styles = {
    container: {
@@ -64,16 +64,6 @@ class Main extends React.Component {
             icon: copyrightIcon,
             onButtonClick: () => {this.setState({isDockDialog: true})}
          }
-         //{
-         //   name: 'Исходники',
-         //   icon: codeIcon,
-         //   onButtonClick: () => {open("https://github.com/dmitry22/course_work_on_information_security_management", "firefox");}
-         //},
-         //{
-         //   name: 'Документация',
-         //   icon: folderIcon,
-         //   onButtonClick: () => {open("https://github.com/dmitry22/course_work_on_information_security_management/blob/master/doc.md", "firefox");}
-         //}
       ],
          about = (
             <div style={styles.about}>

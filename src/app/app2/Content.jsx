@@ -80,6 +80,7 @@ export default class Content2 extends React.Component {
       super(props);
 
       this.onCloseDialog = this.onCloseDialog.bind(this);
+      this.truncation = this.truncation.bind(this);
       this.onCloseResultDialog = this.onCloseResultDialog.bind(this);
       this.onAddSet = this.onAddSet.bind(this);
       this.generateSet = this.generateSet.bind(this);
@@ -99,7 +100,11 @@ export default class Content2 extends React.Component {
          state = this.state,
          sets = state.sets,
          brotherSets = state.brotherSets,
-         tables = sets.map(function(table, i, array){
+         maxLength = sets.length !== 0 && sets.reduce(function (params, item, i) {
+               if(params[0] < item.struct.length) return [item.struct.length, i]
+               else return params
+         }, [0, 0]),
+         tables = sets.map(function(table, i){
             return (
                <div key={i} style={styles.sectionStyle}>
                   <Table
@@ -164,6 +169,18 @@ export default class Content2 extends React.Component {
                   fixedHeader={true}
                   selectable={false}
                >
+                  <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                     <TableRow>
+                        <TableHeaderColumn tooltip='Имя альтернативы'>
+                           Функциональная подсистема
+                        </TableHeaderColumn>
+                        {sets[maxLength[1]].struct.map( (item, i) => (
+                           <TableHeaderColumn key={i + 'number'} style={styles.sectionStyle}>
+                              {i+1}
+                           </TableHeaderColumn>
+                        ))}
+                     </TableRow>
+                  </TableHeader>
                   <TableBody
                      showRowHover={true}
                      displayRowCheckbox={false}
@@ -175,9 +192,9 @@ export default class Content2 extends React.Component {
                            </TableRowColumn>
                            {row.costs.map((item, j) => (
                               <TableRowColumn key={j} >
-                                 <p style={styles.sectionStyle}>{row.protections[j]}</p>
+                                 <p style={styles.sectionStyle}>{self.truncation(row.protections[j])}</p>
                                  <p style={styles.divider}></p>
-                                 <p style={styles.sectionStyle}>{row.costs[j]}</p>
+                                 <p style={styles.sectionStyle}>{self.truncation(row.costs[j])}</p>
                               </TableRowColumn>
                            ))}
                         </TableRow>
@@ -188,7 +205,6 @@ export default class Content2 extends React.Component {
             </div>
          )
       }
-
 
       let closeButton = (
          <RaisedButton
@@ -226,7 +242,7 @@ export default class Content2 extends React.Component {
             </div>
 
             <Dialog
-               title='Мастер создания таблицы для функциональной подсистемы'
+               title='Мастер задания функциональной подсистемы'
                actions={closeButton}
                open={this.state.isDialogOpen}
                contentStyle={styles.dialog}
@@ -326,6 +342,17 @@ export default class Content2 extends React.Component {
       })
    }
 
+   truncation(value) {
+      if (value.toFixed) {
+         if ( parseInt( value ) !== value ) {
+            return value.toFixed(3)
+         } else {
+            return value
+         }
+      }
+      return value
+   }
+   
    onAddSet() {
       this.setState({isDialogOpen: true})
    }

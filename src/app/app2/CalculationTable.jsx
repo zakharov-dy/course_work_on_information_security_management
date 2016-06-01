@@ -58,7 +58,8 @@ export default class TableFields extends React.Component {
    }
 
    render() {
-      let data = this.state.struct;
+      let data = this.state.struct,
+         self = this;
       if (typeof data !== 'undefined'){
          return (
             <Table
@@ -81,9 +82,11 @@ export default class TableFields extends React.Component {
                      <TableRowColumn style={styles.rowColumn1}>
                         Место
                      </TableRowColumn>
+
                      <TableRowColumn style={styles.rowColumn2}>
                         Значение
                      </TableRowColumn>
+
                      <TableRowColumn>
                         Альтернативы
                      </TableRowColumn>
@@ -95,7 +98,7 @@ export default class TableFields extends React.Component {
                         </TableRowColumn>
 
                         <TableRowColumn style={styles.rowColumn2}>
-                           {row.value}
+                           {self.truncation(row.value)}
                         </TableRowColumn>
 
                         <TableRowColumn>
@@ -113,6 +116,17 @@ export default class TableFields extends React.Component {
    componentDidMount(){
       this.updateGeneralSets(this.props)
    }
+
+   truncation(value) {
+      if (value.toFixed) {
+         if ( parseInt( value ) !== value ) {
+            return value.toFixed(3)
+         } else {
+            return value
+         }
+      }
+      return value
+   };
 
    updateGeneralSets(props){
       let functionalSets = props.sets;
@@ -159,16 +173,14 @@ export default class TableFields extends React.Component {
             }
          });
 
-         generalSets.sort(function (a, b) {
+         generalSets = generalSets.sort(function (a, b) {
             return a.value - b.value;
-         });
-         if (generalSets.length > 5)  generalSets.length = 5;
+         }).reverse();
 
-         generalSets.reverse();
+         if (generalSets.length > 5)  generalSets.length = 5;
          this.setState({
             struct: generalSets
          })
       }
    }
-
 }

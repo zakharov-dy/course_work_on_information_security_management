@@ -89,8 +89,8 @@ export default class TableFields extends React.Component {
                         </TableHeaderColumn>
                      </TableRow>
                      <TableRow>
-                        <TableHeaderColumn tooltip='Наименование альтернативы'>
-                           Наименование альтернативы
+                        <TableHeaderColumn tooltip='Наименование элементарной альтернативы'>
+                           Наименование
                         </TableHeaderColumn>
                         {alternatives.map( (item, i) => (
                            <TableHeaderColumn key={i + 'alternatives'} tooltip={item.value}>
@@ -192,7 +192,7 @@ export default class TableFields extends React.Component {
       this.setState({
          struct: struct
       });
-      
+
       this.props.handleChange(struct)
    }
 }
