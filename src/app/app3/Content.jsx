@@ -171,7 +171,6 @@ class Content extends React.Component {
                min={0}
                max={1}
                handleChange={self.inputChange}
-
                caption={item.name}/>
          )
       });
@@ -241,7 +240,6 @@ class Content extends React.Component {
                         label='Показать результат'
                         onMouseDown={this.onGeneralButtonClick}
                         disabled={!this.isGenerateButtonReady()}
-                        secondary={true}
                         secondary={true}
                      />
                   </CardText>

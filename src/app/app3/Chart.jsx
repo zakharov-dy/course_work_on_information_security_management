@@ -302,6 +302,8 @@ class AppChart extends React.Component {
    constructor(props, context) {
       super(props, context);
       this.generateChart = this.generateChart.bind(this);
+      this.getPValue = this.getPValue.bind(this);
+      this.truncation = this.truncation.bind(this);
    }
 
    generateChart(index, damages, deltaP) {
@@ -311,7 +313,8 @@ class AppChart extends React.Component {
    render(){
       console.log(chartLogic.combination_set);
 
-      let width = 1000,
+      let self = this,
+         width = 1000,
          halfBodyWidth = document.body.clientWidth * 0.75,
          combination_set = [],
          combinationSet,
@@ -360,7 +363,7 @@ class AppChart extends React.Component {
                      </TableHeaderColumn>
                      {combination_set[0].map( (column, i) => (
                               <TableHeaderColumn>
-                                 z{i+1}, P(z{i+1})
+                                 z{i+1}
                               </TableHeaderColumn>
                      ))}
                   </TableRow>
@@ -395,7 +398,7 @@ class AppChart extends React.Component {
                      </TableHeaderColumn>
                      {arrayY.map( (column, i) => (
                         <TableHeaderColumn>
-                           {column}
+                           Pa={column}
                         </TableHeaderColumn>
                      ))}
                   </TableRow>
@@ -406,10 +409,13 @@ class AppChart extends React.Component {
                >
                   {pArray.map( (row, i) => (
                      <TableRow key={i}>
+                        <TableRowColumn>
+                           P(z{i+1})
+                        </TableRowColumn>
                         {arrayY.map( (column, i) => (
-                           <TableHeaderColumn>
-                              {row}
-                           </TableHeaderColumn>
+                           <TableRowColumn>
+                              {self.getPValue(row, column)}
+                           </TableRowColumn>
                         ))}
                      </TableRow>
                   ))}
@@ -428,7 +434,7 @@ class AppChart extends React.Component {
          <div>
             <h2>Таблица функции реализации</h2>
                {table1}
-            <h2>Ещё какая-то таблица</h2>
+            <h2>Таблица вероятности реализации</h2>
                {table2}
             <h2>График зависимости значений целевой функции J от вероятности атаки</h2>
             <canvas id="myChart" width={width} height={height}>
@@ -446,6 +452,22 @@ class AppChart extends React.Component {
       let props = this.props;
       if(!this.props.disable) this.generateChart(props.index, props.damages, props.step)
    }
+
+   getPValue(evalString, value){
+      let p = value;
+      return this.truncation(eval(evalString))
+   }
+
+   truncation(value) {
+      if (value.toFixed) {
+         if ( parseInt( value ) !== value ) {
+            return value.toFixed(3)
+         } else {
+            return value
+         }
+      }
+      return value
+   };
 }
 
 export default AppChart;
