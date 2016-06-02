@@ -1,9 +1,9 @@
 {
-  "name": "laboratory_work_2",
+  "name": "laboratory_work_1",
   "version": "1.0.0",
-  "description": "First application",
+  "description": "",
   "main": "index.html",
-  "author": "Developer",
+  "author": "USATU",
   "window": {
     "toolbar": false
   },
